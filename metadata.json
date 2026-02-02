@@ -1,0 +1,5 @@
+{
+  "name": "HackBook",
+  "description": "A centralized platform for offensive security tools, guides, and penetration testing resources, inspired by high-end cybersecurity interfaces.",
+  "requestFramePermissions": []
+}

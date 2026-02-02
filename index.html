@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HackBook | Offensive Security Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --htb-green: #9fef00;
+            --htb-bg: #05080a;
+            --htb-surface: #0b1217;
+            --htb-border: #1a232e;
+            --htb-text-muted: #94a3b8;
+        }
+        
+        body {
+            font-family: 'Sora', 'Inter', sans-serif;
+            background-color: var(--htb-bg);
+            color: #ffffff;
+            letter-spacing: -0.01em;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .grid-dots {
+            background-image: radial-gradient(#1e293b 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        .htb-btn {
+            @apply font-semibold transition-all duration-200 active:scale-95;
+            border-radius: 8px;
+        }
+
+        .htb-card {
+            background-color: var(--htb-surface);
+            border: 1px solid var(--htb-border);
+            border-radius: 12px;
+            @apply transition-all duration-300;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Sora', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--htb-bg); }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+        "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+        "react/": "https://esm.sh/react@^19.2.4/",
+        "react": "https://esm.sh/react@^19.2.4"
+      }
+    }
+    </script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="grid-dots">
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
