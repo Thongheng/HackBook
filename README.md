@@ -55,14 +55,14 @@ HackBook provides a unified interface for payload generation, encoding, and expl
 
 ## 🌐 Deployment to GitHub Pages
 
-This project is configured for easy deployment to GitHub Pages.
+This project uses **GitHub Actions** for automatic deployment.
 
-1. **Configure Repository**: ensure your repository is public or you have GitHub Pro.
-2. **Deploy**:
-   ```bash
-   npm run deploy
-   ```
-3. **Settings**: Go to Repository Settings -> Pages and ensure `gh-pages` branch is selected.
+1. **Push to `main`**:
+   Any push to the `main` branch will trigger the deployment workflow.
+2. **Configure Settings**:
+   - Go to **Settings** > **Pages**.
+   - Under **Build and deployment**, select **Source**: `GitHub Actions`.
+   - The site will deploy automatically after the action completes.
 
 ## 🛡️ Disclaimer
 
