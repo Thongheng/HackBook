@@ -30,16 +30,14 @@ export const GuidesPage: React.FC = () => {
                     <button
                       key={guide.originalIndex}
                       onClick={() => setActiveGuideId(guide.originalIndex)}
-                      className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-xs font-bold transition-all group ${
-                        activeGuideId === guide.originalIndex
+                      className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-xs font-bold transition-all group ${activeGuideId === guide.originalIndex
                           ? 'bg-[#9fef00]/10 text-[#9fef00] border border-[#9fef00]/20'
                           : 'text-slate-400 hover:text-white hover:bg-white/[0.03] border border-transparent'
-                      }`}
+                        }`}
                     >
                       <span className="truncate pr-2">{guide.title}</span>
-                      <ChevronRight className={`w-3 h-3 transition-transform ${
-                        activeGuideId === guide.originalIndex ? 'translate-x-0' : '-translate-x-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-0'
-                      }`} />
+                      <ChevronRight className={`w-3 h-3 transition-transform ${activeGuideId === guide.originalIndex ? 'translate-x-0' : '-translate-x-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-0'
+                        }`} />
                     </button>
                   ))}
               </div>
@@ -97,25 +95,15 @@ export const GuidesPage: React.FC = () => {
               Deployment Sequence
             </h3>
             <div className="max-w-[1000px]">
-              <CodeBlock 
-                code={activeGuide.code} 
-                language={activeGuide.language as any} 
-                title={`${activeGuide.title} Console Output`} 
+              <CodeBlock
+                code={activeGuide.code}
+                language={activeGuide.language as any}
+                title={`${activeGuide.title} Console Output`}
               />
             </div>
           </div>
 
-          <div className="pt-6 border-t border-white/5">
-            <div className="inline-flex items-start gap-3 p-4 bg-rose-500/5 border border-rose-500/10 rounded-xl max-w-2xl">
-              <div className="w-2 h-2 rounded-full bg-rose-500 mt-1.5 shrink-0 animate-pulse" />
-              <div className="space-y-1">
-                <p className="text-[11px] font-bold text-rose-400 uppercase tracking-[0.2em]">OPSEC Critical Alert</p>
-                <p className="text-xs text-rose-300/60 leading-relaxed">
-                  Always verify payload signatures and destination routing before execution. Ensure all tunneling sessions are terminated post-engagement to prevent persistent backdoors.
-                </p>
-              </div>
-            </div>
-          </div>
+
         </div>
       </main>
     </div>

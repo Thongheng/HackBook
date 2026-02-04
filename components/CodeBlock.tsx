@@ -23,7 +23,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'bash', t
           <Terminal className="w-3.5 h-3.5 text-[#9fef00]/60" />
           <span className="text-[10px] uppercase tracking-widest font-bold text-white/30">{title || language}</span>
         </div>
-        <button 
+        <button
           onClick={handleCopy}
           className="p-1.5 hover:bg-white/5 rounded-md transition-all active:scale-90"
           title="Copy command"
@@ -33,7 +33,13 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'bash', t
       </div>
       <div className="p-5 overflow-x-auto">
         <pre className="font-mono text-sm text-[#9fef00]/80 leading-relaxed">
-          <code>{code}</code>
+          <code>
+            {code.split('\n').map((line, i) => (
+              <div key={i} className={line.trim().startsWith('#') ? 'text-slate-500' : 'text-[#9fef00]/80'}>
+                {line}
+              </div>
+            ))}
+          </code>
         </pre>
       </div>
     </div>
