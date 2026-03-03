@@ -25,8 +25,9 @@ export const referenceCategories = [
     icon: Globe,
     links: [
       { title: 'Payloads All The Things', url: 'https://swisskyrepo.github.io/PayloadsAllTheThings/', desc: 'Useful payloads and bypasses for Web App Security.' },
+      { title: 'HackTricks', url: 'https://book.hacktricks.wiki/', desc: 'A massive wiki of All in One hacking tricks and techniques.' },
       { title: 'CSP Bypass', url: 'https://cspbypass.com/', desc: 'Tool designed to help ethical hackers bypass restrictive CSP.' },
-      { title: 'HackTricks', url: 'https://book.hacktricks.wiki/', desc: 'A massive wiki of All in One hacking tricks and techniques.' }
+      { title: 'JWT Auditor', url: 'https://jwtauditor.com/', desc: 'An online tool to analyze JWT tokens for security vulnerabilities.' }
     ]
   },
   {
