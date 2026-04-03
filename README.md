@@ -68,3 +68,21 @@ This project uses **GitHub Actions** for automatic deployment.
 
 **HackBook is for educational and authorized testing purposes only.** 
 The authors are not responsible for any misuse of these tools. Always ensure you have permission before testing any system.
+
+## 📋 Updating Checklist Data
+
+The checklist generator now uses `data/checklistCatalog.json` as the repo-native source of truth.
+
+- `scripts/import_checklist_excel.py`
+  Imports `Pentest_Checklist_v2.xlsx` into normalized catalog JSON for review.
+- `scripts/validate_checklist_catalog.py`
+  Compares the curated catalog against the Excel workbook and flags drift, missing refs, duplicate ids, and invalid metadata.
+- `scripts/validate_checklist_scenarios.mjs`
+  Runs scenario-based checks to make sure the generator returns the right rows for real engagement configurations.
+
+Common workflow:
+
+```bash
+npm run checklist:import
+npm run checklist:test
+```
