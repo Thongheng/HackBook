@@ -19,7 +19,7 @@ dist-ssr
 .vite-cache
 
 # Package manager lock files
-package-lock.json
+# NOTE: package-lock.json should be committed for reproducible builds
 yarn.lock
 pnpm-lock.yaml
 
@@ -47,7 +47,6 @@ __pycache__
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/

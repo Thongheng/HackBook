@@ -1,7 +1,16 @@
 {
   "name": "hackbook",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A comprehensive suite of browser-based offensive security tools for CTF players, pentesters, and security researchers",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Thongheng/HackBook.git"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
