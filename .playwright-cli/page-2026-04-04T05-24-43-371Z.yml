@@ -1,0 +1,81 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+      - generic [ref=e14]: HackBook
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - button "Dashboard" [ref=e17] [cursor=pointer]
+        - button "Tools" [ref=e18] [cursor=pointer]
+        - button "Guides" [active] [ref=e19] [cursor=pointer]
+        - button "Reference" [ref=e20] [cursor=pointer]
+      - button "Search... CTRL K" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+        - generic [ref=e25]:
+          - generic [ref=e26]: Search...
+          - generic [ref=e27]:
+            - generic [ref=e28]: CTRL
+            - generic [ref=e29]: K
+  - main [ref=e30]:
+    - generic [ref=e258]:
+      - complementary [ref=e259]:
+        - generic [ref=e260]:
+          - generic [ref=e263]: Guide Index
+          - generic [ref=e264]:
+            - generic [ref=e265]:
+              - heading "Linux" [level=4] [ref=e266]: Linux
+              - button "Python TTY Upgrade" [ref=e269] [cursor=pointer]:
+                - generic [ref=e270]: Python TTY Upgrade
+                - img [ref=e271]
+            - generic [ref=e273]:
+              - heading "Network" [level=4] [ref=e274]: Network
+              - generic [ref=e276]:
+                - button "Public Reverse Shell Tunneling" [ref=e277] [cursor=pointer]:
+                  - generic [ref=e278]: Public Reverse Shell Tunneling
+                  - img [ref=e279]
+                - button "Ligolo-ng Pivot" [ref=e281] [cursor=pointer]:
+                  - generic [ref=e282]: Ligolo-ng Pivot
+                  - img [ref=e283]
+        - generic [ref=e285]:
+          - generic [ref=e288]: Operator Note
+          - paragraph [ref=e290]: Select a tactic from the manifest to view deployment instructions and shell commands.
+      - main [ref=e291]:
+        - generic [ref=e292]:
+          - generic [ref=e295]: Guide Briefing
+          - generic [ref=e298]:
+            - img [ref=e300]
+            - generic [ref=e302]:
+              - generic [ref=e303]:
+                - img [ref=e304]
+                - heading "Python TTY Upgrade" [level=1] [ref=e307]
+              - generic [ref=e308]:
+                - generic [ref=e309]: Linux
+                - generic [ref=e310]: "REF: OPSEC-100"
+        - generic [ref=e311]:
+          - generic [ref=e312]:
+            - generic [ref=e314]:
+              - img [ref=e315]
+              - generic [ref=e317]: Operational Briefing
+            - paragraph [ref=e319]: Upgrade a standard NC shell to a fully functional interactive TTY with tab-completion and history.
+          - generic [ref=e320]:
+            - generic [ref=e322]:
+              - img [ref=e323]
+              - generic [ref=e325]: Deployment Sequence
+            - generic [ref=e328]:
+              - generic [ref=e329]:
+                - generic [ref=e330]:
+                  - img [ref=e331]
+                  - generic [ref=e333]: Python TTY Upgrade Console Output
+                - button "Copy command" [ref=e334] [cursor=pointer]:
+                  - img [ref=e335]
+              - code [ref=e340]:
+                - generic [ref=e341]: "# Step 1: Spawn PTY Shell"
+                - generic [ref=e342]: python3 -c 'import pty; pty.spawn("/bin/bash")'
+                - generic [ref=e343]: "# Step 2: Background (CTRL+Z) and set local terminal to raw mode"
+                - generic [ref=e344]: stty raw -echo; fg
+                - generic [ref=e345]: "# Step 3: Set Terminal Environment Variables"
+                - generic [ref=e346]: export TERM=xterm
+                - generic [ref=e347]: "# Optional: Try listening with rlwrap for shell history"
+                - generic [ref=e348]: "# rlwrap nc -lnvp 1234"
+  - contentinfo [ref=e100]:
+    - paragraph [ref=e101]: © 2025 HACKBOOK | AUTHORIZED ACCESS ONLY

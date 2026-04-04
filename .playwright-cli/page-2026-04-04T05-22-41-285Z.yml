@@ -1,0 +1,82 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+      - generic [ref=e14]: HackBook
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - button "Dashboard" [ref=e17] [cursor=pointer]
+        - button "Tools" [ref=e18] [cursor=pointer]
+        - button "Guides" [ref=e19] [cursor=pointer]
+        - button "Reference" [ref=e20] [cursor=pointer]
+      - button "Search... CTRL K" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+        - generic [ref=e25]:
+          - generic [ref=e26]: Search...
+          - generic [ref=e27]:
+            - generic [ref=e28]: CTRL
+            - generic [ref=e29]: K
+  - main [ref=e30]:
+    - generic [ref=e102]:
+      - generic [ref=e566]:
+        - generic [ref=e567]:
+          - button "Back to Tools" [ref=e568] [cursor=pointer]:
+            - img [ref=e569]
+          - generic [ref=e571]:
+            - img [ref=e573]
+            - generic [ref=e576]:
+              - heading "JWT Exploit" [level=2] [ref=e577]
+              - paragraph [ref=e578]: HackBook Offensive Intelligence / Auth
+        - generic [ref=e579]:
+          - img [ref=e580]
+          - generic [ref=e583]: tool-jwt
+      - generic [ref=e584]:
+        - generic [ref=e585]:
+          - generic [ref=e588]: Encoded Token
+          - generic [ref=e589]:
+            - text: Encoded JWS / JWT Token
+            - textbox "Paste JWT here..." [ref=e590]: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoyNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        - generic [ref=e591]:
+          - generic [ref=e592]:
+            - generic [ref=e594]:
+              - img [ref=e595]
+              - generic [ref=e599]: Decoded Archive
+            - generic [ref=e601]:
+              - generic [ref=e602]:
+                - paragraph [ref=e603]: Header Segment
+                - generic [ref=e604]: "{ \"alg\": \"HS256\", \"typ\": \"JWT\" }"
+              - generic [ref=e605]:
+                - paragraph [ref=e606]: Payload Claims
+                - generic [ref=e607]: "{ \"sub\": \"1234567890\", \"name\": \"John Doe\", \"iat\": 2516239022 }"
+          - generic [ref=e608]:
+            - generic [ref=e609]:
+              - generic [ref=e611]:
+                - img [ref=e612]
+                - generic [ref=e614]: Offensive Modules
+              - generic [ref=e615]:
+                - generic [ref=e616]:
+                  - heading "None Algorithm Bypass" [level=4] [ref=e617]
+                  - paragraph [ref=e618]:
+                    - text: Forces the
+                    - code [ref=e619]: alg
+                    - text: header to
+                    - code [ref=e620]: none
+                    - text: and truncates the signature segment.
+                - button "Generate None-Type Exploit" [ref=e621] [cursor=pointer]
+            - generic [ref=e622]:
+              - generic [ref=e625]: Forge & Sign (HMAC)
+              - generic [ref=e626]:
+                - heading "Forge & Sign (HMAC)" [level=4] [ref=e627]
+                - generic [ref=e628]:
+                  - generic [ref=e629]:
+                    - text: Header
+                    - textbox [ref=e630]: "{ \"alg\": \"HS256\", \"typ\": \"JWT\" }"
+                  - generic [ref=e631]:
+                    - text: Payload
+                    - textbox [ref=e632]: "{ \"sub\": \"1234567890\", \"name\": \"John Doe\", \"iat\": 2516239022 }"
+                - generic [ref=e633]:
+                  - generic [ref=e634]: Signing Secret
+                  - textbox [ref=e635]: secret123
+                - button "Sign New Token (HS256)" [ref=e636] [cursor=pointer]
+  - contentinfo [ref=e100]:
+    - paragraph [ref=e101]: © 2025 HACKBOOK | AUTHORIZED ACCESS ONLY

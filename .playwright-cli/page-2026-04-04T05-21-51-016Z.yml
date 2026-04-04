@@ -1,0 +1,87 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+      - generic [ref=e14]: HackBook
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - button "Dashboard" [ref=e17] [cursor=pointer]
+        - button "Tools" [active] [ref=e18] [cursor=pointer]
+        - button "Guides" [ref=e19] [cursor=pointer]
+        - button "Reference" [ref=e20] [cursor=pointer]
+      - button "Search... CTRL K" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+        - generic [ref=e25]:
+          - generic [ref=e26]: Search...
+          - generic [ref=e27]:
+            - generic [ref=e28]: CTRL
+            - generic [ref=e29]: K
+  - main [ref=e30]:
+    - generic [ref=e102]:
+      - generic [ref=e103]:
+        - button "All" [ref=e104] [cursor=pointer]
+        - button "Planning" [ref=e105] [cursor=pointer]
+        - button "Web" [ref=e106] [cursor=pointer]
+        - button "Auth" [ref=e107] [cursor=pointer]
+        - button "General" [ref=e108] [cursor=pointer]
+      - generic [ref=e109]:
+        - generic [ref=e110] [cursor=pointer]:
+          - img [ref=e112]
+          - generic [ref=e115]:
+            - heading "Checklist Generator" [level=3] [ref=e116]
+            - paragraph [ref=e117]: Generate a tailored pentest checklist from a curated web, mobile, and thick-client engagement catalog.
+          - generic [ref=e118]:
+            - generic [ref=e119]: "#Planning"
+            - generic [ref=e120]: "#Web"
+            - generic [ref=e121]: "#Mobile"
+            - generic [ref=e122]: "#Desktop"
+        - generic [ref=e123] [cursor=pointer]:
+          - img [ref=e125]
+          - generic [ref=e128]:
+            - heading "CSRF Generator" [level=3] [ref=e129]
+            - paragraph [ref=e130]: Convert HTTP POST requests to ready-to-use HTML PoC exploits.
+          - generic [ref=e131]:
+            - generic [ref=e132]: "#Web"
+            - generic [ref=e133]: "#Forms"
+        - generic [ref=e134] [cursor=pointer]:
+          - img [ref=e136]
+          - generic [ref=e139]:
+            - heading "JWT Exploit" [level=3] [ref=e140]
+            - paragraph [ref=e141]: Decode, inspect, and manipulate JSON Web Tokens for auth bypass.
+          - generic [ref=e142]:
+            - generic [ref=e143]: "#Auth"
+            - generic [ref=e144]: "#Web"
+        - generic [ref=e145] [cursor=pointer]:
+          - img [ref=e147]
+          - generic [ref=e150]:
+            - heading "PHP Filter Chain" [level=3] [ref=e151]
+            - paragraph [ref=e152]: Generate complex iconv filter chains for LFI to RCE escalation.
+          - generic [ref=e153]:
+            - generic [ref=e154]: "#Web"
+            - generic [ref=e155]: "#LFI"
+        - generic [ref=e156] [cursor=pointer]:
+          - img [ref=e158]
+          - generic [ref=e161]:
+            - heading "XSS Payload Arsenal" [level=3] [ref=e162]
+            - paragraph [ref=e163]: Context-aware XSS payload generation with WAF bypass variants.
+          - generic [ref=e164]:
+            - generic [ref=e165]: "#Web"
+            - generic [ref=e166]: "#XSS"
+        - generic [ref=e167] [cursor=pointer]:
+          - img [ref=e169]
+          - generic [ref=e171]:
+            - heading "Data Encoding" [level=3] [ref=e172]
+            - paragraph [ref=e173]: Base64, Hex, URL encoding, and CharCode conversions for payload crafting.
+          - generic [ref=e174]:
+            - generic [ref=e175]: "#General"
+            - generic [ref=e176]: "#Evasion"
+        - generic [ref=e177] [cursor=pointer]:
+          - img [ref=e179]
+          - generic [ref=e181]:
+            - heading "MSFVenom Builder" [level=3] [ref=e182]
+            - paragraph [ref=e183]: Build complex msfvenom payload commands with options for format, encoder, and listener.
+          - generic [ref=e184]:
+            - generic [ref=e185]: "#General"
+            - generic [ref=e186]: "#Evasion"
+  - contentinfo [ref=e100]:
+    - paragraph [ref=e101]: © 2025 HACKBOOK | AUTHORIZED ACCESS ONLY

@@ -1,0 +1,171 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+      - generic [ref=e14]: HackBook
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - button "Dashboard" [ref=e17] [cursor=pointer]
+        - button "Tools" [ref=e18] [cursor=pointer]
+        - button "Guides" [ref=e19] [cursor=pointer]
+        - button "Reference" [active] [ref=e20] [cursor=pointer]
+      - button "Search... CTRL K" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+        - generic [ref=e25]:
+          - generic [ref=e26]: Search...
+          - generic [ref=e27]:
+            - generic [ref=e28]: CTRL
+            - generic [ref=e29]: K
+  - main [ref=e30]:
+    - generic [ref=e349]:
+      - generic [ref=e350]:
+        - generic [ref=e353]: Reference Filters
+        - generic [ref=e354]:
+          - button "All" [ref=e355] [cursor=pointer]
+          - button "Red Team" [ref=e356] [cursor=pointer]
+          - button "Linux & Windows" [ref=e357] [cursor=pointer]
+          - button "Application" [ref=e358] [cursor=pointer]
+          - button "General" [ref=e359] [cursor=pointer]
+      - generic [ref=e360]:
+        - link "Red Team Red Teaming Notes Comprehensive tactics and experiments by spotheplanet. ired.team" [ref=e361] [cursor=pointer]:
+          - /url: https://www.ired.team/
+          - generic [ref=e362]:
+            - img [ref=e364]
+            - img [ref=e366]
+          - generic [ref=e370]:
+            - generic [ref=e371]: Red Team
+            - heading "Red Teaming Notes" [level=3] [ref=e372]
+            - paragraph [ref=e373]: Comprehensive tactics and experiments by spotheplanet.
+            - generic [ref=e375]: ired.team
+        - link "Red Team Internal All The Things Active Directory and Internal Pentest Cheatsheets. swisskyrepo.github.io" [ref=e376] [cursor=pointer]:
+          - /url: https://swisskyrepo.github.io/InternalAllTheThings/
+          - generic [ref=e377]:
+            - img [ref=e379]
+            - img [ref=e381]
+          - generic [ref=e385]:
+            - generic [ref=e386]: Red Team
+            - heading "Internal All The Things" [level=3] [ref=e387]
+            - paragraph [ref=e388]: Active Directory and Internal Pentest Cheatsheets.
+            - generic [ref=e390]: swisskyrepo.github.io
+        - link "Red Team AD Enums & Attack Cheatsheets for attacking AD environments. adminions.ca" [ref=e391] [cursor=pointer]:
+          - /url: https://adminions.ca/books/active-directory-enumeration-and-exploitation
+          - generic [ref=e392]:
+            - img [ref=e394]
+            - img [ref=e396]
+          - generic [ref=e400]:
+            - generic [ref=e401]: Red Team
+            - heading "AD Enums & Attack" [level=3] [ref=e402]
+            - paragraph [ref=e403]: Cheatsheets for attacking AD environments.
+            - generic [ref=e405]: adminions.ca
+        - link "Linux & Windows GTFOBins Unix binaries that can be used to bypass security restrictions. gtfobins.github.io" [ref=e406] [cursor=pointer]:
+          - /url: https://gtfobins.github.io/
+          - generic [ref=e407]:
+            - img [ref=e409]
+            - img [ref=e411]
+          - generic [ref=e415]:
+            - generic [ref=e416]: Linux & Windows
+            - heading "GTFOBins" [level=3] [ref=e417]
+            - paragraph [ref=e418]: Unix binaries that can be used to bypass security restrictions.
+            - generic [ref=e420]: gtfobins.github.io
+        - link "Linux & Windows LOLBAS Living Off The Land Binaries for Windows. lolbas-project.github.io" [ref=e421] [cursor=pointer]:
+          - /url: https://lolbas-project.github.io/
+          - generic [ref=e422]:
+            - img [ref=e424]
+            - img [ref=e426]
+          - generic [ref=e430]:
+            - generic [ref=e431]: Linux & Windows
+            - heading "LOLBAS" [level=3] [ref=e432]
+            - paragraph [ref=e433]: Living Off The Land Binaries for Windows.
+            - generic [ref=e435]: lolbas-project.github.io
+        - link "Linux & Windows WADComs Interactive cheat sheet for Windows/AD offensive tools. wadcoms.github.io" [ref=e436] [cursor=pointer]:
+          - /url: https://wadcoms.github.io/
+          - generic [ref=e437]:
+            - img [ref=e439]
+            - img [ref=e441]
+          - generic [ref=e445]:
+            - generic [ref=e446]: Linux & Windows
+            - heading "WADComs" [level=3] [ref=e447]
+            - paragraph [ref=e448]: Interactive cheat sheet for Windows/AD offensive tools.
+            - generic [ref=e450]: wadcoms.github.io
+        - link "Application Payloads All The Things Useful payloads and bypasses for Web App Security. swisskyrepo.github.io" [ref=e451] [cursor=pointer]:
+          - /url: https://swisskyrepo.github.io/PayloadsAllTheThings/
+          - generic [ref=e452]:
+            - img [ref=e454]
+            - img [ref=e457]
+          - generic [ref=e461]:
+            - generic [ref=e462]: Application
+            - heading "Payloads All The Things" [level=3] [ref=e463]
+            - paragraph [ref=e464]: Useful payloads and bypasses for Web App Security.
+            - generic [ref=e466]: swisskyrepo.github.io
+        - link "Application HackTricks A massive wiki of All in One hacking tricks and techniques. book.hacktricks.wiki" [ref=e467] [cursor=pointer]:
+          - /url: https://book.hacktricks.wiki/
+          - generic [ref=e468]:
+            - img [ref=e470]
+            - img [ref=e473]
+          - generic [ref=e477]:
+            - generic [ref=e478]: Application
+            - heading "HackTricks" [level=3] [ref=e479]
+            - paragraph [ref=e480]: A massive wiki of All in One hacking tricks and techniques.
+            - generic [ref=e482]: book.hacktricks.wiki
+        - link "Application CSP Bypass Tool designed to help ethical hackers bypass restrictive CSP. cspbypass.com" [ref=e483] [cursor=pointer]:
+          - /url: https://cspbypass.com/
+          - generic [ref=e484]:
+            - img [ref=e486]
+            - img [ref=e489]
+          - generic [ref=e493]:
+            - generic [ref=e494]: Application
+            - heading "CSP Bypass" [level=3] [ref=e495]
+            - paragraph [ref=e496]: Tool designed to help ethical hackers bypass restrictive CSP.
+            - generic [ref=e498]: cspbypass.com
+        - link "Application JWT Auditor An online tool to analyze JWT tokens for security vulnerabilities. jwtauditor.com" [ref=e499] [cursor=pointer]:
+          - /url: https://jwtauditor.com/
+          - generic [ref=e500]:
+            - img [ref=e502]
+            - img [ref=e505]
+          - generic [ref=e509]:
+            - generic [ref=e510]: Application
+            - heading "JWT Auditor" [level=3] [ref=e511]
+            - paragraph [ref=e512]: An online tool to analyze JWT tokens for security vulnerabilities.
+            - generic [ref=e514]: jwtauditor.com
+        - link "General CyberChef The Swiss Army Knife of data analysis and conversion. gchq.github.io" [ref=e515] [cursor=pointer]:
+          - /url: https://gchq.github.io/CyberChef/
+          - generic [ref=e516]:
+            - img [ref=e518]
+            - img [ref=e520]
+          - generic [ref=e524]:
+            - generic [ref=e525]: General
+            - heading "CyberChef" [level=3] [ref=e526]
+            - paragraph [ref=e527]: The Swiss Army Knife of data analysis and conversion.
+            - generic [ref=e529]: gchq.github.io
+        - link "General RevShell Generator One-stop shop for all reverse shell commands. revshells.com" [ref=e530] [cursor=pointer]:
+          - /url: https://www.revshells.com/
+          - generic [ref=e531]:
+            - img [ref=e533]
+            - img [ref=e535]
+          - generic [ref=e539]:
+            - generic [ref=e540]: General
+            - heading "RevShell Generator" [level=3] [ref=e541]
+            - paragraph [ref=e542]: One-stop shop for all reverse shell commands.
+            - generic [ref=e544]: revshells.com
+        - link "General CTF Guide Collection of notes for CTF challenges. book.jorianwoltjer.com" [ref=e545] [cursor=pointer]:
+          - /url: https://book.jorianwoltjer.com/
+          - generic [ref=e546]:
+            - img [ref=e548]
+            - img [ref=e550]
+          - generic [ref=e554]:
+            - generic [ref=e555]: General
+            - heading "CTF Guide" [level=3] [ref=e556]
+            - paragraph [ref=e557]: Collection of notes for CTF challenges.
+            - generic [ref=e559]: book.jorianwoltjer.com
+        - link "General Cipher Identifier Identify unknown encryption or encoding methods. dcode.fr" [ref=e560] [cursor=pointer]:
+          - /url: https://www.dcode.fr/cipher-identifier
+          - generic [ref=e561]:
+            - img [ref=e563]
+            - img [ref=e565]
+          - generic [ref=e569]:
+            - generic [ref=e570]: General
+            - heading "Cipher Identifier" [level=3] [ref=e571]
+            - paragraph [ref=e572]: Identify unknown encryption or encoding methods.
+            - generic [ref=e574]: dcode.fr
+  - contentinfo [ref=e100]:
+    - paragraph [ref=e101]: © 2025 HACKBOOK | AUTHORIZED ACCESS ONLY

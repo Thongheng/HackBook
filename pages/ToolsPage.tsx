@@ -55,10 +55,9 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({ initialTool, setView }) =>
           </div>
         </div>
 
-        <div className={activeToolId === 'tool-checklist'
-          ? 'relative min-h-[500px] rounded-[24px] border border-white/[0.06] bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] p-3 sm:p-4'
-          : 'htb-card p-8 shadow-2xl relative overflow-hidden min-h-[500px]'}>
-          <div className="absolute top-0 right-0 w-48 h-48 bg-[#9fef00]/4 blur-[90px] -z-10 rounded-full" />
+        <div className="relative min-h-[500px] overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#0a1117]/96 p-3 shadow-[0_24px_80px_rgba(0,0,0,0.32)] sm:p-4">
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0.015))] pointer-events-none" />
+          <div className="absolute top-0 right-0 h-48 w-48 rounded-full bg-[#9fef00]/5 blur-[90px] pointer-events-none" />
           {(() => {
             switch (activeToolId) {
               case 'tool-csrf':      return <CSRFTool />;

@@ -1,0 +1,87 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+      - generic [ref=e14]: HackBook
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - button "Dashboard" [ref=e17] [cursor=pointer]
+        - button "Tools" [ref=e18] [cursor=pointer]
+        - button "Guides" [ref=e19] [cursor=pointer]
+        - button "Reference" [ref=e20] [cursor=pointer]
+      - button "Search... CTRL K" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+        - generic [ref=e25]:
+          - generic [ref=e26]: Search...
+          - generic [ref=e27]:
+            - generic [ref=e28]: CTRL
+            - generic [ref=e29]: K
+  - main [ref=e30]:
+    - generic [ref=e102]:
+      - generic [ref=e483]:
+        - button "All" [ref=e484] [cursor=pointer]
+        - button "Planning" [ref=e485] [cursor=pointer]
+        - button "Web" [ref=e486] [cursor=pointer]
+        - button "Auth" [ref=e487] [cursor=pointer]
+        - button "General" [ref=e488] [cursor=pointer]
+      - generic [ref=e109]:
+        - generic [ref=e489] [cursor=pointer]:
+          - img [ref=e491]
+          - generic [ref=e494]:
+            - heading "Checklist Generator" [level=3] [ref=e495]
+            - paragraph [ref=e496]: Generate a tailored pentest checklist from a curated web, mobile, and thick-client engagement catalog.
+          - generic [ref=e497]:
+            - generic [ref=e498]: "#Planning"
+            - generic [ref=e499]: "#Web"
+            - generic [ref=e500]: "#Mobile"
+            - generic [ref=e501]: "#Desktop"
+        - generic [ref=e502] [cursor=pointer]:
+          - img [ref=e504]
+          - generic [ref=e507]:
+            - heading "CSRF Generator" [level=3] [ref=e508]
+            - paragraph [ref=e509]: Convert HTTP POST requests to ready-to-use HTML PoC exploits.
+          - generic [ref=e510]:
+            - generic [ref=e511]: "#Web"
+            - generic [ref=e512]: "#Forms"
+        - generic [ref=e513] [cursor=pointer]:
+          - img [ref=e515]
+          - generic [ref=e518]:
+            - heading "JWT Exploit" [level=3] [ref=e519]
+            - paragraph [ref=e520]: Decode, inspect, and manipulate JSON Web Tokens for auth bypass.
+          - generic [ref=e521]:
+            - generic [ref=e522]: "#Auth"
+            - generic [ref=e523]: "#Web"
+        - generic [ref=e524] [cursor=pointer]:
+          - img [ref=e526]
+          - generic [ref=e529]:
+            - heading "PHP Filter Chain" [level=3] [ref=e530]
+            - paragraph [ref=e531]: Generate complex iconv filter chains for LFI to RCE escalation.
+          - generic [ref=e532]:
+            - generic [ref=e533]: "#Web"
+            - generic [ref=e534]: "#LFI"
+        - generic [ref=e535] [cursor=pointer]:
+          - img [ref=e537]
+          - generic [ref=e540]:
+            - heading "XSS Payload Arsenal" [level=3] [ref=e541]
+            - paragraph [ref=e542]: Context-aware XSS payload generation with WAF bypass variants.
+          - generic [ref=e543]:
+            - generic [ref=e544]: "#Web"
+            - generic [ref=e545]: "#XSS"
+        - generic [ref=e546] [cursor=pointer]:
+          - img [ref=e548]
+          - generic [ref=e550]:
+            - heading "Data Encoding" [level=3] [ref=e551]
+            - paragraph [ref=e552]: Base64, Hex, URL encoding, and CharCode conversions for payload crafting.
+          - generic [ref=e553]:
+            - generic [ref=e554]: "#General"
+            - generic [ref=e555]: "#Evasion"
+        - generic [ref=e556] [cursor=pointer]:
+          - img [ref=e558]
+          - generic [ref=e560]:
+            - heading "MSFVenom Builder" [level=3] [ref=e561]
+            - paragraph [ref=e562]: Build complex msfvenom payload commands with options for format, encoder, and listener.
+          - generic [ref=e563]:
+            - generic [ref=e564]: "#General"
+            - generic [ref=e565]: "#Evasion"
+  - contentinfo [ref=e100]:
+    - paragraph [ref=e101]: © 2025 HACKBOOK | AUTHORIZED ACCESS ONLY

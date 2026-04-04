@@ -61,6 +61,12 @@ const CAT_COLOR: Record<Category, string> = {
   desktop: 'text-purple-400 border-purple-500/25 bg-purple-500/8',
 };
 
+const PANEL_SHELL = 'border border-white/[0.08] bg-[#101821]/96 shadow-[0_22px_60px_rgba(0,0,0,0.28)]';
+const PANEL_HEADER = 'bg-[#070b10]';
+const PANEL_BODY = 'bg-[#141d26]/94';
+const QUIET_CONTROL = 'bg-[#111921]/92 border-white/[0.08]';
+const QUIET_CONTROL_HOVER = 'hover:border-white/15 hover:bg-[#16202a]';
+
 // ─── XLSX export ───────────────────────────────────────────────────────────────
 async function exportXLSX(filtered: ChecklistRow[], cfg: Config) {
   const XL = await loadXLSX();
@@ -230,16 +236,16 @@ function exportFindings(filtered: ChecklistRow[], cfg: Config) {
 const Section: React.FC<{ title: string; children: React.ReactNode; defaultOpen?: boolean; badge?: string }> = ({ title, children, defaultOpen = true, badge }) => {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border border-white/[0.06] rounded-xl overflow-hidden">
+    <div className={`${PANEL_SHELL} rounded-2xl overflow-hidden backdrop-blur-sm`}>
       <button onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-5 py-3.5 bg-white/[0.02] hover:bg-white/[0.035] transition-colors">
+        className={`w-full flex items-center justify-between px-5 py-4 ${PANEL_HEADER} hover:bg-[#18222d] transition-colors`}>
         <div className="flex items-center gap-2.5">
-          <span className="text-[10px] font-bold text-white/60 uppercase tracking-[0.18em]">{title}</span>
+          <span className="text-[10px] font-bold text-white/65 uppercase tracking-[0.18em]">{title}</span>
           {badge && <span className="text-[8px] font-bold text-[#9fef00]/60 bg-[#9fef00]/8 px-1.5 py-0.5 rounded border border-[#9fef00]/15">{badge}</span>}
         </div>
-        {open ? <ChevronUp className="w-3.5 h-3.5 text-white/20" /> : <ChevronDown className="w-3.5 h-3.5 text-white/20" />}
+        {open ? <ChevronUp className="w-3.5 h-3.5 text-white/30" /> : <ChevronDown className="w-3.5 h-3.5 text-white/30" />}
       </button>
-      {open && <div className="px-5 py-4 space-y-3 border-t border-white/[0.04]">{children}</div>}
+      {open && <div className={`px-5 py-4 space-y-3 border-t border-white/[0.06] ${PANEL_BODY}`}>{children}</div>}
     </div>
   );
 };
@@ -254,10 +260,10 @@ const FoldBlock: React.FC<{ title: string; icon: React.ReactNode; badge?: React.
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+    <div className={`${PANEL_SHELL} rounded-2xl overflow-hidden`}>
       <button
         onClick={() => setOpen((value) => !value)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/[0.03] transition-colors"
+        className={`w-full flex items-center justify-between px-4 py-3.5 ${PANEL_HEADER} hover:bg-[#18222d] transition-colors`}
       >
         <div className="flex items-center gap-2">
           {icon}
@@ -266,7 +272,7 @@ const FoldBlock: React.FC<{ title: string; icon: React.ReactNode; badge?: React.
         </div>
         {open ? <ChevronUp className="w-3.5 h-3.5 text-white/35" /> : <ChevronDown className="w-3.5 h-3.5 text-white/35" />}
       </button>
-      {open && <div className="px-4 pb-4 border-t border-white/[0.04]">{children}</div>}
+      {open && <div className={`px-4 pb-4 border-t border-white/[0.06] ${PANEL_BODY}`}>{children}</div>}
     </div>
   );
 };
@@ -277,7 +283,7 @@ const Chip: React.FC<{ label: string; count?: number; active: boolean; onClick: 
         ? accent
           ? `bg-white/8 border-white/20 text-white`
           : 'bg-[#9fef00]/8 border-[#9fef00]/25 text-[#9fef00]'
-        : 'bg-white/[0.02] border-white/[0.06] text-white/70 hover:border-white/12 hover:text-white/90'
+        : `${QUIET_CONTROL} text-white/72 ${QUIET_CONTROL_HOVER} hover:text-white/92`
       }`}>
     <span>{label}</span>
     {typeof count === 'number' && <span className="ml-2 text-[10px] opacity-60">{count}</span>}
@@ -313,9 +319,9 @@ const SummaryRail: React.FC<{ filtered: ChecklistRow[] }> = ({ filtered }) => {
   ];
 
   return (
-    <div className="flex flex-wrap gap-2 rounded-2xl border border-white/[0.06] bg-[#0b1217]/80 px-3 py-3">
+    <div className={`${PANEL_SHELL} flex flex-wrap gap-2 rounded-[24px] px-3 py-3 backdrop-blur-sm`}>
       {stats.map(({ label, val, cls }) => (
-        <div key={label} className="min-w-[92px] rounded-xl border border-white/[0.05] bg-white/[0.02] px-3 py-2">
+        <div key={label} className="min-w-[92px] rounded-xl border border-white/[0.08] bg-[#141d26]/94 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
           <div className={`text-lg font-black tracking-tight leading-none ${cls}`}>{val}</div>
           <div className="mt-1 text-[8px] font-bold text-white/35 uppercase tracking-[0.18em]">{label}</div>
         </div>
@@ -326,19 +332,19 @@ const SummaryRail: React.FC<{ filtered: ChecklistRow[] }> = ({ filtered }) => {
 
 // ─── Preview table ─────────────────────────────────────────────────────────────
 const PreviewTable: React.FC<{ rows: ChecklistRow[] }> = ({ rows }) => (
-  <div className="border border-white/[0.06] rounded-xl overflow-hidden">
+  <div className={`${PANEL_SHELL} rounded-2xl overflow-hidden`}>
     <div className="overflow-x-auto max-h-72 overflow-y-auto">
       <table className="w-full text-left">
-        <thead className="sticky top-0 bg-[#0b1217] z-10">
+        <thead className={`sticky top-0 ${PANEL_HEADER} z-10`}>
           <tr>
             {['Ref', 'Category', 'Test Case', 'Sev', 'Mode', 'Type'].map(h => (
-              <th key={h} className="px-3 py-2.5 text-[9px] font-bold text-white/45 uppercase tracking-widest border-b border-white/[0.06] whitespace-nowrap">{h}</th>
+              <th key={h} className="px-3 py-2.5 text-[9px] font-bold text-white/50 uppercase tracking-widest border-b border-white/[0.08] whitespace-nowrap">{h}</th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className={PANEL_BODY}>
           {rows.map((r, i) => (
-            <tr key={r.ref} className={i % 2 === 0 ? 'bg-white/[0.01]' : ''}>
+            <tr key={r.ref} className={i % 2 === 0 ? 'bg-[#101820]/78' : 'bg-[#0c1319]/92'}>
               <td className="px-3 py-2 text-[10px] font-mono text-white/45 whitespace-nowrap">{r.ref}</td>
               <td className="px-3 py-2">
                 <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${r.category === 'web' ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' : r.category === 'mobile' ? 'text-green-400 bg-green-500/10 border-green-500/20' : 'text-purple-400 bg-purple-500/10 border-purple-500/20'}`}>
@@ -444,13 +450,13 @@ export const ChecklistGenerator: React.FC = () => {
   return (
     <div className="space-y-6 pb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="flex flex-wrap gap-2">
-        <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
+        <span className="rounded-full border border-white/[0.08] bg-[#141d26]/92 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
           {ALL_ROWS.length} rows
         </span>
-        <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
+        <span className="rounded-full border border-white/[0.08] bg-[#141d26]/92 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
           {FEATURE_REGISTRY.length} features
         </span>
-        <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
+        <span className="rounded-full border border-white/[0.08] bg-[#141d26]/92 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
           {selectedCategoryLabels.length ? selectedCategoryLabels.join(' + ') : 'No target'}
         </span>
       </div>
@@ -482,7 +488,7 @@ export const ChecklistGenerator: React.FC = () => {
                 <button key={et} onClick={() => setCfg(p => ({ ...p, engagementType: et }))}
                   className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${cfg.engagementType === et
                       ? 'bg-[#9fef00]/6 border-[#9fef00]/25 text-[#9fef00]'
-                      : 'bg-white/[0.02] border-white/[0.06] text-white/45 hover:border-white/12 hover:text-white/70'
+                      : `${QUIET_CONTROL} text-white/50 ${QUIET_CONTROL_HOVER} hover:text-white/72`
                     }`}>
                   <div className={`w-3 h-3 rounded-full border-2 shrink-0 mt-0.5 transition-colors ${cfg.engagementType === et ? 'bg-[#9fef00] border-[#9fef00]' : 'border-white/20'}`} />
                   <p className="text-[12px] font-bold leading-tight flex-1">{et}</p>
@@ -500,7 +506,7 @@ export const ChecklistGenerator: React.FC = () => {
                 const count = ALL_ROWS.filter(r => r.category === c).length;
                 return (
                   <button key={c} onClick={() => toggleCat(c)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left ${active ? CAT_COLOR[c] + ' border-opacity-30' : 'bg-white/[0.02] border-white/[0.06] text-white/40 hover:border-white/12 hover:text-white/65'
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-all text-left ${active ? CAT_COLOR[c] + ' border-opacity-30' : `${QUIET_CONTROL} text-white/45 ${QUIET_CONTROL_HOVER} hover:text-white/68`
                       }`}>
                     <Icon className="w-4 h-4 shrink-0" />
                     <span className="text-[12px] font-bold tracking-tight flex-1">{CAT_LABEL[c]}</span>
@@ -621,7 +627,7 @@ export const ChecklistGenerator: React.FC = () => {
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_280px]">
             <Section title="Output Preview">
               <div className="space-y-4">
-                <div className="rounded-2xl border border-white/[0.06] bg-[#0b1217]/70 px-4 py-4">
+                <div className="rounded-2xl border border-white/[0.08] bg-[#141d26]/94 px-4 py-4">
                   <div className="flex flex-wrap items-center gap-3">
                     <div>
                       <p className="text-[10px] font-bold text-white/35 uppercase tracking-[0.18em]">Export file</p>
@@ -631,7 +637,7 @@ export const ChecklistGenerator: React.FC = () => {
                 </div>
                 {filtered.length > 0 && (
                   <button onClick={() => setShowPreview(p => !p)}
-                    className="w-full flex items-center justify-between px-5 py-3 bg-white/[0.02] border border-white/[0.06] rounded-xl hover:bg-white/[0.035] transition-colors">
+                    className="w-full flex items-center justify-between px-5 py-3 rounded-xl border border-white/[0.08] bg-[#141d26]/92 hover:bg-[#18222d] transition-colors">
                     <div className="flex items-center gap-2">
                       {showPreview ? <EyeOff className="w-3.5 h-3.5 text-white/25" /> : <Eye className="w-3.5 h-3.5 text-white/25" />}
                       <span className="text-[11px] font-bold text-white/60 uppercase tracking-[0.18em]">
@@ -653,7 +659,7 @@ export const ChecklistGenerator: React.FC = () => {
                   <button key={fmt} onClick={() => setCfg(p => ({ ...p, outputFormat: fmt }))}
                     className={`w-full flex items-start gap-3 p-3.5 rounded-xl border text-left transition-all ${cfg.outputFormat === fmt
                         ? 'bg-[#9fef00]/6 border-[#9fef00]/25 text-[#9fef00]'
-                        : 'bg-white/[0.02] border-white/[0.06] text-white/30 hover:border-white/12 hover:text-white/55'
+                        : `${QUIET_CONTROL} text-white/35 ${QUIET_CONTROL_HOVER} hover:text-white/58`
                       }`}>
                     <Icon className="w-4 h-4 shrink-0 mt-0.5" />
                     <div>

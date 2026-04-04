@@ -1,0 +1,249 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5] [cursor=pointer]:
+      - img [ref=e6]
+      - generic [ref=e14]: HackBook
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - button "Dashboard" [ref=e17] [cursor=pointer]
+        - button "Tools" [ref=e18] [cursor=pointer]
+        - button "Guides" [ref=e19] [cursor=pointer]
+        - button "Reference" [ref=e20] [cursor=pointer]
+      - button "Search... CTRL K" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+        - generic [ref=e25]:
+          - generic [ref=e26]: Search...
+          - generic [ref=e27]:
+            - generic [ref=e28]: CTRL
+            - generic [ref=e29]: K
+  - main [ref=e30]:
+    - generic [ref=e102]:
+      - generic [ref=e187]:
+        - generic [ref=e188]:
+          - button "Back to Tools" [ref=e189] [cursor=pointer]:
+            - img [ref=e190]
+          - generic [ref=e192]:
+            - img [ref=e194]
+            - generic [ref=e197]:
+              - heading "Checklist Generator" [level=2] [ref=e198]
+              - paragraph [ref=e199]: HackBook Offensive Intelligence / Planning
+        - generic [ref=e200]:
+          - img [ref=e201]
+          - generic [ref=e204]: tool-checklist
+      - generic [ref=e205]:
+        - generic [ref=e206]:
+          - generic [ref=e207]: 298 rows
+          - generic [ref=e208]: 57 features
+          - generic [ref=e209]: Web / API
+        - generic [ref=e210]:
+          - generic [ref=e211]:
+            - generic [ref=e212]: "59"
+            - generic [ref=e213]: Selected
+          - generic [ref=e214]:
+            - generic [ref=e215]: "59"
+            - generic [ref=e216]: Baseline
+          - generic [ref=e217]:
+            - generic [ref=e218]: "0"
+            - generic [ref=e219]: Custom
+          - generic [ref=e220]:
+            - generic [ref=e221]: "8"
+            - generic [ref=e222]: Critical
+          - generic [ref=e223]:
+            - generic [ref=e224]: "30"
+            - generic [ref=e225]: High
+          - generic [ref=e226]:
+            - generic [ref=e227]: "13"
+            - generic [ref=e228]: Medium
+        - generic [ref=e229]:
+          - generic [ref=e231]:
+            - button "Setup" [ref=e232] [cursor=pointer]:
+              - generic [ref=e234]: Setup
+              - img [ref=e235]
+            - generic [ref=e237]:
+              - generic [ref=e238]:
+                - generic [ref=e239]:
+                  - generic [ref=e240]: Engagement Name
+                  - textbox "ClientName_Q2_2026" [ref=e241]
+                - generic [ref=e242]:
+                  - generic [ref=e243]: Target / App Name
+                  - textbox "CustomerPortal" [ref=e244]
+              - generic [ref=e245]:
+                - paragraph [ref=e246]: Access Type
+                - button "Black-Box Black-Box + Both" [ref=e247] [cursor=pointer]:
+                  - paragraph [ref=e249]: Black-Box
+                  - generic [ref=e250]: Black-Box + Both
+                - button "Grey-Box Grey-Box + Both" [ref=e251] [cursor=pointer]:
+                  - paragraph [ref=e253]: Grey-Box
+                  - generic [ref=e254]: Grey-Box + Both
+              - generic [ref=e255]:
+                - paragraph [ref=e256]: Target Surface
+                - button "Web / API 149 items" [ref=e257] [cursor=pointer]:
+                  - img [ref=e258]
+                  - generic [ref=e261]: Web / API
+                  - generic [ref=e262]: 149 items
+                - button "Mobile (Android) 76 items" [ref=e265] [cursor=pointer]:
+                  - img [ref=e266]
+                  - generic [ref=e268]: Mobile (Android)
+                  - generic [ref=e269]: 76 items
+                - button "Desktop / Thick Client 73 items" [ref=e271] [cursor=pointer]:
+                  - img [ref=e272]
+                  - generic [ref=e274]: Desktop / Thick Client
+                  - generic [ref=e275]: 73 items
+          - generic [ref=e277]:
+            - generic [ref=e278]:
+              - button "Target Profile stack filters" [ref=e279] [cursor=pointer]:
+                - generic [ref=e280]:
+                  - generic [ref=e281]: Target Profile
+                  - generic [ref=e282]: stack filters
+                - img [ref=e283]
+              - generic [ref=e286]:
+                - generic [ref=e287]:
+                  - paragraph [ref=e288]:
+                    - img [ref=e289]
+                    - text: Web
+                  - generic [ref=e292]:
+                    - generic [ref=e293] [cursor=pointer]:
+                      - button "GraphQL" [ref=e294]
+                      - paragraph [ref=e297]: GraphQL
+                    - generic [ref=e298] [cursor=pointer]:
+                      - button "WebSocket" [ref=e299]
+                      - paragraph [ref=e302]: WebSocket
+                    - generic [ref=e303] [cursor=pointer]:
+                      - button "OAuth / OIDC" [ref=e304]
+                      - paragraph [ref=e307]: OAuth / OIDC
+                - generic [ref=e308]:
+                  - paragraph [ref=e309]:
+                    - img [ref=e310]
+                    - text: Mobile
+                  - generic [ref=e312]:
+                    - generic [ref=e313] [cursor=pointer]:
+                      - button "Native (Java/Kotlin)" [ref=e314]
+                      - paragraph [ref=e317]: Native (Java/Kotlin)
+                    - generic [ref=e318] [cursor=pointer]:
+                      - button "Flutter" [ref=e319]
+                      - paragraph [ref=e322]: Flutter
+                    - generic [ref=e323] [cursor=pointer]:
+                      - button "React Native" [ref=e324]
+                      - paragraph [ref=e327]: React Native
+                - generic [ref=e328]:
+                  - paragraph [ref=e329]:
+                    - img [ref=e330]
+                    - text: Desktop
+                  - generic [ref=e332]:
+                    - generic [ref=e333] [cursor=pointer]:
+                      - button ".NET (WPF/WinForms)" [ref=e334]
+                      - paragraph [ref=e337]: .NET (WPF/WinForms)
+                    - generic [ref=e338] [cursor=pointer]:
+                      - button "Electron" [ref=e339]
+                      - paragraph [ref=e342]: Electron
+                    - generic [ref=e343] [cursor=pointer]:
+                      - button "Java (Swing/FX)" [ref=e344]
+                      - paragraph [ref=e347]: Java (Swing/FX)
+            - generic [ref=e348]:
+              - button "Feature Selection 0 active" [ref=e349] [cursor=pointer]:
+                - generic [ref=e350]:
+                  - generic [ref=e351]: Feature Selection
+                  - generic [ref=e352]: 0 active
+                - img [ref=e353]
+              - generic [ref=e355]:
+                - generic [ref=e356]:
+                  - button "Web / API selected for export" [ref=e357] [cursor=pointer]:
+                    - generic [ref=e358]:
+                      - img [ref=e359]
+                      - generic [ref=e362]: Web / API
+                      - generic [ref=e363]: selected for export
+                    - img [ref=e364]
+                  - generic [ref=e367]:
+                    - generic [ref=e368]:
+                      - button "All" [ref=e369] [cursor=pointer]
+                      - generic [ref=e370]: "|"
+                      - button "None" [ref=e371] [cursor=pointer]
+                    - generic [ref=e372]:
+                      - button "Admin2" [ref=e373] [cursor=pointer]
+                      - button "Announcement2" [ref=e374] [cursor=pointer]
+                      - button "API / Webhook3" [ref=e375] [cursor=pointer]
+                      - button "API Keys / Tokens2" [ref=e376] [cursor=pointer]
+                      - button "Billing / Subscription2" [ref=e377] [cursor=pointer]
+                      - button "Branches1" [ref=e378] [cursor=pointer]
+                      - button "Categories1" [ref=e379] [cursor=pointer]
+                      - button "Comments / Rich Text2" [ref=e380] [cursor=pointer]
+                      - button "Coupon / Promo3" [ref=e381] [cursor=pointer]
+                      - button "Email / Notify2" [ref=e382] [cursor=pointer]
+                      - button "Export5" [ref=e383] [cursor=pointer]
+                      - button "File Download2" [ref=e384] [cursor=pointer]
+                      - button "File Upload7" [ref=e385] [cursor=pointer]
+                      - button "Import5" [ref=e386] [cursor=pointer]
+                      - button "Invitations / Membership2" [ref=e387] [cursor=pointer]
+                      - button "Login5" [ref=e388] [cursor=pointer]
+                      - button "Password Change2" [ref=e389] [cursor=pointer]
+                      - button "Password Reset3" [ref=e390] [cursor=pointer]
+                      - button "Profile3" [ref=e391] [cursor=pointer]
+                      - button "QR / KHQR2" [ref=e392] [cursor=pointer]
+                      - button "Registration3" [ref=e393] [cursor=pointer]
+                      - button "Reports / Dashboard2" [ref=e394] [cursor=pointer]
+                      - button "Search4" [ref=e395] [cursor=pointer]
+                      - button "Session1" [ref=e396] [cursor=pointer]
+                      - button "Set Language2" [ref=e397] [cursor=pointer]
+                      - button "SSO / Magic Link2" [ref=e398] [cursor=pointer]
+                      - button "Transaction8" [ref=e399] [cursor=pointer]
+                      - button "Users (Mgmt)2" [ref=e400] [cursor=pointer]
+                      - button "Vendor Profile4" [ref=e401] [cursor=pointer]
+                    - paragraph [ref=e402]: No Web / API feature groups are active. Only baseline rows will export for this target type.
+                - button "Mobile (Android) visible, not exporting" [ref=e404] [cursor=pointer]:
+                  - generic [ref=e405]:
+                    - img [ref=e406]
+                    - generic [ref=e408]: Mobile (Android)
+                    - generic [ref=e409]: visible, not exporting
+                  - img [ref=e410]
+                - button "Desktop / Thick Client visible, not exporting" [ref=e413] [cursor=pointer]:
+                  - generic [ref=e414]:
+                    - img [ref=e415]
+                    - generic [ref=e417]: Desktop / Thick Client
+                    - generic [ref=e418]: visible, not exporting
+                  - img [ref=e419]
+                - generic [ref=e421]:
+                  - img [ref=e422]
+                  - paragraph [ref=e424]:
+                    - text: No active features contribute to the currently selected target categories —
+                    - strong [ref=e425]: 0 custom tests
+                    - text: will be included. You can still pre-toggle other platform features, but they will not export until that platform is selected.
+                - paragraph [ref=e426]: Feature groups are always visible for planning. Exported rows still depend on selected target categories, access model, and stack toggles.
+            - generic [ref=e427]:
+              - generic [ref=e428]:
+                - button "Output Preview" [ref=e429] [cursor=pointer]:
+                  - generic [ref=e431]: Output Preview
+                  - img [ref=e432]
+                - generic [ref=e435]:
+                  - generic [ref=e438]:
+                    - paragraph [ref=e439]: Export file
+                    - paragraph [ref=e440]: checklist_engagement_blackbox_2026-04-04.xlsx
+                  - button "Preview (59 rows)" [ref=e441] [cursor=pointer]:
+                    - generic [ref=e442]:
+                      - img [ref=e443]
+                      - generic [ref=e446]: Preview (59 rows)
+                    - img [ref=e447]
+              - generic [ref=e449]:
+                - button "Export Format" [ref=e450] [cursor=pointer]:
+                  - generic [ref=e452]: Export Format
+                  - img [ref=e453]
+                - generic [ref=e456]:
+                  - button "Filtered XLSX Spreadsheet with all columns — same format as the master Excel, filtered to your config." [ref=e457] [cursor=pointer]:
+                    - img [ref=e458]
+                    - generic [ref=e462]:
+                      - paragraph [ref=e463]: Filtered XLSX
+                      - paragraph [ref=e464]: Spreadsheet with all columns — same format as the master Excel, filtered to your config.
+                  - button "Markdown Checklist Structured .md checklist — paste into Obsidian, Notion, or your report template." [ref=e465] [cursor=pointer]:
+                    - img [ref=e466]
+                    - generic [ref=e469]:
+                      - paragraph [ref=e470]: Markdown Checklist
+                      - paragraph [ref=e471]: Structured .md checklist — paste into Obsidian, Notion, or your report template.
+                  - button "Finding Report Skeleton Pre-filled finding skeleton for each High/Critical item. Delete what you don't find." [ref=e472] [cursor=pointer]:
+                    - img [ref=e473]
+                    - generic [ref=e475]:
+                      - paragraph [ref=e476]: Finding Report Skeleton
+                      - paragraph [ref=e477]: Pre-filled finding skeleton for each High/Critical item. Delete what you don't find.
+        - button "Export — 59 Test Cases" [ref=e479] [cursor=pointer]:
+          - img [ref=e480]
+          - text: Export — 59 Test Cases
+  - contentinfo [ref=e100]:
+    - paragraph [ref=e101]: © 2025 HACKBOOK | AUTHORIZED ACCESS ONLY
