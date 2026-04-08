@@ -71,18 +71,39 @@ The authors are not responsible for any misuse of these tools. Always ensure you
 
 ## 📋 Updating Checklist Data
 
-The checklist generator now uses `data/checklistCatalog.json` as the repo-native source of truth.
+The checklist generator is now **JSON-first**. The single source of truth is:
 
-- `scripts/import_checklist_excel.py`
-  Imports `Pentest_Checklist_v2.xlsx` into normalized catalog JSON for review.
+- `data/checklistCatalog.json`
+
+Checklist data workflow:
+
+- Edit checklist rows directly in `data/checklistCatalog.json`
+- Run `npm run checklist:test` to validate structure, scenarios, matrix behavior, and XLSX export shape
+- Run `npm run build` before shipping to production
+
+Validation and export checks:
+
 - `scripts/validate_checklist_catalog.py`
-  Compares the curated catalog against the Excel workbook and flags drift, missing refs, duplicate ids, and invalid metadata.
+  Validates catalog structure, ids, source metadata, feature slugs, and canonical sheet grouping.
 - `scripts/validate_checklist_scenarios.mjs`
   Runs scenario-based checks to make sure the generator returns the right rows for real engagement configurations.
+- `scripts/validate_checklist_matrix.mjs`
+  Verifies feature toggles, access gating, tech filters, and output-format compatibility.
+- `scripts/validate_checklist_export.mjs`
+  Smoke-tests the shared workbook builder to ensure the full catalog still exports into the canonical six-sheet XLSX layout.
+
+App exports:
+
+- **Filtered export**
+  Uses the current checklist selections and can export XLSX, Markdown, or Findings skeleton output.
+- **Export Full Catalog XLSX**
+  Ignores the current filters and rebuilds the full six-sheet workbook directly from the JSON catalog, including curated-only rows.
+
+The XLSX exports are generated directly from the bundled app code and the JSON catalog. They do not depend on a tracked Excel workbook or a runtime CDN script.
 
 Common workflow:
 
 ```bash
-npm run checklist:import
 npm run checklist:test
+npm run build
 ```

@@ -3,21 +3,10 @@ import {
   FileDown, ChevronDown, ChevronUp, Globe, Smartphone, Monitor,
   Eye, EyeOff, FileText, AlertTriangle, Download,
 } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import { ALL_ROWS, FEATURE_GROUPS, FEATURE_REGISTRY, ChecklistRow, Category } from '../../data/checklistData';
 import { filterCatalogRows } from '../../logic/checklistEngine.js';
-
-// ─── SheetJS loader ────────────────────────────────────────────────────────────
-declare const XLSX: any;
-function loadXLSX(): Promise<any> {
-  return new Promise((resolve, reject) => {
-    if ((window as any).XLSX) { resolve((window as any).XLSX); return; }
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
-    s.onload = () => resolve((window as any).XLSX);
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
-}
+import { buildWorkbookMetadataRows, buildWorkbookSheets } from '../../logic/checklistWorkbook.js';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type EngagementType = 'Black-Box' | 'Grey-Box';
@@ -68,70 +57,45 @@ const QUIET_CONTROL = 'bg-[#111921]/92 border-white/[0.08]';
 const QUIET_CONTROL_HOVER = 'hover:border-white/15 hover:bg-[#16202a]';
 
 // ─── XLSX export ───────────────────────────────────────────────────────────────
-async function exportXLSX(filtered: ChecklistRow[], cfg: Config) {
-  const XL = await loadXLSX();
-  const wb = XL.utils.book_new();
-
-  const versionMeta = [
-    ['PENTEST CHECKLIST — HACKBOOK GENERATOR v3'],
-    [],
-    ['Generated', new Date().toLocaleString()],
-    ['Engagement', cfg.engagementName || '—'],
-    ['Target', cfg.targetName || '—'],
-    ['Engagement Type', cfg.engagementType],
-    ['Categories', cfg.categories.join(', ')],
-    ['Total Items', String(filtered.length)],
-    [],
-  ];
-
-  let isFirst = true;
-  const cats: Category[] = ['web', 'mobile', 'desktop'];
-
-  for (const cat of cats) {
-    const catRows = filtered.filter(r => r.category === cat);
-    if (!catRows.length) continue;
-
-    for (const sheetType of ['baseline', 'custom'] as const) {
-      const sheetRows = catRows.filter(r => r.sheetType === sheetType);
-      if (!sheetRows.length) continue;
-
-      const wsData: any[][] = [];
-      if (isFirst) { versionMeta.forEach(r => wsData.push(r)); isFirst = false; }
-
-      const hdrs = sheetType === 'baseline'
-        ? ['#', 'Ref ID', 'Std Ref', 'Group', 'Test Case', 'Objective / What to Look For', 'Mode', 'Type', 'Severity', 'Status', 'Tested On', 'Evidence / Notes']
-        : ['#', 'Ref ID', 'Std Ref', 'Feature', 'Test Case', 'Objective / What to Look For', 'Feature Present?', 'Mode', 'Type', 'Severity', 'Status', 'Tested On', 'Evidence / Notes'];
-      wsData.push(hdrs);
-
-      const groups = Array.from(new Set(sheetRows.map(r => r.group)));
-      let n = 1;
-      for (const grp of groups) {
-        const grpRows = sheetRows.filter(r => r.group === grp);
-        wsData.push([grp]);
-        for (const r of grpRows) {
-          if (sheetType === 'baseline') {
-            wsData.push([n++, r.ref, r.stdRef, r.group, r.testCase, r.objective, r.mode, r.type, r.severityLabel, r.status, '', '']);
-          } else {
-            wsData.push([n++, r.ref, r.stdRef, r.feature || r.group, r.testCase, r.objective, '—', r.mode, r.type, r.severityLabel, r.status, '', '']);
-          }
-        }
-      }
-
-      const ws = XL.utils.aoa_to_sheet(wsData);
-      const colW = sheetType === 'baseline'
-        ? [4, 14, 14, 18, 46, 42, 12, 10, 11, 13, 12, 42]
-        : [4, 14, 14, 18, 46, 42, 14, 12, 10, 11, 13, 12, 42];
-      ws['!cols'] = colW.map(w => ({ wch: w }));
-
-      const name = `${cat.toUpperCase()} - ${sheetType === 'baseline' ? 'Baseline' : 'Custom'}`;
-      XL.utils.book_append_sheet(wb, ws, name.slice(0, 31));
-    }
+async function writeWorkbook(sheets: ReturnType<typeof buildWorkbookSheets>, filename: string) {
+  const wb = XLSX.utils.book_new();
+  for (const sheet of sheets) {
+    const ws = XLSX.utils.aoa_to_sheet(sheet.data);
+    ws['!cols'] = sheet.columnWidths.map((width) => ({ wch: width }));
+    XLSX.utils.book_append_sheet(wb, ws, sheet.name.slice(0, 31));
   }
 
+  XLSX.writeFile(wb, filename);
+}
+
+async function exportXLSX(filtered: ChecklistRow[], cfg: Config) {
   const safeName = (cfg.engagementName || 'engagement').replace(/[^a-zA-Z0-9_-]/g, '_');
   const dateStr = new Date().toISOString().split('T')[0];
   const typeTag = cfg.engagementType.toLowerCase().replace('-', '');
-  XL.writeFile(wb, `checklist_${safeName}_${typeTag}_${dateStr}.xlsx`);
+  const metadataRows = buildWorkbookMetadataRows({
+    scope: 'filtered',
+    engagementName: cfg.engagementName,
+    targetName: cfg.targetName,
+    engagementType: cfg.engagementType,
+    categories: cfg.categories,
+    totalItems: filtered.length,
+    sourceLabel: 'JSON catalog',
+  });
+  const sheets = buildWorkbookSheets(filtered, { metadataRows, includeEmptySheets: false });
+
+  await writeWorkbook(sheets, `checklist_${safeName}_${typeTag}_${dateStr}.xlsx`);
+}
+
+async function exportFullCatalogXLSX(rows: ChecklistRow[]) {
+  const dateStr = new Date().toISOString().split('T')[0];
+  const metadataRows = buildWorkbookMetadataRows({
+    scope: 'full',
+    totalItems: rows.length,
+    sourceLabel: 'JSON catalog',
+  });
+  const sheets = buildWorkbookSheets(rows, { metadataRows, includeEmptySheets: true });
+
+  await writeWorkbook(sheets, `checklist_catalog_full_${dateStr}.xlsx`);
 }
 
 // ─── Markdown export ───────────────────────────────────────────────────────────
@@ -382,7 +346,7 @@ export const ChecklistGenerator: React.FC = () => {
     features: {},
     outputFormat: 'xlsx',
   });
-  const [generating, setGenerating] = useState(false);
+  const [exportingAction, setExportingAction] = useState<null | 'filtered' | 'full'>(null);
   const [showPreview, setShowPreview] = useState(false);
 
   const filtered = useMemo(() => filterCatalogRows(ALL_ROWS, cfg), [cfg]);
@@ -411,13 +375,23 @@ export const ChecklistGenerator: React.FC = () => {
 
   const handleGenerate = async () => {
     if (!filtered.length) return;
-    setGenerating(true);
+    setExportingAction('filtered');
     try {
       if (cfg.outputFormat === 'xlsx') await exportXLSX(filtered, cfg);
       if (cfg.outputFormat === 'markdown') exportMarkdown(filtered, cfg);
       if (cfg.outputFormat === 'findings') exportFindings(filtered, cfg);
     } finally {
-      setGenerating(false);
+      setExportingAction(null);
+    }
+  };
+
+  const handleExportFullCatalog = async () => {
+    if (!ALL_ROWS.length) return;
+    setExportingAction('full');
+    try {
+      await exportFullCatalogXLSX(ALL_ROWS);
+    } finally {
+      setExportingAction(null);
     }
   };
 
@@ -439,7 +413,7 @@ export const ChecklistGenerator: React.FC = () => {
     findings: 'Finding Report Skeleton',
   };
   const FORMAT_DESC: Record<OutputFormat, string> = {
-    xlsx: 'Spreadsheet with all columns — same format as the master Excel, filtered to your config.',
+    xlsx: 'Spreadsheet with all checklist columns — generated from the JSON catalog and filtered to your config.',
     markdown: 'Structured .md checklist — paste into Obsidian, Notion, or your report template.',
     findings: 'Pre-filled finding skeleton for each High/Critical item. Delete what you don\'t find.',
   };
@@ -676,20 +650,37 @@ export const ChecklistGenerator: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <button onClick={handleGenerate} disabled={generating || filtered.length === 0}
+        <button onClick={handleGenerate} disabled={exportingAction !== null || filtered.length === 0}
           className={`w-full flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-sm uppercase tracking-[0.15em] transition-all ${filtered.length === 0
               ? 'bg-white/5 border border-white/5 text-white/15 cursor-not-allowed'
-              : generating
+              : exportingAction === 'filtered'
                 ? 'bg-[#9fef00]/10 border border-[#9fef00]/20 text-[#9fef00]/50 cursor-wait'
                 : 'bg-[#9fef00] text-black hover:shadow-[0_0_35px_rgba(159,239,0,0.25)] active:scale-[0.99]'
             }`}>
           <Download className="w-5 h-5" />
-          {generating
+          {exportingAction === 'filtered'
             ? 'Building…'
             : filtered.length === 0
               ? 'Select at least one category'
               : `Export — ${filtered.length} Test Cases`}
         </button>
+        <button
+          onClick={handleExportFullCatalog}
+          disabled={exportingAction !== null || ALL_ROWS.length === 0}
+          className={`w-full flex items-center justify-center gap-3 py-3.5 rounded-xl border font-bold text-sm uppercase tracking-[0.15em] transition-all ${
+            ALL_ROWS.length === 0
+              ? 'bg-white/5 border-white/5 text-white/15 cursor-not-allowed'
+              : exportingAction === 'full'
+                ? 'bg-white/[0.05] border-white/[0.08] text-white/35 cursor-wait'
+                : 'bg-[#141d26]/94 border-white/[0.08] text-white/72 hover:text-white hover:bg-[#18222d]'
+          }`}
+        >
+          <FileDown className="w-4.5 h-4.5" />
+          {exportingAction === 'full' ? 'Building Full Catalog…' : 'Export Full Catalog XLSX'}
+        </button>
+        <p className="text-[10px] text-white/45 leading-relaxed px-1">
+          Full catalog export ignores the current filters and rebuilds the six-sheet workbook directly from the JSON catalog.
+        </p>
       </div>
     </div>
   );

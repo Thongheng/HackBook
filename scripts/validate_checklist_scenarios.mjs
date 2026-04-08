@@ -34,6 +34,7 @@ const scenarios = [
     config: cfg({ categories: ['web'], engagementType: 'Black-Box' }),
     run(rows) {
       assert(rows.length > 0, 'expected rows');
+      assert(rows.some((row) => row.id === 'WEB-BL-069'), 'generic HTML injection row missing');
       assert(rows.every((row) => row.platform === 'web'), 'only web rows should export');
       assert(rows.every((row) => row.section === 'baseline'), 'no custom rows should export');
       assert(rows.every((row) => row.access !== 'greybox'), 'greybox-only rows leaked into blackbox scenario');
@@ -44,9 +45,19 @@ const scenarios = [
     config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:login': true } }),
     run(rows) {
       assert(rows.some((row) => row.id === 'WEB-CT-001'), 'login custom row missing');
+      assert(rows.some((row) => row.id === 'WEB-CT-002'), 'HTTP verb confusion login row missing');
       assert(rows.some((row) => row.id === 'WEB-CT-005'), 'login coverage incomplete');
       assert(!rows.some((row) => row.id === 'WEB-CT-014'), 'profile row should not appear without Profile feature');
       assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into web scenario');
+    },
+  },
+  {
+    name: 'web + File Upload',
+    config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:file-upload': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'WEB-CT-046'), 'SVG upload XSS row missing');
+      assert(rows.some((row) => row.id === 'WEB-CT-086'), 'HTML file upload XSS row missing');
+      assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into file upload scenario');
     },
   },
   {
@@ -69,9 +80,19 @@ const scenarios = [
     },
   },
   {
+    name: 'mobile + API Backend blackbox',
+    config: cfg({ categories: ['mobile'], engagementType: 'Black-Box', features: { 'mobile:api-backend': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'MOB-CT-019'), 'mobile API BOLA row missing');
+      assert(rows.some((row) => row.id === 'MOB-CT-037'), 'mobile API misconfiguration row missing');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile API scenario');
+    },
+  },
+  {
     name: 'desktop + WebView + blackbox',
     config: cfg({ categories: ['desktop'], engagementType: 'Black-Box', features: { 'desktop:webview': true } }),
     run(rows) {
+      assert(rows.some((row) => row.id === 'DSK-BL-021'), 'desktop API baseline row missing');
       assert(rows.every((row) => row.platform === 'desktop'), 'desktop-only scenario leaked other platforms');
       assert(!rows.some((row) => row.id === 'DSK-CT-015'), 'greybox-only desktop WebView row leaked into blackbox');
       assert(rows.every((row) => row.access !== 'greybox'), 'greybox access rows leaked into blackbox');

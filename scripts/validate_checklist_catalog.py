@@ -2,10 +2,9 @@
 from __future__ import annotations
 
 import json
-from collections import Counter, defaultdict
+import re
+from collections import Counter
 from pathlib import Path
-
-from import_checklist_excel import DEFAULT_XLSX, load_rows
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,19 +14,42 @@ VALID_SEVERITY = {"critical", "high", "medium", "low", "info"}
 VALID_ROW_TYPES = {"test", "setup"}
 VALID_PLATFORM = {"web", "mobile", "desktop"}
 VALID_SECTION = {"baseline", "custom"}
+VALID_SOURCE = {"catalog", "curated"}
+CANONICAL_SHEET_ORDER = [
+    "WEB - Baseline",
+    "WEB - Custom",
+    "MOBILE - Baseline",
+    "MOBILE - Custom",
+    "DESKTOP - Baseline",
+    "DESKTOP - Custom",
+]
+SHEET_MAP = {
+    ("web", "baseline"): "WEB - Baseline",
+    ("web", "custom"): "WEB - Custom",
+    ("mobile", "baseline"): "MOBILE - Baseline",
+    ("mobile", "custom"): "MOBILE - Custom",
+    ("desktop", "baseline"): "DESKTOP - Baseline",
+    ("desktop", "custom"): "DESKTOP - Custom",
+}
+
+
+def slug(platform: str, label: str | None) -> str | None:
+    if not label:
+        return None
+    token = re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")
+    return f"{platform}:{token}"
 
 
 def main() -> int:
     curated = json.loads(CURATED_CATALOG.read_text(encoding="utf-8"))["rows"]
-    imported = load_rows(DEFAULT_XLSX)
-
-    curated_by_id = {row["id"]: row for row in curated}
-    imported_by_id = {row["id"]: row for row in imported}
-
     structural_errors: list[str] = []
+
     duplicate_ids = [ref for ref, count in Counter(row["id"] for row in curated).items() if count > 1]
     if duplicate_ids:
         structural_errors.append(f"Duplicate ids in curated catalog: {', '.join(sorted(duplicate_ids))}")
+
+    seen_sheet_order: list[str] = []
+    active_sheet: str | None = None
 
     for row in curated:
         if row["platform"] not in VALID_PLATFORM:
@@ -40,51 +62,42 @@ def main() -> int:
             structural_errors.append(f"{row['id']}: invalid severity {row['severity']}")
         if row["rowType"] not in VALID_ROW_TYPES:
             structural_errors.append(f"{row['id']}: invalid rowType {row['rowType']}")
-        if row["section"] == "custom" and (not row["featureKey"] or not row["featureLabel"]):
-            structural_errors.append(f"{row['id']}: custom row missing feature metadata")
-        if row["section"] == "baseline" and (row["featureKey"] or row["featureLabel"]):
-            structural_errors.append(f"{row['id']}: baseline row should not carry feature metadata")
+        if row["source"] not in VALID_SOURCE:
+            structural_errors.append(f"{row['id']}: invalid source {row['source']}")
 
-    missing_excel_refs = sorted(set(imported_by_id) - set(curated_by_id))
-    repo_only_refs = sorted(set(curated_by_id) - set(imported_by_id))
-    repo_only_curated = [ref for ref in repo_only_refs if curated_by_id[ref]["source"] == "curated"]
-    repo_only_non_curated = [ref for ref in repo_only_refs if curated_by_id[ref]["source"] != "curated"]
+        expected_sheet = SHEET_MAP[(row["platform"], row["section"])]
+        if row["sourceSheet"] != expected_sheet:
+            structural_errors.append(f"{row['id']}: sourceSheet should be {expected_sheet}, got {row['sourceSheet']}")
+        if row["sourceRef"] != row["id"]:
+            structural_errors.append(f"{row['id']}: sourceRef should match id")
 
-    changed_fields: dict[str, list[str]] = defaultdict(list)
-    comparable_fields = ["platform", "section", "featureLabel", "title", "objective", "severity", "rowType"]
-    for ref in sorted(set(imported_by_id) & set(curated_by_id)):
-        base = imported_by_id[ref]
-        current = curated_by_id[ref]
-        for field in comparable_fields:
-            if base.get(field) != current.get(field):
-                changed_fields[ref].append(field)
+        if row["section"] == "custom":
+            if not row["featureKey"] or not row["featureLabel"]:
+                structural_errors.append(f"{row['id']}: custom row missing feature metadata")
+            elif row["featureKey"] != slug(row["platform"], row["featureLabel"]):
+                structural_errors.append(
+                    f"{row['id']}: featureKey should be {slug(row['platform'], row['featureLabel'])}, got {row['featureKey']}"
+                )
+        else:
+            if row["featureKey"] or row["featureLabel"]:
+                structural_errors.append(f"{row['id']}: baseline row should not carry feature metadata")
 
-    orphan_features = sorted(
-        feature
-        for feature, count in Counter(row["featureKey"] for row in curated if row["featureKey"]).items()
-        if count == 0
-    )
+        if active_sheet != expected_sheet:
+            if expected_sheet in seen_sheet_order:
+                structural_errors.append(f"{row['id']}: sheet block {expected_sheet} is not contiguous")
+            else:
+                seen_sheet_order.append(expected_sheet)
+                active_sheet = expected_sheet
+
+    if seen_sheet_order != [sheet for sheet in CANONICAL_SHEET_ORDER if sheet in seen_sheet_order]:
+        structural_errors.append("Catalog rows are not grouped in canonical sheet order.")
 
     print("Checklist catalog validation summary")
-    print(f"- Curated rows: {len(curated)}")
-    print(f"- Excel rows: {len(imported)}")
-    print(f"- Missing Excel refs in curated catalog: {len(missing_excel_refs)}")
-    if missing_excel_refs:
-        print(f"  {', '.join(missing_excel_refs)}")
-    print(f"- Repo-only curated refs: {len(repo_only_curated)}")
-    if repo_only_curated:
-        print(f"  {', '.join(repo_only_curated)}")
-    print(f"- Repo-only non-curated refs: {len(repo_only_non_curated)}")
-    if repo_only_non_curated:
-        print(f"  {', '.join(repo_only_non_curated)}")
-    print(f"- Curated rows with Excel field drift: {len(changed_fields)}")
-    for ref, fields in list(changed_fields.items())[:20]:
-        print(f"  {ref}: {', '.join(fields)}")
-
-    if orphan_features:
-        structural_errors.append(f"Orphan feature keys: {', '.join(orphan_features)}")
-    if repo_only_non_curated:
-        structural_errors.append("Found repo-only rows not marked as curated.")
+    print(f"- Catalog rows: {len(curated)}")
+    print(f"- Sources: {dict(Counter(row['source'] for row in curated))}")
+    print(f"- Platforms: {dict(Counter(row['platform'] for row in curated))}")
+    print(f"- Sections: {dict(Counter(row['section'] for row in curated))}")
+    print(f"- Sheet blocks: {', '.join(seen_sheet_order)}")
 
     if structural_errors:
         print("\nStructural issues")

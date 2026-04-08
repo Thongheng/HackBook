@@ -6,7 +6,7 @@ export type SheetType = 'baseline' | 'custom';
 export type Access = 'blackbox' | 'greybox' | 'both';
 export type RowType = 'test' | 'setup';
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'info';
-export type SourceType = 'excel' | 'curated';
+export type SourceType = 'catalog' | 'curated';
 
 export interface ChecklistCatalogRow {
   id: string;
@@ -40,14 +40,16 @@ export interface ChecklistRow extends ChecklistCatalogRow {
   severityLabel: 'Critical' | 'High' | 'Medium' | 'Low' | 'Info';
 }
 
+const severityLabelMap: Record<Severity, ChecklistRow['severityLabel']> = {
+  critical: 'Critical',
+  high: 'High',
+  medium: 'Medium',
+  low: 'Low',
+  info: 'Info',
+};
+
 const severityLabel = (severity: Severity): ChecklistRow['severityLabel'] =>
-  ({
-    critical: 'Critical',
-    high: 'High',
-    medium: 'Medium',
-    low: 'Low',
-    info: 'Info',
-  })[severity];
+  severityLabelMap[severity];
 
 const rowTypeLabel = (rowType: RowType): ChecklistRow['type'] => (rowType === 'setup' ? 'Setup' : 'Test');
 
