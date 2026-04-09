@@ -23,6 +23,7 @@
     "checklist:test": "npm run checklist:validate && npm run checklist:scenarios && npm run checklist:matrix && npm run checklist:export-shape"
   },
   "dependencies": {
+    "cfb": "^1.2.2",
     "lucide-react": "^0.563.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

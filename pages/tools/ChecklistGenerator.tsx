@@ -1,16 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import {
   FileDown, ChevronDown, ChevronUp, Globe, Smartphone, Monitor,
-  Eye, EyeOff, FileText, AlertTriangle, Download,
+  Eye, EyeOff, AlertTriangle, Download,
 } from 'lucide-react';
-import * as XLSX from 'xlsx';
 import { ALL_ROWS, FEATURE_GROUPS, FEATURE_REGISTRY, ChecklistRow, Category } from '../../data/checklistData';
 import { filterCatalogRows } from '../../logic/checklistEngine.js';
 import { buildWorkbookMetadataRows, buildWorkbookSheets } from '../../logic/checklistWorkbook.js';
+import { saveWorkbookFile } from '../../logic/checklistWorkbookXlsx.js';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type EngagementType = 'Black-Box' | 'Grey-Box';
-type OutputFormat = 'xlsx' | 'markdown' | 'findings';
 
 // Tech stack options per category
 interface TechStack {
@@ -26,7 +25,6 @@ interface Config {
   categories: Category[];
   techStack: TechStack;
   features: Record<string, boolean>;
-  outputFormat: OutputFormat;
 }
 
 // ─── Constants ──────────────────────────────────────────────────────────────────
@@ -58,20 +56,10 @@ const QUIET_CONTROL_HOVER = 'hover:border-white/15 hover:bg-[#16202a]';
 
 // ─── XLSX export ───────────────────────────────────────────────────────────────
 async function writeWorkbook(sheets: ReturnType<typeof buildWorkbookSheets>, filename: string) {
-  const wb = XLSX.utils.book_new();
-  for (const sheet of sheets) {
-    const ws = XLSX.utils.aoa_to_sheet(sheet.data);
-    ws['!cols'] = sheet.columnWidths.map((width) => ({ wch: width }));
-    XLSX.utils.book_append_sheet(wb, ws, sheet.name.slice(0, 31));
-  }
-
-  XLSX.writeFile(wb, filename);
+  saveWorkbookFile(sheets, filename);
 }
 
 async function exportXLSX(filtered: ChecklistRow[], cfg: Config) {
-  const safeName = (cfg.engagementName || 'engagement').replace(/[^a-zA-Z0-9_-]/g, '_');
-  const dateStr = new Date().toISOString().split('T')[0];
-  const typeTag = cfg.engagementType.toLowerCase().replace('-', '');
   const metadataRows = buildWorkbookMetadataRows({
     scope: 'filtered',
     engagementName: cfg.engagementName,
@@ -83,11 +71,10 @@ async function exportXLSX(filtered: ChecklistRow[], cfg: Config) {
   });
   const sheets = buildWorkbookSheets(filtered, { metadataRows, includeEmptySheets: false });
 
-  await writeWorkbook(sheets, `checklist_${safeName}_${typeTag}_${dateStr}.xlsx`);
+  await writeWorkbook(sheets, 'checklist.xlsx');
 }
 
 async function exportFullCatalogXLSX(rows: ChecklistRow[]) {
-  const dateStr = new Date().toISOString().split('T')[0];
   const metadataRows = buildWorkbookMetadataRows({
     scope: 'full',
     totalItems: rows.length,
@@ -95,7 +82,7 @@ async function exportFullCatalogXLSX(rows: ChecklistRow[]) {
   });
   const sheets = buildWorkbookSheets(rows, { metadataRows, includeEmptySheets: true });
 
-  await writeWorkbook(sheets, `checklist_catalog_full_${dateStr}.xlsx`);
+  await writeWorkbook(sheets, 'checklist_catalog_full.xlsx');
 }
 
 // ─── Markdown export ───────────────────────────────────────────────────────────
@@ -336,16 +323,39 @@ const DEFAULT_STACK: TechStack = {
   desktop: { dotnet: true, electron: false, java: false },
 };
 
+// Build initial features with all selected for given categories
+const getDefaultFeatures = (categories: Category[]): Record<string, boolean> => {
+  const defaults: Record<string, boolean> = {};
+  FEATURE_REGISTRY.forEach((feature) => {
+    defaults[feature.key] = categories.includes(feature.platform);
+  });
+  return defaults;
+};
+
 export const ChecklistGenerator: React.FC = () => {
+  const initialCategories: Category[] = ['web'];
   const [cfg, setCfg] = useState<Config>({
     engagementName: '',
     targetName: '',
     engagementType: 'Black-Box',
-    categories: ['web'],
+    categories: initialCategories,
     techStack: DEFAULT_STACK,
-    features: {},
-    outputFormat: 'xlsx',
+    features: getDefaultFeatures(initialCategories),
   });
+
+  // Update features when categories change
+  // - Select all features for selected categories
+  // - Deselect all features for unselected categories
+  const updateCategories = (newCategories: Category[]) => {
+    setCfg((p) => {
+      const newFeatures: Record<string, boolean> = {};
+      FEATURE_REGISTRY.forEach((feature) => {
+        // Only select feature if its category is in newCategories
+        newFeatures[feature.key] = newCategories.includes(feature.platform);
+      });
+      return { ...p, categories: newCategories, features: newFeatures };
+    });
+  };
   const [exportingAction, setExportingAction] = useState<null | 'filtered' | 'full'>(null);
   const [showPreview, setShowPreview] = useState(false);
 
@@ -356,13 +366,38 @@ export const ChecklistGenerator: React.FC = () => {
   );
   const contributingFeatureCount = selectedFeatureGroups.filter((feature) => cfg.features[feature.key]).length;
 
-  const toggleCat = (c: Category) => setCfg(p => ({
-    ...p, categories: p.categories.includes(c) ? p.categories.filter(x => x !== c) : [...p.categories, c],
-  }));
+  const toggleCat = (c: Category) => {
+    const newCategories = cfg.categories.includes(c)
+      ? cfg.categories.filter((x) => x !== c)
+      : [...cfg.categories, c];
+    updateCategories(newCategories);
+  };
 
-  const toggleFeature = (featureKey: string) => setCfg(p => ({
-    ...p, features: { ...p.features, [featureKey]: !p.features[featureKey] },
-  }));
+  const toggleFeature = (cat: Category, featureKey: string) => {
+    const features = FEATURE_GROUPS[cat] || [];
+    const allSelected = features.every((feature) => cfg.features[feature.key]);
+
+    if (allSelected) {
+      // If all are selected, switch to only this single feature
+      const newFeatures: Record<string, boolean> = {};
+      features.forEach((feature) => {
+        newFeatures[feature.key] = feature.key === featureKey;
+      });
+      // Preserve other category selections
+      Object.keys(cfg.features).forEach((key) => {
+        if (!features.find((f) => f.key === key)) {
+          newFeatures[key] = cfg.features[key];
+        }
+      });
+      setCfg((p) => ({ ...p, features: newFeatures }));
+    } else {
+      // Normal toggle behavior
+      setCfg((p) => ({
+        ...p,
+        features: { ...p.features, [featureKey]: !p.features[featureKey] },
+      }));
+    }
+  };
 
   const setAllFeatures = (cat: Category, val: boolean) => {
     const features = FEATURE_GROUPS[cat] || [];
@@ -377,9 +412,7 @@ export const ChecklistGenerator: React.FC = () => {
     if (!filtered.length) return;
     setExportingAction('filtered');
     try {
-      if (cfg.outputFormat === 'xlsx') await exportXLSX(filtered, cfg);
-      if (cfg.outputFormat === 'markdown') exportMarkdown(filtered, cfg);
-      if (cfg.outputFormat === 'findings') exportFindings(filtered, cfg);
+      await exportXLSX(filtered, cfg);
     } finally {
       setExportingAction(null);
     }
@@ -393,29 +426,6 @@ export const ChecklistGenerator: React.FC = () => {
     } finally {
       setExportingAction(null);
     }
-  };
-
-  const safeName = (cfg.engagementName || 'engagement').replace(/[^a-zA-Z0-9_-]/g, '_');
-  const dateStr = new Date().toISOString().split('T')[0];
-  const typeTag = cfg.engagementType.toLowerCase().replace('-', '');
-  const ext = cfg.outputFormat === 'xlsx' ? 'xlsx' : 'md';
-  const prefix = cfg.outputFormat === 'findings' ? 'findings' : 'checklist';
-  const filename = `${prefix}_${safeName}_${typeTag}_${dateStr}.${ext}`;
-
-  const FORMAT_ICONS: Record<OutputFormat, React.FC<any>> = {
-    xlsx: FileDown,
-    markdown: FileText,
-    findings: AlertTriangle,
-  };
-  const FORMAT_LABELS: Record<OutputFormat, string> = {
-    xlsx: 'Filtered XLSX',
-    markdown: 'Markdown Checklist',
-    findings: 'Finding Report Skeleton',
-  };
-  const FORMAT_DESC: Record<OutputFormat, string> = {
-    xlsx: 'Spreadsheet with all checklist columns — generated from the JSON catalog and filtered to your config.',
-    markdown: 'Structured .md checklist — paste into Obsidian, Notion, or your report template.',
-    findings: 'Pre-filled finding skeleton for each High/Critical item. Delete what you don\'t find.',
   };
 
   const selectedCategoryLabels = cfg.categories.map((category) => CAT_LABEL[category]);
@@ -437,9 +447,9 @@ export const ChecklistGenerator: React.FC = () => {
 
       <SummaryRail filtered={filtered} />
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[340px_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[340px_minmax(0,1fr)] xl:max-h-[calc(100vh-180px)]">
 
-        <div className="space-y-4 xl:sticky xl:top-28 self-start">
+        <div className="space-y-4 xl:sticky xl:top-0 self-start xl:max-h-[calc(100vh-180px)] xl:overflow-y-auto pr-1">
 
           <Section title="Setup">
             <div className="space-y-3">
@@ -495,7 +505,7 @@ export const ChecklistGenerator: React.FC = () => {
           </Section>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-5 xl:overflow-y-auto xl:max-h-[calc(100vh-180px)] xl:pr-1">
           <Section title="Target Profile" badge="stack filters">
             <div className="space-y-4">
               <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:gap-4">
@@ -547,7 +557,7 @@ export const ChecklistGenerator: React.FC = () => {
                       {cfg.categories.includes(cat) ? 'selected for export' : 'visible, not exporting'}
                     </span>
                   }
-                  defaultOpen={cfg.categories.includes(cat) || anyOn}
+                  defaultOpen={cfg.categories.includes(cat)}
                 >
                   <div className="space-y-2.5 pt-3">
                     <div className="flex items-center justify-end gap-2">
@@ -562,15 +572,10 @@ export const ChecklistGenerator: React.FC = () => {
                           label={feature.label}
                           count={feature.count}
                           active={!!cfg.features[feature.key]}
-                          onClick={() => toggleFeature(feature.key)}
+                          onClick={() => toggleFeature(cat, feature.key)}
                         />
                       ))}
                     </div>
-                    {!cfg.categories.includes(cat) && anyOn && (
-                      <p className="text-[10px] text-white/45">
-                        These toggles are stored, but {CAT_LABEL[cat]} rows stay out of the export until that target category is selected.
-                      </p>
-                    )}
                     {cfg.categories.includes(cat) && !anyOn && (
                       <p className="text-[10px] text-white/40">
                         No {CAT_LABEL[cat]} feature groups are active. Only baseline rows will export for this target type.
@@ -589,98 +594,74 @@ export const ChecklistGenerator: React.FC = () => {
               <div className="flex items-start gap-2.5 px-3.5 py-3 rounded-lg border border-yellow-500/20 bg-yellow-500/5">
                 <AlertTriangle className="w-3.5 h-3.5 text-yellow-400/70 shrink-0 mt-0.5" />
                 <p className="text-[11px] text-yellow-300/60 leading-relaxed">
-                  No active features contribute to the currently selected target categories — <strong className="text-yellow-300/80">0 custom tests</strong> will be included. You can still pre-toggle other platform features, but they will not export until that platform is selected.
+                  No custom features selected — <strong className="text-yellow-300/80">0 custom tests</strong> will be included. Only baseline tests will export. Click "All" to select custom features for your target categories.
                 </p>
               </div>
             )}
             <p className="text-[10px] text-white/45 leading-relaxed pt-1">
-              Feature groups are always visible for planning. Exported rows still depend on selected target categories, access model, and stack toggles.
+              Feature selection is linked to target categories. Toggle features to include custom tests in your export.
             </p>
           </Section>
 
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_280px]">
-            <Section title="Output Preview">
-              <div className="space-y-4">
-                <div className="rounded-2xl border border-white/[0.08] bg-[#141d26]/94 px-4 py-4">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div>
-                      <p className="text-[10px] font-bold text-white/35 uppercase tracking-[0.18em]">Export file</p>
-                      <p className="mt-1 text-[12px] font-mono text-white/80 break-all">{filename}</p>
-                    </div>
+          <Section title="Output Preview">
+            <div className="space-y-4">
+              {filtered.length > 0 && (
+                <button onClick={() => setShowPreview(p => !p)}
+                  className="w-full flex items-center justify-between px-5 py-3 rounded-xl border border-white/[0.08] bg-[#141d26]/92 hover:bg-[#18222d] transition-colors">
+                  <div className="flex items-center gap-2">
+                    {showPreview ? <EyeOff className="w-3.5 h-3.5 text-white/25" /> : <Eye className="w-3.5 h-3.5 text-white/25" />}
+                    <span className="text-[11px] font-bold text-white/60 uppercase tracking-[0.18em]">
+                      {showPreview ? 'Hide Preview' : `Preview (${filtered.length} rows)`}
+                    </span>
                   </div>
-                </div>
-                {filtered.length > 0 && (
-                  <button onClick={() => setShowPreview(p => !p)}
-                    className="w-full flex items-center justify-between px-5 py-3 rounded-xl border border-white/[0.08] bg-[#141d26]/92 hover:bg-[#18222d] transition-colors">
-                    <div className="flex items-center gap-2">
-                      {showPreview ? <EyeOff className="w-3.5 h-3.5 text-white/25" /> : <Eye className="w-3.5 h-3.5 text-white/25" />}
-                      <span className="text-[11px] font-bold text-white/60 uppercase tracking-[0.18em]">
-                        {showPreview ? 'Hide Preview' : `Preview (${filtered.length} rows)`}
-                      </span>
-                    </div>
-                    {showPreview ? <ChevronUp className="w-3.5 h-3.5 text-white/15" /> : <ChevronDown className="w-3.5 h-3.5 text-white/15" />}
-                  </button>
-                )}
-                {showPreview && filtered.length > 0 && <PreviewTable rows={filtered} />}
-              </div>
-            </Section>
-
-            <Section title="Export Format">
-              <div className="space-y-2">
-              {(['xlsx', 'markdown', 'findings'] as OutputFormat[]).map(fmt => {
-                const Icon = FORMAT_ICONS[fmt];
-                return (
-                  <button key={fmt} onClick={() => setCfg(p => ({ ...p, outputFormat: fmt }))}
-                    className={`w-full flex items-start gap-3 p-3.5 rounded-xl border text-left transition-all ${cfg.outputFormat === fmt
-                        ? 'bg-[#9fef00]/6 border-[#9fef00]/25 text-[#9fef00]'
-                        : `${QUIET_CONTROL} text-white/35 ${QUIET_CONTROL_HOVER} hover:text-white/58`
-                      }`}>
-                    <Icon className="w-4 h-4 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-[12px] font-bold leading-tight">{FORMAT_LABELS[fmt]}</p>
-                      <p className="text-[10px] mt-0.5 text-white/55 leading-relaxed">{FORMAT_DESC[fmt]}</p>
-                    </div>
-                  </button>
-                );
-              })}
-              </div>
-            </Section>
-          </div>
+                  {showPreview ? <ChevronUp className="w-3.5 h-3.5 text-white/15" /> : <ChevronDown className="w-3.5 h-3.5 text-white/15" />}
+                </button>
+              )}
+              {showPreview && filtered.length > 0 && <PreviewTable rows={filtered} />}
+            </div>
+          </Section>
         </div>
       </div>
 
-      <div className="space-y-2">
-        <button onClick={handleGenerate} disabled={exportingAction !== null || filtered.length === 0}
-          className={`w-full flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-sm uppercase tracking-[0.15em] transition-all ${filtered.length === 0
-              ? 'bg-white/5 border border-white/5 text-white/15 cursor-not-allowed'
-              : exportingAction === 'filtered'
-                ? 'bg-[#9fef00]/10 border border-[#9fef00]/20 text-[#9fef00]/50 cursor-wait'
-                : 'bg-[#9fef00] text-black hover:shadow-[0_0_35px_rgba(159,239,0,0.25)] active:scale-[0.99]'
-            }`}>
-          <Download className="w-5 h-5" />
-          {exportingAction === 'filtered'
-            ? 'Building…'
-            : filtered.length === 0
-              ? 'Select at least one category'
-              : `Export — ${filtered.length} Test Cases`}
-        </button>
-        <button
-          onClick={handleExportFullCatalog}
-          disabled={exportingAction !== null || ALL_ROWS.length === 0}
-          className={`w-full flex items-center justify-center gap-3 py-3.5 rounded-xl border font-bold text-sm uppercase tracking-[0.15em] transition-all ${
-            ALL_ROWS.length === 0
-              ? 'bg-white/5 border-white/5 text-white/15 cursor-not-allowed'
-              : exportingAction === 'full'
-                ? 'bg-white/[0.05] border-white/[0.08] text-white/35 cursor-wait'
-                : 'bg-[#141d26]/94 border-white/[0.08] text-white/72 hover:text-white hover:bg-[#18222d]'
-          }`}
-        >
-          <FileDown className="w-4.5 h-4.5" />
-          {exportingAction === 'full' ? 'Building Full Catalog…' : 'Export Full Catalog XLSX'}
-        </button>
-        <p className="text-[10px] text-white/45 leading-relaxed px-1">
-          Full catalog export ignores the current filters and rebuilds the six-sheet workbook directly from the JSON catalog.
-        </p>
+      <div className={`${PANEL_SHELL} rounded-2xl overflow-hidden`}>
+        <div className={`px-4 py-3 ${PANEL_HEADER} border-b border-white/[0.06]`}>
+          <span className="text-[10px] font-bold text-white/65 uppercase tracking-[0.18em]">Export XLSX</span>
+        </div>
+        <div className={`px-4 py-3 ${PANEL_BODY} space-y-2`}>
+          <div className="flex gap-2">
+            <button onClick={handleGenerate} disabled={exportingAction !== null || filtered.length === 0}
+              className={`w-1/2 flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-[11px] uppercase tracking-[0.12em] transition-all ${filtered.length === 0
+                  ? 'bg-white/5 border border-white/5 text-white/15 cursor-not-allowed'
+                  : exportingAction === 'filtered'
+                    ? 'bg-[#9fef00]/10 border border-[#9fef00]/20 text-[#9fef00]/50 cursor-wait'
+                    : 'bg-[#9fef00] text-black hover:shadow-[0_0_25px_rgba(159,239,0,0.2)] active:scale-[0.99]'
+                }`}>
+              <Download className="w-4 h-4" />
+              {exportingAction === 'filtered'
+                ? 'Building…'
+                : filtered.length === 0
+                  ? 'Select category'
+                  : `Export ${filtered.length}`}
+            </button>
+            <button
+              onClick={handleExportFullCatalog}
+              disabled={exportingAction !== null || ALL_ROWS.length === 0}
+              className={`w-1/2 flex items-center justify-center gap-2 py-2.5 rounded-lg border font-bold text-[11px] uppercase tracking-[0.12em] transition-all ${
+                ALL_ROWS.length === 0
+                  ? 'bg-white/5 border-white/5 text-white/15 cursor-not-allowed'
+                  : exportingAction === 'full'
+                    ? 'bg-white/[0.05] border-white/[0.08] text-white/35 cursor-wait'
+                    : 'bg-[#141d26]/94 border-white/[0.08] text-white/70 hover:text-white hover:bg-[#18222d]'
+              }`}
+            >
+              <FileDown className="w-4 h-4" />
+              Full Catalog
+            </button>
+          </div>
+          <p className="text-[9px] text-white/40 leading-relaxed">
+            Full Catalog exports the complete checklist ignoring filters.
+          </p>
+        </div>
       </div>
     </div>
   );
