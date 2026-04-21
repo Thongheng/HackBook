@@ -1,5 +1,6 @@
 import React from 'react';
-import { Search } from 'lucide-react';
+import { Search, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface NavbarProps {
   currentView: string;
@@ -19,6 +20,9 @@ const HackBookLogo = () => (
 );
 
 export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, onOpenSearch }) => {
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === 'dark';
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#05080a]/80 backdrop-blur-md px-6 md:px-12 lg:px-24 h-20 flex items-center justify-between border-b border-white/5">
       <div
@@ -31,7 +35,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, onOpenSear
         </div>
       </div>
 
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-3">
         <div className="hidden md:flex items-center gap-8 border-r border-white/5 pr-8 mr-2">
           {[
             { id: 'dashboard', label: 'Dashboard' },
@@ -52,6 +56,29 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, onOpenSear
           ))}
         </div>
 
+        {/* Theme Toggle */}
+        <button
+          id="theme-toggle"
+          onClick={toggleTheme}
+          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          className="theme-toggle-btn w-9 h-9 flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all"
+          style={{ flexShrink: 0 }}
+        >
+          <span
+            key={theme}
+            style={{
+              display: 'inline-flex',
+              animation: 'spin-in 0.35s cubic-bezier(0.34,1.56,0.64,1)',
+            }}
+          >
+            {isDark
+              ? <Sun className="w-4 h-4 text-white/60" style={{ color: '#facc15' }} />
+              : <Moon className="w-4 h-4" style={{ color: '#6366f1' }} />
+            }
+          </span>
+        </button>
+
+        {/* Search */}
         <button
           onClick={onOpenSearch}
           className="flex items-center gap-3 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all group"

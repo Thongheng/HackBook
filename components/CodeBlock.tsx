@@ -17,7 +17,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'bash', t
   };
 
   return (
-    <div className="relative group bg-[#0a0f16]/60 rounded-xl border border-white/5 overflow-hidden shadow-2xl transition-all group-hover:border-[#9fef00]/20">
+    <div data-code-block="true" className="relative group bg-[#0a0f16]/60 rounded-xl border border-white/5 overflow-hidden shadow-2xl transition-all group-hover:border-[#9fef00]/20">
       <div className="flex items-center justify-between px-4 py-2 border-b border-white/5 bg-white/[0.02]">
         <div className="flex items-center gap-2">
           <Terminal className="w-3.5 h-3.5 text-[#9fef00]/60" />
