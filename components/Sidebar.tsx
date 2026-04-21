@@ -25,11 +25,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
               <button
                 key={item.id}
                 onClick={() => setView(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all group ${
-                  currentView === item.id 
-                    ? 'bg-[#9fef00]/10 text-[#9fef00]' 
-                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-                }`}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all group ${currentView === item.id
+                    ? 'bg-[#9fef00]/10 text-[#9fef00]'
+                    : 'htb-text-muted hover:bg-slate-800/50 hover:htb-text'
+                  }`}
               >
                 <item.icon className={`w-4 h-4 ${currentView === item.id ? 'text-[#9fef00]' : 'text-slate-500 group-hover:text-slate-300'}`} />
                 {item.label}
@@ -41,20 +40,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
         <div>
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-4">Quick Tools</p>
           <div className="space-y-1">
-            <button onClick={() => setView('tool-csrf')} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-400 hover:bg-slate-800/50 hover:text-white transition-all">
+            <button onClick={() => setView('tool-csrf')} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm htb-text-muted hover:bg-slate-800/50 hover:htb-text transition-all">
               <ShieldAlert className="w-4 h-4 text-slate-500" />
               CSRF Generator
             </button>
-            <button onClick={() => setView('tool-jwt')} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-400 hover:bg-slate-800/50 hover:text-white transition-all">
+            <button onClick={() => setView('tool-jwt')} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm htb-text-muted hover:bg-slate-800/50 hover:htb-text transition-all">
               <ShieldAlert className="w-4 h-4 text-slate-500" />
               JWT Exploit
             </button>
           </div>
         </div>
       </div>
-      
+
       <div className="mt-auto p-6 border-t border-slate-800">
-        <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-400 hover:bg-slate-800/50 hover:text-white transition-all">
+        <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm htb-text-muted hover:bg-slate-800/50 hover:htb-text transition-all">
           <Settings className="w-4 h-4 text-slate-500" />
           Platform Settings
         </button>

@@ -23,7 +23,7 @@ export const XSSTool: React.FC = () => {
     <div className="space-y-8">
       <div className="space-y-4">
         <div className="space-y-2">
-          <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Source JavaScript Payload</label>
+          <label className="text-[10px] font-bold htb-text-muted uppercase tracking-[0.2em]">Source JavaScript Payload</label>
           <textarea
             className="w-full h-36 bg-[#0a0f16]/60 border border-white/5 rounded-xl p-5 font-mono text-sm text-[#9fef00] focus:outline-none focus:ring-1 focus:ring-[#9fef00]/40 transition-all resize-none"
             value={payload}
@@ -45,14 +45,14 @@ export const XSSTool: React.FC = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-2.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#9fef00] animate-pulse" />
-                <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Base64 Encoded Execution</span>
+                <span className="text-[10px] font-bold htb-text-muted uppercase tracking-widest">Base64 Encoded Execution</span>
               </div>
               <CodeBlock code={results.b64} language="javascript" title="eval-atob-wrapper" />
             </div>
             <div className="space-y-4">
               <div className="flex items-center gap-2.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#9fef00] animate-pulse" />
-                <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">CharCode Dynamic Injection</span>
+                <span className="text-[10px] font-bold htb-text-muted uppercase tracking-widest">CharCode Dynamic Injection</span>
               </div>
               <CodeBlock code={results.charCode} language="javascript" title="eval-fromCharCode-wrapper" />
             </div>
@@ -62,14 +62,14 @@ export const XSSTool: React.FC = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-2.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#9fef00] animate-pulse" />
-                <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">SVG Vector</span>
+                <span className="text-[10px] font-bold htb-text-muted uppercase tracking-widest">SVG Vector</span>
               </div>
               <CodeBlock code={results.svg} language="html" title="SVG OnLoad" />
             </div>
             <div className="space-y-4">
               <div className="flex items-center gap-2.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#9fef00] animate-pulse" />
-                <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Polyglot Context Break</span>
+                <span className="text-[10px] font-bold htb-text-muted uppercase tracking-widest">Polyglot Context Break</span>
               </div>
               <CodeBlock code={results.polyglot} language="html" title="Polyglot Wrapper" />
             </div>
@@ -79,8 +79,8 @@ export const XSSTool: React.FC = () => {
 
       {!results && (
         <div className="flex items-center gap-3 p-5 border border-white/5 bg-white/[0.01] rounded-2xl">
-          <Code2 className="w-5 h-5 text-white/20" />
-          <p className="text-[12px] text-white/30 font-medium tracking-tight">
+          <Code2 className="w-5 h-5 htb-text-faint" />
+          <p className="text-[12px] htb-text-faint font-medium tracking-tight">
             Use these obfuscators to bypass basic keyword-based filters (e.g. WAFs blocking <code>alert</code>, <code>script</code>, or <code>eval</code> directly).
           </p>
         </div>

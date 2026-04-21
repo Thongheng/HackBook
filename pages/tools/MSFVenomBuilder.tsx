@@ -57,53 +57,53 @@ export const MSFVenomBuilder: React.FC = () => {
         <div className="lg:col-span-1 space-y-6">
           <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl space-y-5">
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Metasploit Payload</label>
-              <select name="payload" value={config.payload} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] text-white/80 focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all appearance-none">
+              <label className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em]">Metasploit Payload</label>
+              <select name="payload" value={config.payload} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] htb-text-muted focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all appearance-none">
                 {payloads.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">LHOST</label>
-                <input name="lhost" value={config.lhost} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] text-white/80 focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all" />
+                <label className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em]">LHOST</label>
+                <input name="lhost" value={config.lhost} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] htb-text-muted focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all" />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">LPORT</label>
-                <input name="lport" value={config.lport} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] text-white/80 focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all" />
+                <label className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em]">LPORT</label>
+                <input name="lport" value={config.lport} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] htb-text-muted focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Format</label>
-                <select name="format" value={config.format} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] text-white/80 focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all appearance-none cursor-pointer">
+                <label className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em]">Format</label>
+                <select name="format" value={config.format} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] htb-text-muted focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all appearance-none cursor-pointer">
                   {formats.map(f => <option key={f} value={f}>{f.toUpperCase()}</option>)}
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Output Name</label>
-                <input name="outfile" value={config.outfile} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] text-white/80 focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all" />
+                <label className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em]">Output Name</label>
+                <input name="outfile" value={config.outfile} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] htb-text-muted focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Encoder</label>
-                <select name="encoder" value={config.encoder} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] text-white/80 focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all appearance-none cursor-pointer">
+                <label className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em]">Encoder</label>
+                <select name="encoder" value={config.encoder} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] htb-text-muted focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all appearance-none cursor-pointer">
                   <option value="">None</option>
                   {encoders.slice(1).map(e => <option key={e} value={e}>{e}</option>)}
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Iterations</label>
-                <input name="iterations" type="number" value={config.iterations} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] text-white/80 focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all" placeholder="e.g. 3" />
+                <label className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em]">Iterations</label>
+                <input name="iterations" type="number" value={config.iterations} onChange={handleChange} className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] htb-text-muted focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all" placeholder="e.g. 3" />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Bad Characters (Global)</label>
-              <input name="badchars" value={config.badchars} onChange={handleChange} placeholder="e.g. \x00\x0a" className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] text-white/80 focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all" />
+              <label className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em]">Bad Characters (Global)</label>
+              <input name="badchars" value={config.badchars} onChange={handleChange} placeholder="e.g. \x00\x0a" className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-lg p-3 text-[13px] htb-text-muted focus:ring-1 focus:ring-[#9fef00]/40 outline-none transition-all" />
             </div>
           </div>
         </div>
@@ -111,7 +111,7 @@ export const MSFVenomBuilder: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           <div className="p-0.5 rounded-2xl bg-gradient-to-br from-[#9fef00]/10 via-transparent to-transparent">
             <div className="p-8 bg-[#0a0f16]/80 rounded-2xl border border-white/5 shadow-2xl">
-              <h3 className="text-xs font-bold text-white mb-5 uppercase tracking-[0.2em] flex items-center gap-2.5">
+              <h3 className="text-xs font-bold htb-text mb-5 uppercase tracking-[0.2em] flex items-center gap-2.5">
                 <Download className="w-4 h-4 text-[#9fef00]" /> Assembly Manifest
               </h3>
               <CodeBlock code={command} title="MSFVENOM CLI PARAMETERS" />
@@ -120,16 +120,16 @@ export const MSFVenomBuilder: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="p-6 bg-white/[0.01] border border-white/5 rounded-2xl space-y-2.5 group hover:border-white/10 transition-colors">
-              <Shield className="w-5 h-5 text-white/20 group-hover:text-white/40 transition-colors" />
-              <h4 className="font-bold text-white text-[13px] tracking-tight uppercase">Bypass Strategies</h4>
-              <p className="text-[11px] text-white/40 leading-relaxed font-medium">
+              <Shield className="w-5 h-5 htb-text-faint group-hover:htb-text-muted transition-colors" />
+              <h4 className="font-bold htb-text text-[13px] tracking-tight uppercase">Bypass Strategies</h4>
+              <p className="text-[11px] htb-text-faint leading-relaxed font-medium">
                 Implement <code>shikata_ga_nai</code> encoding with multiple iterations (<code>-i 5+</code>) to obscure binary signatures from static analysis engines.
               </p>
             </div>
             <div className="p-6 bg-white/[0.01] border border-white/5 rounded-2xl space-y-2.5 group hover:border-white/10 transition-colors">
-              <Hash className="w-5 h-5 text-white/20 group-hover:text-white/40 transition-colors" />
-              <h4 className="font-bold text-white text-[13px] tracking-tight uppercase">Staging Methodology</h4>
-              <p className="text-[11px] text-white/40 leading-relaxed font-medium">
+              <Hash className="w-5 h-5 htb-text-faint group-hover:htb-text-muted transition-colors" />
+              <h4 className="font-bold htb-text text-[13px] tracking-tight uppercase">Staging Methodology</h4>
+              <p className="text-[11px] htb-text-faint leading-relaxed font-medium">
                 Select appropriate formats (e.g. <code>war</code> for Tomcat, <code>elf</code> for Linux). Staged payloads connect back to a listener to download the full shell.
               </p>
             </div>

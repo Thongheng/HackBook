@@ -32,7 +32,7 @@ export const PHPFilterChainTool: React.FC = () => {
         <div className="lg:col-span-1 space-y-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-1">
-              <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Target PHP Payload</label>
+              <label className="text-[10px] font-bold htb-text-muted uppercase tracking-[0.2em]">Target PHP Payload</label>
               <select
                 className="bg-transparent text-[10px] text-[#9fef00] font-bold uppercase tracking-widest outline-none cursor-pointer hover:text-[#9fef00]/80 transition-colors"
                 onChange={(e) => setPayload(definitions[e.target.value] || payload)}
@@ -57,13 +57,13 @@ export const PHPFilterChainTool: React.FC = () => {
         </div>
 
         <div className="lg:col-span-2 space-y-5">
-          <label className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Generated Inclusion URI</label>
+          <label className="text-[10px] font-bold htb-text-muted uppercase tracking-[0.2em]">Generated Inclusion URI</label>
           {chain ? (
             <div className="animate-in fade-in slide-in-from-right-2 duration-500 space-y-4">
               <CodeBlock code={chain} language="bash" title="php://filter-chain" />
               <div className="p-5 rounded-xl border border-white/5 bg-white/[0.01]">
-                <h4 className="text-[10px] font-bold text-white uppercase tracking-[0.2em] mb-2 text-white/60">Execution Methodology</h4>
-                <p className="text-[12px] text-white/30 leading-relaxed font-medium">
+                <h4 className="text-[10px] font-bold htb-text uppercase tracking-[0.2em] mb-2 htb-text-muted">Execution Methodology</h4>
+                <p className="text-[12px] htb-text-faint leading-relaxed font-medium">
                   Submit this URI to any parameter processed by <code>include()</code>, <code>require()</code>, or <code>file_get_contents()</code>. The PHP engine will process the conversions, effectively decoding your payload into the memory buffer before execution.
                 </p>
               </div>
@@ -73,7 +73,7 @@ export const PHPFilterChainTool: React.FC = () => {
               <div className="w-10 h-10 rounded-full border border-white/5 mb-3 flex items-center justify-center">
                 <div className="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse" />
               </div>
-              <p className="text-white/20 text-xs font-bold uppercase tracking-widest">Awaiting payload briefing...</p>
+              <p className="htb-text-faint text-xs font-bold uppercase tracking-widest">Awaiting payload briefing...</p>
             </div>
           )}
         </div>

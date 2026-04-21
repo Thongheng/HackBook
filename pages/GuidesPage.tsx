@@ -31,8 +31,8 @@ export const GuidesPage: React.FC = () => {
                       key={guide.originalIndex}
                       onClick={() => setActiveGuideId(guide.originalIndex)}
                       className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-xs font-bold transition-all group ${activeGuideId === guide.originalIndex
-                          ? 'bg-[#9fef00]/10 text-[#9fef00] border border-[#9fef00]/20'
-                          : 'text-slate-400 hover:text-white hover:bg-white/[0.03] border border-transparent'
+                        ? 'bg-[#9fef00]/10 text-[#9fef00] border border-[#9fef00]/20'
+                        : 'htb-text-muted hover:htb-text hover:bg-white/[0.03] border border-transparent'
                         }`}
                     >
                       <span className="truncate pr-2">{guide.title}</span>
@@ -62,12 +62,12 @@ export const GuidesPage: React.FC = () => {
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <Hash className="w-4 h-4 text-[#9fef00] opacity-40" />
-                <h1 className="text-2xl font-extrabold text-white tracking-tight leading-none">
+                <h1 className="text-2xl font-extrabold htb-text tracking-tight leading-none">
                   {activeGuide.title}
                 </h1>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded">
+                <span className="text-[10px] font-bold htb-text-faint uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded">
                   {activeGuide.category}
                 </span>
                 <span className="text-[10px] font-mono text-[#9fef00]/60 uppercase tracking-widest">

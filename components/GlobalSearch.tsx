@@ -105,28 +105,28 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose, onS
 
   return (
     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] px-4 sm:px-0">
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" 
-        onClick={onClose} 
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+        onClick={onClose}
       />
-      
+
       <div className="relative w-full max-w-2xl bg-[#0b1217] border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden animate-in slide-in-from-top-4 duration-300">
         <div className="flex items-center gap-4 px-6 h-16 border-b border-white/5 bg-white/[0.02]">
-          <Search className="w-5 h-5 text-white/40" />
+          <Search className="w-5 h-5 htb-text-faint" />
           <input
             ref={inputRef}
             type="text"
-            className="flex-1 bg-transparent border-none outline-none text-lg text-white placeholder-white/20 font-medium"
+            className="flex-1 bg-transparent border-none outline-none text-lg htb-text placeholder-htb-text-faint font-medium"
             placeholder="Search tactical modules, guides, or intel..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
           />
           <div className="flex items-center gap-2">
-             <span className="text-[10px] font-bold text-white/20 border border-white/10 px-1.5 py-0.5 rounded">ESC</span>
-             <button onClick={onClose} className="p-1 hover:bg-white/5 rounded-lg transition-colors">
-               <X className="w-5 h-5 text-white/40" />
-             </button>
+            <span className="text-[10px] font-bold htb-text-faint border border-white/10 px-1.5 py-0.5 rounded">ESC</span>
+            <button onClick={onClose} className="p-1 hover:bg-white/5 rounded-lg transition-colors">
+              <X className="w-5 h-5 htb-text-faint" />
+            </button>
           </div>
         </div>
 
@@ -138,27 +138,25 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose, onS
                   key={res.id}
                   onClick={() => onSelect(res.type, res.originalId)}
                   onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all ${
-                    idx === selectedIndex ? 'bg-[#9fef00]/10 border border-[#9fef00]/20' : 'bg-transparent border border-transparent'
-                  }`}
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all ${idx === selectedIndex ? 'bg-[#9fef00]/10 border border-[#9fef00]/20' : 'bg-transparent border border-transparent'
+                    }`}
                 >
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                    idx === selectedIndex ? 'bg-[#9fef00]/20 text-[#9fef00]' : 'bg-white/5 text-white/20'
-                  }`}>
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${idx === selectedIndex ? 'bg-[#9fef00]/20 text-[#9fef00]' : 'bg-white/5 htb-text-faint'
+                    }`}>
                     {res.type === 'tool' && <Terminal className="w-5 h-5" />}
                     {res.type === 'guide' && <BookOpen className="w-5 h-5" />}
                     {res.type === 'reference' && <Share2 className="w-5 h-5" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                       <h4 className={`text-sm font-bold tracking-tight truncate ${idx === selectedIndex ? 'text-[#9fef00]' : 'text-white'}`}>
+                      <h4 className={`text-sm font-bold tracking-tight truncate ${idx === selectedIndex ? 'text-[#9fef00]' : 'htb-text'}`}>
                         {res.title}
                       </h4>
-                      <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest border border-white/5 px-2 py-0.5 rounded">
+                      <span className="text-[9px] font-bold htb-text-faint uppercase tracking-widest border border-white/5 px-2 py-0.5 rounded">
                         {res.type}
                       </span>
                     </div>
-                    <p className="text-xs text-white/40 truncate font-medium mt-0.5">{res.description}</p>
+                    <p className="text-xs htb-text-muted truncate font-medium mt-0.5">{res.description}</p>
                   </div>
                 </button>
               ))}
@@ -166,22 +164,22 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose, onS
           ) : query ? (
             <div className="py-12 text-center space-y-2">
               <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/5">
-                <Search className="w-6 h-6 text-white/20" />
+                <Search className="w-6 h-6 htb-text-faint" />
               </div>
-              <p className="text-white font-bold tracking-tight">No intelligence found for "{query}"</p>
-              <p className="text-xs text-white/30">Verify target spelling or try broader tactical keywords.</p>
+              <p className="htb-text font-bold tracking-tight">No intelligence found for "{query}"</p>
+              <p className="text-xs htb-text-faint">Verify target spelling or try broader tactical keywords.</p>
             </div>
           ) : (
             <div className="p-4">
-              <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-4 px-2">Recently Accessed / Quick Links</p>
+              <p className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em] mb-4 px-2">Recently Accessed / Quick Links</p>
               <div className="grid grid-cols-2 gap-2">
                 <button onClick={() => onSelect('tool', 'tool-phpfilter')} className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-xl hover:border-[#9fef00]/20 transition-all text-left group">
-                  <Terminal className="w-4 h-4 text-white/20 group-hover:text-[#9fef00]" />
-                  <span className="text-xs font-bold text-white/60 group-hover:text-white">PHP Filter Chain</span>
+                  <Terminal className="w-4 h-4 htb-text-faint group-hover:text-[#9fef00]" />
+                  <span className="text-xs font-bold htb-text-muted group-hover:htb-text">PHP Filter Chain</span>
                 </button>
                 <button onClick={() => onSelect('guide', 0)} className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-xl hover:border-[#9fef00]/20 transition-all text-left group">
-                  <BookOpen className="w-4 h-4 text-white/20 group-hover:text-[#9fef00]" />
-                  <span className="text-xs font-bold text-white/60 group-hover:text-white">TTY Upgrade</span>
+                  <BookOpen className="w-4 h-4 htb-text-faint group-hover:text-[#9fef00]" />
+                  <span className="text-xs font-bold htb-text-muted group-hover:htb-text">TTY Upgrade</span>
                 </button>
               </div>
             </div>
@@ -189,20 +187,20 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose, onS
         </div>
 
         <div className="px-6 py-3 border-t border-white/5 bg-white/[0.01] flex items-center justify-between">
-           <div className="flex items-center gap-4">
-             <div className="flex items-center gap-1.5">
-               <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-bold text-white/40">↑↓</kbd>
-               <span className="text-[9px] text-white/20 font-bold uppercase tracking-widest">Navigate</span>
-             </div>
-             <div className="flex items-center gap-1.5">
-               <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-bold text-white/40">Enter</kbd>
-               <span className="text-[9px] text-white/20 font-bold uppercase tracking-widest">Execute</span>
-             </div>
-           </div>
-           <div className="flex items-center gap-2">
-             <Command className="w-3 h-3 text-[#9fef00]/40" />
-             <span className="text-[9px] text-[#9fef00]/40 font-bold uppercase tracking-widest">Search Module v1.0</span>
-           </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-bold htb-text-muted">↑↓</kbd>
+              <span className="text-[9px] htb-text-faint font-bold uppercase tracking-widest">Navigate</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-bold htb-text-muted">Enter</kbd>
+              <span className="text-[9px] htb-text-faint font-bold uppercase tracking-widest">Execute</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Command className="w-3 h-3 text-[#9fef00]/40" />
+            <span className="text-[9px] text-[#9fef00]/40 font-bold uppercase tracking-widest">Search Module v1.0</span>
+          </div>
         </div>
       </div>
     </div>

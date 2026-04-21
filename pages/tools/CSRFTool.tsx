@@ -24,7 +24,7 @@ user_id=1337&confirm=true`);
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div className="space-y-6">
         <div className="space-y-2">
-          <label className="text-xs font-bold text-white/40 uppercase tracking-widest">Raw HTTP Request Source</label>
+          <label className="text-xs font-bold htb-text-muted uppercase tracking-widest">Raw HTTP Request Source</label>
           <textarea
             className="w-full h-64 bg-[#0a0f16]/60 border border-white/5 rounded-xl p-4 font-mono text-sm text-[#9fef00] focus:outline-none focus:ring-1 focus:ring-[#9fef00]/40 transition-all"
             value={input}
@@ -36,8 +36,8 @@ user_id=1337&confirm=true`);
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-xl">
             <div className="flex items-center gap-2">
-              <Settings className="w-4 h-4 text-white/20" />
-              <span className="text-[12px] font-medium text-white/60">Auto-submit</span>
+              <Settings className="w-4 h-4 htb-text-faint" />
+              <span className="text-[12px] font-medium htb-text-muted">Auto-submit</span>
             </div>
             <button
               onClick={() => setAutoSubmit(!autoSubmit)}
@@ -49,15 +49,15 @@ user_id=1337&confirm=true`);
 
           <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-xl">
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-white/20" />
-              <span className="text-[12px] font-medium text-white/60">Technique</span>
+              <Globe className="w-4 h-4 htb-text-faint" />
+              <span className="text-[12px] font-medium htb-text-muted">Technique</span>
             </div>
             <div className="flex bg-black/20 rounded-lg p-0.5">
               {(['form', 'fetch'] as const).map(t => (
                 <button
                   key={t}
                   onClick={() => setReqType(t)}
-                  className={`px-3 py-1 text-[10px] uppercase font-bold rounded-md transition-all ${reqType === t ? 'bg-white/10 text-white' : 'text-white/30 hover:text-white/60'}`}
+                  className={`px-3 py-1 text-[10px] uppercase font-bold rounded-md transition-all ${reqType === t ? 'bg-white/10 htb-text' : 'htb-text-faint hover:htb-text-muted'}`}
                 >
                   {t}
                 </button>
@@ -77,8 +77,8 @@ user_id=1337&confirm=true`);
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Code2 className="w-4 h-4 text-white/20" />
-            <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Output Manifest</span>
+            <Code2 className="w-4 h-4 htb-text-faint" />
+            <span className="text-xs font-bold htb-text-muted uppercase tracking-widest">Output Manifest</span>
           </div>
         </div>
 
@@ -96,7 +96,7 @@ user_id=1337&confirm=true`);
           </div>
         ) : (
           <div className="h-full flex items-center justify-center border border-dashed border-white/10 rounded-xl bg-white/[0.01] min-h-[400px]">
-            <p className="text-white/20 italic text-sm font-medium">Initialize parameters and build payload...</p>
+            <p className="htb-text-faint italic text-sm font-medium">Initialize parameters and build payload...</p>
           </div>
         )}
       </div>

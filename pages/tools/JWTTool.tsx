@@ -45,9 +45,9 @@ export const JWTTool: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <label className="text-xs font-bold text-white/40 uppercase tracking-widest">Encoded JWS / JWT Token</label>
+        <label className="text-xs font-bold htb-text-muted uppercase tracking-widest">Encoded JWS / JWT Token</label>
         <textarea
-          className="w-full bg-[#0a0f16]/60 border border-white/5 rounded-xl p-4 font-mono text-[13px] text-white/80 focus:outline-none focus:ring-1 focus:ring-[#9fef00]/40 break-all h-24 transition-all"
+          className="w-full bg-[#0a0f16]/60 border border-white/5 rounded-xl p-4 font-mono text-[13px] htb-text-muted focus:outline-none focus:ring-1 focus:ring-[#9fef00]/40 break-all h-24 transition-all"
           value={token}
           onChange={(e) => setToken(e.target.value.trim())}
           placeholder="Paste JWT here..."
@@ -58,20 +58,20 @@ export const JWTTool: React.FC = () => {
         <div className="space-y-6">
           <div className="flex items-center gap-2 mb-2">
             <Database className="w-4 h-4 text-[#9fef00]/60" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-widest">Decoded Archive</h3>
+            <h3 className="text-sm font-bold htb-text uppercase tracking-widest">Decoded Archive</h3>
           </div>
 
           <div className="space-y-4">
             <div className="p-5 bg-white/[0.01] border border-white/5 rounded-xl space-y-3">
               <p className="text-[10px] text-rose-500 font-bold uppercase tracking-[0.2em]">Header Segment</p>
-              <pre className="text-sm text-white/80 font-mono leading-relaxed whitespace-pre-wrap break-all">
+              <pre className="text-sm htb-text-muted font-mono leading-relaxed whitespace-pre-wrap break-all">
                 {decoded ? JSON.stringify(decoded.header, null, 2) : 'Awaiting Valid Input'}
               </pre>
             </div>
 
             <div className="p-5 bg-white/[0.01] border border-white/5 rounded-xl space-y-3">
               <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-[0.2em]">Payload Claims</p>
-              <pre className="text-sm text-white/80 font-mono leading-relaxed whitespace-pre-wrap break-all">
+              <pre className="text-sm htb-text-muted font-mono leading-relaxed whitespace-pre-wrap break-all">
                 {decoded ? JSON.stringify(decoded.payload, null, 2) : 'Awaiting Valid Input'}
               </pre>
             </div>
@@ -81,13 +81,13 @@ export const JWTTool: React.FC = () => {
         <div className="space-y-6">
           <div className="flex items-center gap-2 mb-2">
             <Zap className="w-4 h-4 text-[#9fef00]/60" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-widest">Offensive Modules</h3>
+            <h3 className="text-sm font-bold htb-text uppercase tracking-widest">Offensive Modules</h3>
           </div>
 
           <div className="p-6 bg-[#9fef00]/[0.02] border border-[#9fef00]/10 rounded-2xl space-y-5">
             <div className="space-y-2">
-              <h4 className="text-sm font-bold text-white tracking-tight">None Algorithm Bypass</h4>
-              <p className="text-[12px] text-white/40 leading-relaxed font-medium">
+              <h4 className="text-sm font-bold htb-text tracking-tight">None Algorithm Bypass</h4>
+              <p className="text-[12px] htb-text-faint leading-relaxed font-medium">
                 Forces the <code>alg</code> header to <code>none</code> and truncates the signature segment.
               </p>
             </div>
@@ -106,29 +106,29 @@ export const JWTTool: React.FC = () => {
           </div>
 
           <div className="p-6 bg-purple-500/[0.02] border border-purple-500/10 rounded-2xl space-y-5">
-            <h4 className="text-sm font-bold text-white tracking-tight">Forge & Sign (HMAC)</h4>
+            <h4 className="text-sm font-bold htb-text tracking-tight">Forge & Sign (HMAC)</h4>
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-[10px] text-white/30 uppercase font-bold">Header</label>
+                <label className="text-[10px] htb-text-faint uppercase font-bold">Header</label>
                 <textarea
                   value={editHeader}
                   onChange={e => setEditHeader(e.target.value)}
-                  className="w-full h-32 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono text-white/70 focus:outline-none focus:border-purple-500/50"
+                  className="w-full h-32 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono htb-text-muted focus:outline-none focus:border-purple-500/50"
                 />
               </div>
               <div>
-                <label className="text-[10px] text-white/30 uppercase font-bold">Payload</label>
+                <label className="text-[10px] htb-text-faint uppercase font-bold">Payload</label>
                 <textarea
                   value={editPayload}
                   onChange={e => setEditPayload(e.target.value)}
-                  className="w-full h-32 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono text-white/70 focus:outline-none focus:border-purple-500/50"
+                  className="w-full h-32 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono htb-text-muted focus:outline-none focus:border-purple-500/50"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[10px] text-white/30 uppercase font-bold block mb-1.5">Signing Secret</label>
+              <label className="text-[10px] htb-text-faint uppercase font-bold block mb-1.5">Signing Secret</label>
               <input
                 type="text"
                 value={signSecret}

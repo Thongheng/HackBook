@@ -31,7 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, onOpenSear
       >
         <HackBookLogo />
         <div className="flex items-baseline gap-1">
-          <span className="text-xl font-bold text-white tracking-tight">HackBook</span>
+          <span className="text-xl font-bold htb-text tracking-tight">HackBook</span>
         </div>
       </div>
 
@@ -48,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, onOpenSear
               onClick={() => setView(item.id)}
               className={`text-sm font-semibold transition-colors tracking-tight ${currentView === item.id || (item.id === 'tools' && currentView.startsWith('tool-'))
                 ? 'text-[#9fef00]'
-                : 'text-white/60 hover:text-white'
+                : 'htb-text-muted hover:htb-text'
                 }`}
             >
               {item.label}
@@ -72,7 +72,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, onOpenSear
             }}
           >
             {isDark
-              ? <Sun className="w-4 h-4 text-white/60" style={{ color: '#facc15' }} />
+              ? <Sun className="w-4 h-4 htb-text-muted" style={{ color: '#facc15' }} />
               : <Moon className="w-4 h-4" style={{ color: '#6366f1' }} />
             }
           </span>
@@ -83,12 +83,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, onOpenSear
           onClick={onOpenSearch}
           className="flex items-center gap-3 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all group"
         >
-          <Search className="w-4 h-4 text-white/40 group-hover:text-white" />
+          <Search className="w-4 h-4 htb-text-faint group-hover:htb-text-muted" />
           <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-bold text-white/20 group-hover:text-white/40 uppercase tracking-widest hidden sm:block">Search...</span>
+            <span className="text-[10px] font-bold htb-text-faint group-hover:htb-text-muted uppercase tracking-widest hidden sm:block">Search...</span>
             <div className="hidden lg:flex items-center gap-0.5 opacity-40 group-hover:opacity-60 transition-opacity">
-              <span className="text-[9px] font-black text-white px-1.5 py-0.5 rounded border border-white/20 bg-black/20">CTRL</span>
-              <span className="text-[9px] font-black text-white px-1.5 py-0.5 rounded border border-white/20 bg-black/20">K</span>
+              <span className="text-[9px] font-black htb-text px-1.5 py-0.5 rounded border border-white/20 bg-black/20">CTRL</span>
+              <span className="text-[9px] font-black htb-text px-1.5 py-0.5 rounded border border-white/20 bg-black/20">K</span>
             </div>
           </div>
         </button>

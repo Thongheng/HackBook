@@ -21,14 +21,14 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'bash', t
       <div className="flex items-center justify-between px-4 py-2 border-b border-white/5 bg-white/[0.02]">
         <div className="flex items-center gap-2">
           <Terminal className="w-3.5 h-3.5 text-[#9fef00]/60" />
-          <span className="text-[10px] uppercase tracking-widest font-bold text-white/30">{title || language}</span>
+          <span className="text-[10px] uppercase tracking-widest font-bold htb-text-faint">{title || language}</span>
         </div>
         <button
           onClick={handleCopy}
           className="p-1.5 hover:bg-white/5 rounded-md transition-all active:scale-90"
           title="Copy command"
         >
-          {copied ? <Check className="w-3.5 h-3.5 text-[#9fef00]" /> : <Copy className="w-3.5 h-3.5 text-white/20 hover:text-white/60" />}
+          {copied ? <Check className="w-3.5 h-3.5 text-[#9fef00]" /> : <Copy className="w-3.5 h-3.5 htb-text-faint hover:htb-text-muted" />}
         </button>
       </div>
       <div className="p-5 overflow-x-auto">
