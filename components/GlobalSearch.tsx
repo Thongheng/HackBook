@@ -173,10 +173,6 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose, onS
             <div className="p-4">
               <p className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em] mb-4 px-2">Recently Accessed / Quick Links</p>
               <div className="grid grid-cols-2 gap-2">
-                <button onClick={() => onSelect('tool', 'tool-phpfilter')} className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-xl hover:border-[#9fef00]/20 transition-all text-left group">
-                  <Terminal className="w-4 h-4 htb-text-faint group-hover:text-[#9fef00]" />
-                  <span className="text-xs font-bold htb-text-muted group-hover:htb-text">PHP Filter Chain</span>
-                </button>
                 <button onClick={() => onSelect('guide', 0)} className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-xl hover:border-[#9fef00]/20 transition-all text-left group">
                   <BookOpen className="w-4 h-4 htb-text-faint group-hover:text-[#9fef00]" />
                   <span className="text-xs font-bold htb-text-muted group-hover:htb-text">TTY Upgrade</span>

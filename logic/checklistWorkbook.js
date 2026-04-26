@@ -1,5 +1,3 @@
-import { accessModeLabel } from './checklistEngine.js';
-
 export const WORKBOOK_LAYOUT = [
   { category: 'web', sheetType: 'baseline', name: 'WEB - Baseline' },
   { category: 'web', sheetType: 'custom', name: 'WEB - Custom' },
@@ -10,13 +8,13 @@ export const WORKBOOK_LAYOUT = [
 ];
 
 export const WORKBOOK_HEADERS = {
-  baseline: ['#', 'Ref ID', 'Std Ref', 'Group', 'Test Case', 'Objective', 'Mode', 'Type', 'Severity', 'Status', 'Tested On', 'Notes'],
-  custom: ['#', 'Ref ID', 'Std Ref', 'Feature', 'Test Case', 'Objective', 'Present?', 'Mode', 'Type', 'Severity', 'Status', 'Tested On', 'Notes'],
+  baseline: ['#', 'Test Case', 'Objective', 'Type', 'Severity', 'Status', 'Notes'],
+  custom: ['#', 'Feature', 'Test Case', 'Objective', 'Present?', 'Type', 'Severity', 'Status', 'Notes'],
 };
 
 export const WORKBOOK_COLUMN_WIDTHS = {
-  baseline: [5, 12, 12, 22, 45, 50, 10, 8, 10, 12, 12, 35],
-  custom: [5, 12, 12, 20, 42, 48, 10, 10, 8, 10, 12, 12, 35],
+  baseline: [5, 45, 50, 8, 10, 12, 35],
+  custom: [5, 20, 42, 48, 10, 8, 10, 12, 35],
 };
 
 const SEVERITY_LABELS = {
@@ -151,7 +149,6 @@ function normalizeWorkbookRow(row) {
   const ref = row.ref ?? row.id;
   const testCase = row.testCase ?? row.title;
   const feature = row.feature ?? row.featureLabel ?? row.group ?? null;
-  const mode = row.mode ?? accessModeLabel(row.access);
   const type = row.type ?? ROW_TYPE_LABELS[row.rowType] ?? 'Test';
   const severityLabel = row.severityLabel ?? SEVERITY_LABELS[row.severity] ?? row.severity ?? 'Medium';
 
@@ -159,12 +156,10 @@ function normalizeWorkbookRow(row) {
     category,
     sheetType,
     ref,
-    stdRef: row.stdRef ?? '',
     group: row.group ?? '',
     testCase,
     objective: row.objective ?? '',
     feature,
-    mode,
     type,
     severityLabel,
     status: row.status ?? 'Not Started',
@@ -242,6 +237,7 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
     const data = [];
     const merges = [];
     let currentRow = 0;
+    const colCount = WORKBOOK_HEADERS[sheet.sheetType].length;
 
     // Add metadata to first sheet only
     if (sheets.length === 0 && metadataRows.length > 0) {
@@ -249,17 +245,17 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
         const styledRow = [];
         if (row.length === 1 && row[0].includes('—')) {
           styledRow.push(createStyledCell(row[0], titleStyle, 'title'));
-          merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: 11 } });
+          merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: colCount - 1 } });
         } else if (row.length === 2) {
           styledRow.push(createStyledCell(row[0], metaLabelStyle, 'meta-label'));
           styledRow.push(createStyledCell(row[1], metaValueStyle, 'meta-value'));
-          for (let i = 2; i < 12; i++) {
+          for (let i = 2; i < colCount; i++) {
             styledRow.push(createDataCell(''));
           }
-          merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: 11 } });
+          merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: colCount - 1 } });
         } else {
           row.forEach((cell, idx) => {
-            if (idx < 12) styledRow.push(createDataCell(cell || ''));
+            if (idx < colCount) styledRow.push(createDataCell(cell || ''));
           });
         }
         data.push(styledRow);
@@ -269,11 +265,11 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
 
     // Add section title for this sheet
     const titleRow = [createStyledCell(sheet.name, titleStyle, 'title')];
-    for (let i = 1; i < 12; i++) {
+    for (let i = 1; i < colCount; i++) {
       titleRow.push(createStyledCell('', titleStyle, 'title'));
     }
     data.push(titleRow);
-    merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: 11 } });
+    merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: colCount - 1 } });
     currentRow++;
     data.push([]);
     currentRow++;
@@ -288,11 +284,11 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
 
     if (groups.length === 0) {
       const emptyRow = [createDataCell('No items for this configuration')];
-      for (let i = 1; i < WORKBOOK_HEADERS[sheet.sheetType].length; i++) {
+      for (let i = 1; i < colCount; i++) {
         emptyRow.push(createDataCell(''));
       }
       data.push(emptyRow);
-      merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: WORKBOOK_HEADERS[sheet.sheetType].length - 1 } });
+      merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: colCount - 1 } });
       currentRow++;
     }
 
@@ -302,41 +298,32 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
 
       // Group header row
       const groupRow = [createGroupCell(group.toUpperCase())];
-      for (let i = 1; i < WORKBOOK_HEADERS[sheet.sheetType].length; i++) {
+      for (let i = 1; i < colCount; i++) {
         groupRow.push(createGroupCell(''));
       }
       data.push(groupRow);
-      merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: WORKBOOK_HEADERS[sheet.sheetType].length - 1 } });
+      merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: colCount - 1 } });
       currentRow++;
 
       for (const row of groupRows) {
         const dataRow = [];
         if (sheet.sheetType === 'baseline') {
           dataRow.push(createDataCell(counter++, 'center'));
-          dataRow.push(createDataCell(row.ref, 'center'));
-          dataRow.push(createDataCell(row.stdRef, 'center'));
-          dataRow.push(createDataCell(row.group));
           dataRow.push(createDataCell(row.testCase));
           dataRow.push(createDataCell(row.objective));
-          dataRow.push(createDataCell(row.mode, 'center'));
           dataRow.push(createDataCell(row.type, 'center'));
           dataRow.push(createSeverityCell(row.severityLabel));
           dataRow.push(createDataCell(row.status, 'center'));
-          dataRow.push(createDataCell('', 'center'));
           dataRow.push(createDataCell(''));
         } else {
           dataRow.push(createDataCell(counter++, 'center'));
-          dataRow.push(createDataCell(row.ref, 'center'));
-          dataRow.push(createDataCell(row.stdRef, 'center'));
           dataRow.push(createDataCell(row.feature || row.group));
           dataRow.push(createDataCell(row.testCase));
           dataRow.push(createDataCell(row.objective));
           dataRow.push(createDataCell('—', 'center'));
-          dataRow.push(createDataCell(row.mode, 'center'));
           dataRow.push(createDataCell(row.type, 'center'));
           dataRow.push(createSeverityCell(row.severityLabel));
           dataRow.push(createDataCell(row.status, 'center'));
-          dataRow.push(createDataCell('', 'center'));
           dataRow.push(createDataCell(''));
         }
         data.push(dataRow);
