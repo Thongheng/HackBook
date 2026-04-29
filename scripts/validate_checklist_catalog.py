@@ -15,6 +15,7 @@ VALID_ROW_TYPES = {"test", "setup"}
 VALID_PLATFORM = {"web", "mobile", "desktop"}
 VALID_SECTION = {"baseline", "custom"}
 VALID_SOURCE = {"catalog", "curated"}
+DISALLOWED_PROTOCOL_TECH = {"graphql", "oauth", "websocket"}
 CANONICAL_SHEET_ORDER = [
     "WEB - Baseline",
     "WEB - Custom",
@@ -70,6 +71,19 @@ def main() -> int:
             structural_errors.append(f"{row['id']}: sourceSheet should be {expected_sheet}, got {row['sourceSheet']}")
         if row["sourceRef"] != row["id"]:
             structural_errors.append(f"{row['id']}: sourceRef should match id")
+
+        tools = row.get("tools")
+        if not isinstance(tools, list):
+            structural_errors.append(f"{row['id']}: tools must be an array")
+        elif not 1 <= len(tools) <= 3:
+            structural_errors.append(f"{row['id']}: tools must contain between 1 and 3 entries")
+        elif any(not isinstance(tool, str) or not tool.strip() for tool in tools):
+            structural_errors.append(f"{row['id']}: tools entries must be non-empty strings")
+        elif len({tool.strip().lower() for tool in tools}) != len(tools):
+            structural_errors.append(f"{row['id']}: tools entries must be unique")
+
+        if any(tech in DISALLOWED_PROTOCOL_TECH for tech in row.get("tech", [])):
+            structural_errors.append(f"{row['id']}: graphql/oauth/websocket must be modeled as feature selection, not tech tags")
 
         if row["section"] == "custom":
             if not row["featureKey"] or not row["featureLabel"]:

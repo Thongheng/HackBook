@@ -8,13 +8,13 @@ export const WORKBOOK_LAYOUT = [
 ];
 
 export const WORKBOOK_HEADERS = {
-  baseline: ['#', 'Test Case', 'Objective', 'Type', 'Severity', 'Status', 'Notes'],
-  custom: ['#', 'Feature', 'Test Case', 'Objective', 'Present?', 'Type', 'Severity', 'Status', 'Notes'],
+  baseline: ['#', 'Test Case', 'Objective', 'Type', 'Tools', 'Severity', 'Status', 'Notes'],
+  custom: ['#', 'Feature', 'Test Case', 'Objective', 'Tools', 'Present?', 'Type', 'Severity', 'Status', 'Notes'],
 };
 
 export const WORKBOOK_COLUMN_WIDTHS = {
-  baseline: [5, 45, 50, 8, 10, 12, 35],
-  custom: [5, 20, 42, 48, 10, 8, 10, 12, 35],
+  baseline: [5, 42, 48, 10, 24, 10, 12, 35],
+  custom: [5, 20, 38, 46, 24, 10, 8, 10, 12, 35],
 };
 
 const SEVERITY_LABELS = {
@@ -161,6 +161,7 @@ function normalizeWorkbookRow(row) {
     objective: row.objective ?? '',
     feature,
     type,
+    tools: Array.isArray(row.tools) ? row.tools : [],
     severityLabel,
     status: row.status ?? 'Not Started',
   };
@@ -312,6 +313,7 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
           dataRow.push(createDataCell(row.testCase));
           dataRow.push(createDataCell(row.objective));
           dataRow.push(createDataCell(row.type, 'center'));
+          dataRow.push(createDataCell(row.tools.join(', ')));
           dataRow.push(createSeverityCell(row.severityLabel));
           dataRow.push(createDataCell(row.status, 'center'));
           dataRow.push(createDataCell(''));
@@ -320,6 +322,7 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
           dataRow.push(createDataCell(row.feature || row.group));
           dataRow.push(createDataCell(row.testCase));
           dataRow.push(createDataCell(row.objective));
+          dataRow.push(createDataCell(row.tools.join(', ')));
           dataRow.push(createDataCell('—', 'center'));
           dataRow.push(createDataCell(row.type, 'center'));
           dataRow.push(createSeverityCell(row.severityLabel));

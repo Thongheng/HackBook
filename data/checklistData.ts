@@ -7,6 +7,7 @@ export type Access = 'blackbox' | 'greybox' | 'both';
 export type RowType = 'test' | 'setup';
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'info';
 export type SourceType = 'catalog' | 'curated';
+export type Scope = 'external' | 'internal';
 
 export interface ChecklistCatalogRow {
   id: string;
@@ -27,6 +28,7 @@ export interface ChecklistCatalogRow {
   sourceRef: string;
   tags: string[];
   tech: string[];
+  tools?: string[];
 }
 
 export interface ChecklistRow extends ChecklistCatalogRow {
@@ -38,6 +40,7 @@ export interface ChecklistRow extends ChecklistCatalogRow {
   feature: string | null;
   mode: 'Black-Box' | 'Grey-Box' | 'Both';
   severityLabel: 'Critical' | 'High' | 'Medium' | 'Low' | 'Info';
+  tools: string[];
 }
 
 const severityLabelMap: Record<Severity, ChecklistRow['severityLabel']> = {
@@ -65,6 +68,7 @@ export const ALL_ROWS: ChecklistRow[] = CATALOG_ROWS.map((row) => ({
   feature: row.featureLabel,
   mode: accessModeLabel(row.access) as ChecklistRow['mode'],
   severityLabel: severityLabel(row.severity),
+  tools: row.tools ?? [],
 }));
 
 export const FEATURE_REGISTRY = buildFeatureRegistry(CATALOG_ROWS);

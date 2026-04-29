@@ -20,7 +20,8 @@
     "checklist:scenarios": "node scripts/validate_checklist_scenarios.mjs",
     "checklist:matrix": "node scripts/validate_checklist_matrix.mjs",
     "checklist:export-shape": "node scripts/validate_checklist_export.mjs",
-    "checklist:test": "npm run checklist:validate && npm run checklist:scenarios && npm run checklist:matrix && npm run checklist:export-shape"
+    "checklist:review-html": "node scripts/validate_checklist_review_html.mjs",
+    "checklist:test": "npm run checklist:validate && npm run checklist:scenarios && npm run checklist:matrix && npm run checklist:export-shape && npm run checklist:review-html"
   },
   "dependencies": {
     "cfb": "^1.2.2",

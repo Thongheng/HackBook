@@ -30,7 +30,17 @@ assert(
 
 assert(sheets[0].data[0]?.[0]?.v === 'PENTEST CHECKLIST — FULL CATALOG', 'first sheet must start with the workbook title');
 
+function findHeaderRow(sheet, firstCell) {
+  return sheet.data.find((row) => row.some((cell) => cell?.v === firstCell));
+}
+
+const baselineHeaderRow = findHeaderRow(sheets[0], 'Test Case');
+const customHeaderRow = findHeaderRow(sheets[1], 'Feature');
+assert(baselineHeaderRow?.some((cell) => cell?.v === 'Tools'), 'baseline workbook header must include a Tools column');
+assert(customHeaderRow?.some((cell) => cell?.v === 'Tools'), 'custom workbook header must include a Tools column');
+
 const exportedRefs = new Set();
+let jsUrlAnalysisRow = null;
 
 for (const sheet of sheets) {
   for (const row of sheet.rows) {
@@ -39,14 +49,27 @@ for (const sheet of sheets) {
     const expectedSheet = WORKBOOK_LAYOUT.find((entry) => entry.category === platform && entry.sheetType === section)?.name;
 
     assert(expectedSheet === sheet.name, `${row.ref ?? row.id} was placed in ${sheet.name} instead of ${expectedSheet}`);
+    assert(Array.isArray(row.tools) && row.tools.length >= 1 && row.tools.length <= 3, `${row.ref ?? row.id} must export 1-3 tools`);
     exportedRefs.add(row.ref ?? row.id);
+    if ((row.ref ?? row.id) === 'WEB-BL-087') {
+      jsUrlAnalysisRow = row;
+    }
   }
 }
 
 assert(exportedRefs.size === catalog.length, `expected ${catalog.length} exported refs, got ${exportedRefs.size}`);
+assert(jsUrlAnalysisRow, 'expected WEB-BL-087 in exported workbook rows');
+assert(
+  Array.isArray(jsUrlAnalysisRow.tools) &&
+    jsUrlAnalysisRow.tools.join('|') === 'xnLinkFinder|Katana',
+  'WEB-BL-087 must carry xnLinkFinder and Katana tool metadata'
+);
 
 for (const ref of ['WEB-CT-082', 'MOB-CT-023', 'DSK-CT-022']) {
   assert(exportedRefs.has(ref), `missing curated row in full export: ${ref}`);
+}
+for (const ref of ['WEB-BL-021', 'MOB-CT-042', 'DSK-CT-040']) {
+  assert(exportedRefs.has(ref), `missing protocol feature row in full export: ${ref}`);
 }
 
 function findStyledCellRef(sheet, predicate) {

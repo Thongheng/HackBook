@@ -8,7 +8,7 @@ const catalog = JSON.parse(fs.readFileSync(path.join(root, 'data/checklistCatalo
 const featureRegistry = buildFeatureRegistry(catalog);
 
 const defaultStack = {
-  web: { graphql: false, websocket: false, oauth: false },
+  web: { php: false, aspnet: false, tomcat: false, nodejs: false },
   mobile: { native: true, flutter: false, reactnative: false },
   desktop: { dotnet: true, electron: false, java: false },
 };
@@ -129,9 +129,10 @@ for (const feature of featureRegistry) {
 }
 
 const techCases = [
-  { platform: 'web', tech: 'graphql' },
-  { platform: 'web', tech: 'websocket' },
-  { platform: 'web', tech: 'oauth' },
+  { platform: 'web', tech: 'php' },
+  { platform: 'web', tech: 'aspnet' },
+  { platform: 'web', tech: 'tomcat' },
+  { platform: 'web', tech: 'nodejs' },
   { platform: 'mobile', tech: 'flutter' },
   { platform: 'mobile', tech: 'reactnative' },
   { platform: 'mobile', tech: 'native' },

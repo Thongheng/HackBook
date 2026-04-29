@@ -7,7 +7,7 @@ const root = process.cwd();
 const catalog = JSON.parse(fs.readFileSync(path.join(root, 'data/checklistCatalog.json'), 'utf8')).rows;
 
 const defaultStack = {
-  web: { graphql: false, websocket: false, oauth: false },
+  web: { php: false, aspnet: false, tomcat: false, nodejs: false },
   mobile: { native: true, flutter: false, reactnative: false },
   desktop: { dotnet: true, electron: false, java: false },
 };
@@ -35,6 +35,7 @@ const scenarios = [
     run(rows) {
       assert(rows.length > 0, 'expected rows');
       assert(rows.some((row) => row.id === 'WEB-BL-069'), 'generic HTML injection row missing');
+      assert(rows.some((row) => row.id === 'WEB-BL-087'), 'JS URL analysis row missing');
       assert(rows.every((row) => row.platform === 'web'), 'only web rows should export');
       assert(rows.every((row) => row.section === 'baseline'), 'no custom rows should export');
       assert(rows.every((row) => row.access !== 'greybox'), 'greybox-only rows leaked into blackbox scenario');
@@ -52,12 +53,30 @@ const scenarios = [
     },
   },
   {
+    name: 'web + GraphQL feature',
+    config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:graphql': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'WEB-BL-057'), 'graphql introspection row missing');
+      assert(rows.some((row) => row.id === 'WEB-BL-059'), 'graphql nested query row missing');
+      assert(!rows.some((row) => row.id === 'WEB-BL-060'), 'websocket row should not appear without WebSocket feature');
+    },
+  },
+  {
     name: 'web + File Upload',
     config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:file-upload': true } }),
     run(rows) {
       assert(rows.some((row) => row.id === 'WEB-CT-046'), 'SVG upload XSS row missing');
       assert(rows.some((row) => row.id === 'WEB-CT-086'), 'HTML file upload XSS row missing');
       assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into file upload scenario');
+    },
+  },
+  {
+    name: 'mobile + OAuth / OIDC feature',
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:oauth-oidc': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'MOB-CT-042'), 'mobile oauth redirect row missing');
+      assert(rows.some((row) => row.id === 'MOB-CT-043'), 'mobile oauth pkce row missing');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile oauth scenario');
     },
   },
   {

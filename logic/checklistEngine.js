@@ -18,9 +18,11 @@ export function isTechRelevant(row, stack) {
   const tech = new Set(row.tech || []);
 
   if (row.platform === 'web') {
-    if (tech.has('graphql') && !stack.web.graphql) return false;
-    if (tech.has('websocket') && !stack.web.websocket) return false;
-    if (tech.has('oauth') && !stack.web.oauth) return false;
+    // Server tech filters — tech-specific rows only shown when that tech is selected
+    if (tech.has('php') && !stack.web.php) return false;
+    if (tech.has('aspnet') && !stack.web.aspnet) return false;
+    if (tech.has('tomcat') && !stack.web.tomcat) return false;
+    if (tech.has('nodejs') && !stack.web.nodejs) return false;
   }
 
   if (row.platform === 'mobile') {
@@ -38,14 +40,24 @@ export function isTechRelevant(row, stack) {
   return true;
 }
 
+// Rows tagged external_only are suppressed for internal engagements
+export function isScopeRelevant(row, scope) {
+  if (scope === 'internal') {
+    return !(row.tags || []).includes('external_only');
+  }
+  return true; // external: show everything
+}
+
 export function filterCatalogRows(rows, cfg) {
   const allowedAccess = getAllowedAccess(cfg.engagementType);
+  const scope = cfg.scope || 'external';
 
   return rows.filter((row) => {
     if (!cfg.categories.includes(row.platform)) return false;
     if (!allowedAccess.has(row.access)) return false;
     if (row.section === 'custom' && row.featureKey && !cfg.features[row.featureKey]) return false;
     if (!isTechRelevant(row, cfg.techStack)) return false;
+    if (!isScopeRelevant(row, scope)) return false;
     return true;
   });
 }
