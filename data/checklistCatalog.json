@@ -2939,8 +2939,8 @@
       "status": "Not Started",
       "platform": "web",
       "section": "custom",
-      "featureLabel": "Transaction",
-      "featureKey": "web:transaction",
+      "featureLabel": "Payment",
+      "featureKey": "web:payment",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "WEB - Custom",
@@ -2966,8 +2966,8 @@
       "status": "Not Started",
       "platform": "web",
       "section": "custom",
-      "featureLabel": "Transaction",
-      "featureKey": "web:transaction",
+      "featureLabel": "Payment",
+      "featureKey": "web:payment",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "WEB - Custom",
@@ -2993,8 +2993,8 @@
       "status": "Not Started",
       "platform": "web",
       "section": "custom",
-      "featureLabel": "Transaction",
-      "featureKey": "web:transaction",
+      "featureLabel": "Payment",
+      "featureKey": "web:payment",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "WEB - Custom",
@@ -3020,8 +3020,8 @@
       "status": "Not Started",
       "platform": "web",
       "section": "custom",
-      "featureLabel": "Transaction",
-      "featureKey": "web:transaction",
+      "featureLabel": "Payment",
+      "featureKey": "web:payment",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "WEB - Custom",
@@ -3047,8 +3047,8 @@
       "status": "Not Started",
       "platform": "web",
       "section": "custom",
-      "featureLabel": "Transaction",
-      "featureKey": "web:transaction",
+      "featureLabel": "Payment",
+      "featureKey": "web:payment",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "WEB - Custom",
@@ -3074,8 +3074,8 @@
       "status": "Not Started",
       "platform": "web",
       "section": "custom",
-      "featureLabel": "Transaction",
-      "featureKey": "web:transaction",
+      "featureLabel": "Payment",
+      "featureKey": "web:payment",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "WEB - Custom",
@@ -3101,8 +3101,8 @@
       "status": "Not Started",
       "platform": "web",
       "section": "custom",
-      "featureLabel": "Transaction",
-      "featureKey": "web:transaction",
+      "featureLabel": "Payment",
+      "featureKey": "web:payment",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "WEB - Custom",
@@ -3128,8 +3128,8 @@
       "status": "Not Started",
       "platform": "web",
       "section": "custom",
-      "featureLabel": "Transaction",
-      "featureKey": "web:transaction",
+      "featureLabel": "Payment",
+      "featureKey": "web:payment",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "WEB - Custom",
@@ -6239,7 +6239,7 @@
     {
       "id": "MOB-CT-010",
       "stdRef": "MASVS-PLATFORM-2",
-      "group": "Payment",
+      "group": "QR / KHQR",
       "title": "QR code injection / malicious QR",
       "objective": "Scan attacker-crafted QR — does app process embedded deep link or payload unsafely?",
       "rowType": "test",
@@ -6247,8 +6247,8 @@
       "status": "Not Started",
       "platform": "mobile",
       "section": "custom",
-      "featureLabel": "Payment",
-      "featureKey": "mobile:payment",
+      "featureLabel": "QR / KHQR",
+      "featureKey": "mobile:qr-khqr",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "MOBILE - Custom",
@@ -7153,6 +7153,330 @@
       "tools": [
         "Frida",
         "Burp Suite",
+        "MobSF"
+      ]
+    },
+    {
+      "id": "MOB-CT-044",
+      "stdRef": "MASVS-AUTH-3",
+      "group": "Password Reset",
+      "title": "Password reset token reuse in mobile recovery flow",
+      "objective": "Intercept or recover reset tokens, OTPs, or deep-link parameters used by the mobile app and verify whether they can be replayed across devices or reused after successful reset.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Password Reset",
+      "featureKey": "mobile:password-reset",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-044",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Frida",
+        "Burp Suite",
+        "MobSF"
+      ]
+    },
+    {
+      "id": "MOB-CT-045",
+      "stdRef": "MASVS-AUTH-3",
+      "group": "Password Reset",
+      "title": "Reset link / app-link hijack in mobile recovery flow",
+      "objective": "Abuse custom scheme or app-link password reset callbacks to steal reset tokens, swap the target account, or complete recovery from an attacker-controlled handler.",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Password Reset",
+      "featureKey": "mobile:password-reset",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-045",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Frida",
+        "Burp Suite",
+        "MobSF"
+      ]
+    },
+    {
+      "id": "MOB-CT-046",
+      "stdRef": "MASVS-PLATFORM-1",
+      "group": "Import / Export",
+      "title": "Malicious file import/share parser abuse",
+      "objective": "Feed attacker-controlled documents, archives, or shared files into the mobile app import flow and test for parser crashes, unsafe deserialization, or trust bypass in imported content.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Import",
+      "featureKey": "mobile:import",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-046",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "MobSF",
+        "Frida",
+        "Burp Suite"
+      ]
+    },
+    {
+      "id": "MOB-CT-047",
+      "stdRef": "MASVS-PLATFORM-1",
+      "group": "Import / Export",
+      "title": "Exported mobile report / statement payload injection",
+      "objective": "Generate exported statements, CSVs, or documents from the mobile app and test whether attacker-controlled values survive into files as formulas, scripts, or unsafe active content.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Export",
+      "featureKey": "mobile:export",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-047",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "MobSF",
+        "Frida",
+        "Burp Suite"
+      ]
+    },
+    {
+      "id": "MOB-CT-048",
+      "stdRef": "MASVS-NETWORK-2",
+      "group": "QR / KHQR",
+      "title": "QR payload tampering before payment confirmation",
+      "objective": "Intercept mobile QR/KHQR payment flows and alter merchant IDs, amounts, references, or redirect parameters before the app confirms the scanned payment request.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "QR / KHQR",
+      "featureKey": "mobile:qr-khqr",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-048",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Frida",
+        "Burp Suite",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "MOB-CT-049",
+      "stdRef": "MASVS-PLATFORM-1",
+      "group": "QR / KHQR",
+      "title": "Malicious QR deep-link / app-routing abuse",
+      "objective": "Test whether mobile QR or KHQR scans can trigger unsafe deep links, unintended app routes, or hidden mini-app/payment entrypoints without adequate user confirmation.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "QR / KHQR",
+      "featureKey": "mobile:qr-khqr",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-049",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Frida",
+        "Burp Suite",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "MOB-CT-050",
+      "stdRef": "MASVS-NETWORK-2",
+      "group": "Coupon / Promo",
+      "title": "Mobile coupon code tampering",
+      "objective": "Intercept coupon or promo-code apply requests from the mobile app and modify code, discount value, currency, eligibility, or cart binding before server validation.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Coupon / Promo",
+      "featureKey": "mobile:coupon-promo",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-050",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Frida",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "MOB-CT-051",
+      "stdRef": "MASVS-NETWORK-2",
+      "group": "Coupon / Promo",
+      "title": "Mobile promo entitlement replay",
+      "objective": "Replay or reuse consumed mobile promo grants, referral credits, or campaign rewards across accounts, devices, carts, or checkout sessions.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Coupon / Promo",
+      "featureKey": "mobile:coupon-promo",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-051",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Frida",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "MOB-CT-052",
+      "stdRef": "MASVS-NETWORK-2",
+      "group": "Billing / Subscription",
+      "title": "Mobile subscription entitlement tampering",
+      "objective": "Modify mobile subscription plan, renewal state, entitlement flags, or local purchase cache values and verify that the backend rejects unauthorized access.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Billing / Subscription",
+      "featureKey": "mobile:billing-subscription",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-052",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Frida",
+        "Burp Suite",
+        "MobSF"
+      ]
+    },
+    {
+      "id": "MOB-CT-053",
+      "stdRef": "MASVS-NETWORK-2",
+      "group": "Billing / Subscription",
+      "title": "Mobile billing receipt / callback replay",
+      "objective": "Replay, alter, or duplicate mobile billing receipts and subscription status callbacks to test server-side verification, idempotency, and account binding.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Billing / Subscription",
+      "featureKey": "mobile:billing-subscription",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-053",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Frida",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "MOB-CT-054",
+      "stdRef": "MASVS-PLATFORM-1",
+      "group": "File Upload",
+      "title": "Mobile file upload validation bypass",
+      "objective": "Upload attacker-controlled images, documents, archives, or renamed payloads from the mobile app and verify server-side MIME, extension, size, malware, and content validation.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "File Upload",
+      "featureKey": "mobile:file-upload",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-054",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "MobSF",
+        "Frida"
+      ]
+    },
+    {
+      "id": "MOB-CT-055",
+      "stdRef": "MASVS-PLATFORM-1",
+      "group": "File Download",
+      "title": "Mobile file download authorization bypass",
+      "objective": "Modify mobile download identifiers, content:// references, signed URLs, or cached file paths to retrieve another user's documents or server-generated files.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "File Download",
+      "featureKey": "mobile:file-download",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-055",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Frida",
         "MobSF"
       ]
     },
@@ -8292,7 +8616,7 @@
     {
       "id": "DSK-CT-001",
       "stdRef": "TASVS-AUTH-1",
-      "group": "Auth / Login",
+      "group": "Login",
       "title": "Bypass local auth check",
       "objective": "Memory patch (x64dbg) or binary patch — flip auth result check from jne to je; always-true patch",
       "rowType": "test",
@@ -8300,8 +8624,8 @@
       "status": "Not Started",
       "platform": "desktop",
       "section": "custom",
-      "featureLabel": "Auth / Login",
-      "featureKey": "desktop:auth-login",
+      "featureLabel": "Login",
+      "featureKey": "desktop:login",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "DESKTOP - Custom",
@@ -8319,7 +8643,7 @@
     {
       "id": "DSK-CT-002",
       "stdRef": "TASVS-AUTH-1",
-      "group": "Auth / Login",
+      "group": "Login",
       "title": "Credential in transit — desktop to server",
       "objective": "Intercept login via Burp/Fiddler — plaintext or weakly hashed credential in transit",
       "rowType": "test",
@@ -8327,8 +8651,8 @@
       "status": "Not Started",
       "platform": "desktop",
       "section": "custom",
-      "featureLabel": "Auth / Login",
-      "featureKey": "desktop:auth-login",
+      "featureLabel": "Login",
+      "featureKey": "desktop:login",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "DESKTOP - Custom",
@@ -8346,7 +8670,7 @@
     {
       "id": "DSK-CT-003",
       "stdRef": "TASVS-AUTH-2",
-      "group": "Auth / Login",
+      "group": "Login",
       "title": "Offline mode bypasses server auth",
       "objective": "Disconnect network — does app enter offline mode with full access? Are cached creds protected?",
       "rowType": "test",
@@ -8354,8 +8678,8 @@
       "status": "Not Started",
       "platform": "desktop",
       "section": "custom",
-      "featureLabel": "Auth / Login",
-      "featureKey": "desktop:auth-login",
+      "featureLabel": "Login",
+      "featureKey": "desktop:login",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "DESKTOP - Custom",
@@ -8373,7 +8697,7 @@
     {
       "id": "DSK-CT-004",
       "stdRef": "TASVS-STOR-4",
-      "group": "Auth / Login",
+      "group": "Login",
       "title": "Cached credential protection",
       "objective": "Search disk + memory + registry for cached credentials used in offline mode — DPAPI protected?",
       "rowType": "test",
@@ -8381,8 +8705,8 @@
       "status": "Not Started",
       "platform": "desktop",
       "section": "custom",
-      "featureLabel": "Auth / Login",
-      "featureKey": "desktop:auth-login",
+      "featureLabel": "Login",
+      "featureKey": "desktop:login",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "DESKTOP - Custom",
@@ -9112,7 +9436,7 @@
     {
       "id": "DSK-CT-032",
       "stdRef": "TASVS-STOR-1",
-      "group": "Document Export",
+      "group": "Import / Export",
       "title": "Formula/script payload in exported documents",
       "objective": "Inject spreadsheet formulas, HTML, or active content into exported files consumed by internal users",
       "rowType": "test",
@@ -9120,8 +9444,8 @@
       "status": "Not Started",
       "platform": "desktop",
       "section": "custom",
-      "featureLabel": "Document Export",
-      "featureKey": "desktop:document-export",
+      "featureLabel": "Export",
+      "featureKey": "desktop:export",
       "access": "greybox",
       "source": "curated",
       "sourceSheet": "DESKTOP - Custom",
@@ -9139,7 +9463,7 @@
     {
       "id": "DSK-CT-033",
       "stdRef": "TASVS-STOR-1",
-      "group": "Document Export",
+      "group": "Import / Export",
       "title": "Export path traversal or arbitrary write",
       "objective": "Manipulate save/export paths, templates, or filenames to write outside approved directories",
       "rowType": "test",
@@ -9147,8 +9471,8 @@
       "status": "Not Started",
       "platform": "desktop",
       "section": "custom",
-      "featureLabel": "Document Export",
-      "featureKey": "desktop:document-export",
+      "featureLabel": "Export",
+      "featureKey": "desktop:export",
       "access": "greybox",
       "source": "curated",
       "sourceSheet": "DESKTOP - Custom",
@@ -9377,6 +9701,222 @@
         "mitmproxy",
         "Wireshark",
         "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-CT-042",
+      "stdRef": "TASVS-PLATFORM-1",
+      "group": "Import / Export",
+      "title": "Imported desktop document/parser abuse",
+      "objective": "Feed attacker-controlled spreadsheets, PDFs, or data files into the desktop import/open flow and verify whether parser trust, macro handling, or file-type validation can be bypassed.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Import",
+      "featureKey": "desktop:import",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-042",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Procmon",
+        "ILSpy",
+        "Frida"
+      ]
+    },
+    {
+      "id": "DSK-CT-043",
+      "stdRef": "TASVS-PLATFORM-1",
+      "group": "QR / KHQR",
+      "title": "Desktop QR/KHQR payload tampering before render or print",
+      "objective": "Alter QR/KHQR payload fields generated or displayed by the desktop app and verify whether merchant identifiers, amounts, or references can be swapped without integrity checks.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "QR / KHQR",
+      "featureKey": "desktop:qr-khqr",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-043",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Procmon",
+        "mitmproxy",
+        "Frida"
+      ]
+    },
+    {
+      "id": "DSK-CT-044",
+      "stdRef": "TASVS-PLATFORM-1",
+      "group": "QR / KHQR",
+      "title": "Scanned QR deep-link / protocol abuse in desktop client",
+      "objective": "Test whether QR/KHQR scanning or imported QR payloads can invoke unsafe protocol handlers, hidden desktop routes, or privileged actions without explicit trust boundaries.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "QR / KHQR",
+      "featureKey": "desktop:qr-khqr",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-044",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Procmon",
+        "mitmproxy",
+        "Frida"
+      ]
+    },
+    {
+      "id": "DSK-CT-045",
+      "stdRef": "TASVS-NETWORK-1",
+      "group": "Coupon / Promo",
+      "title": "Desktop coupon code tampering",
+      "objective": "Intercept coupon or promotion apply requests from the desktop client and alter discount values, code ownership, campaign eligibility, or cart/session binding.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Coupon / Promo",
+      "featureKey": "desktop:coupon-promo",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-045",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-CT-046",
+      "stdRef": "TASVS-NETWORK-1",
+      "group": "Billing / Subscription",
+      "title": "Desktop billing entitlement tampering",
+      "objective": "Modify plan, renewal, paid status, or entitlement values in desktop API traffic and local state to verify backend authorization and license enforcement.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Billing / Subscription",
+      "featureKey": "desktop:billing-subscription",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-046",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Procmon",
+        "dnSpyEx"
+      ]
+    },
+    {
+      "id": "DSK-CT-047",
+      "stdRef": "TASVS-NETWORK-1",
+      "group": "Billing / Subscription",
+      "title": "Desktop subscription status replay",
+      "objective": "Replay or duplicate subscription activation, renewal, cancellation, or webhook-derived status messages and verify server-side idempotency and account binding.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Billing / Subscription",
+      "featureKey": "desktop:billing-subscription",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-047",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-CT-048",
+      "stdRef": "TASVS-PLATFORM-1",
+      "group": "File Upload",
+      "title": "Desktop file upload validation bypass",
+      "objective": "Upload attacker-controlled desktop files, renamed payloads, oversized archives, or malformed documents and verify backend validation independent of client-side checks.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "File Upload",
+      "featureKey": "desktop:file-upload",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-048",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Procmon",
+        "Nuclei"
+      ]
+    },
+    {
+      "id": "DSK-CT-049",
+      "stdRef": "TASVS-PLATFORM-1",
+      "group": "File Download",
+      "title": "Desktop file download authorization bypass",
+      "objective": "Tamper with desktop download identifiers, export paths, signed URLs, and cached document references to retrieve unauthorized files or overwrite unsafe locations.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "File Download",
+      "featureKey": "desktop:file-download",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-049",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Procmon",
+        "mitmproxy"
       ]
     }
   ]

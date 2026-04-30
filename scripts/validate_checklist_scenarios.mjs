@@ -62,12 +62,34 @@ const scenarios = [
     },
   },
   {
-    name: 'web + File Upload',
+    name: 'web + Payment excludes adjacent business features',
+    config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:payment': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'WEB-CT-029'), 'web payment transaction row missing');
+      assert(rows.some((row) => row.id === 'WEB-CT-036'), 'web payment reference row missing');
+      assert(!rows.some((row) => row.id === 'WEB-CT-039'), 'coupon row should not appear with Payment only');
+      assert(!rows.some((row) => row.id === 'WEB-CT-078'), 'billing row should not appear with Payment only');
+      assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into payment scenario');
+    },
+  },
+  {
+    name: 'web + File Upload excludes File Download',
     config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:file-upload': true } }),
     run(rows) {
       assert(rows.some((row) => row.id === 'WEB-CT-046'), 'SVG upload XSS row missing');
       assert(rows.some((row) => row.id === 'WEB-CT-086'), 'HTML file upload XSS row missing');
+      assert(!rows.some((row) => row.id === 'WEB-CT-049'), 'file download row should not appear with File Upload only');
       assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into file upload scenario');
+    },
+  },
+  {
+    name: 'web + File Download excludes File Upload',
+    config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:file-download': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'WEB-CT-049'), 'file download traversal row missing');
+      assert(rows.some((row) => row.id === 'WEB-CT-050'), 'file download IDOR row missing');
+      assert(!rows.some((row) => row.id === 'WEB-CT-046'), 'file upload row should not appear with File Download only');
+      assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into file download scenario');
     },
   },
   {
@@ -99,6 +121,53 @@ const scenarios = [
     },
   },
   {
+    name: 'mobile + Coupon / Promo',
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:coupon-promo': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'MOB-CT-050'), 'mobile coupon tampering row missing');
+      assert(rows.some((row) => row.id === 'MOB-CT-051'), 'mobile promo replay row missing');
+      assert(!rows.some((row) => row.id === 'MOB-CT-008'), 'payment row should not appear with mobile Coupon / Promo only');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile coupon scenario');
+    },
+  },
+  {
+    name: 'mobile + Billing / Subscription',
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:billing-subscription': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'MOB-CT-052'), 'mobile subscription entitlement row missing');
+      assert(rows.some((row) => row.id === 'MOB-CT-053'), 'mobile billing callback row missing');
+      assert(!rows.some((row) => row.id === 'MOB-CT-008'), 'payment row should not appear with mobile Billing / Subscription only');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile billing scenario');
+    },
+  },
+  {
+    name: 'mobile + QR / KHQR',
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:qr-khqr': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'MOB-CT-010'), 'mobile qr tampering row missing');
+      assert(rows.some((row) => row.id === 'MOB-CT-048'), 'mobile qr payload row missing');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile qr scenario');
+    },
+  },
+  {
+    name: 'mobile + File Upload excludes File Download',
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:file-upload': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'MOB-CT-054'), 'mobile file upload validation row missing');
+      assert(!rows.some((row) => row.id === 'MOB-CT-055'), 'mobile file download row should not appear with File Upload only');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile file upload scenario');
+    },
+  },
+  {
+    name: 'mobile + File Download excludes File Upload',
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:file-download': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'MOB-CT-055'), 'mobile file download authorization row missing');
+      assert(!rows.some((row) => row.id === 'MOB-CT-054'), 'mobile file upload row should not appear with File Download only');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile file download scenario');
+    },
+  },
+  {
     name: 'mobile + API Backend blackbox',
     config: cfg({ categories: ['mobile'], engagementType: 'Black-Box', features: { 'mobile:api-backend': true } }),
     run(rows) {
@@ -118,6 +187,43 @@ const scenarios = [
     },
   },
   {
+    name: 'desktop + Coupon / Promo',
+    config: cfg({ categories: ['desktop'], engagementType: 'Grey-Box', features: { 'desktop:coupon-promo': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'DSK-CT-045'), 'desktop coupon tampering row missing');
+      assert(!rows.some((row) => row.id === 'DSK-CT-020'), 'desktop payment row should not appear with Coupon / Promo only');
+      assert(rows.every((row) => row.platform === 'desktop'), 'non-desktop rows leaked into desktop coupon scenario');
+    },
+  },
+  {
+    name: 'desktop + Billing / Subscription',
+    config: cfg({ categories: ['desktop'], engagementType: 'Grey-Box', features: { 'desktop:billing-subscription': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'DSK-CT-046'), 'desktop billing entitlement row missing');
+      assert(rows.some((row) => row.id === 'DSK-CT-047'), 'desktop subscription status row missing');
+      assert(!rows.some((row) => row.id === 'DSK-CT-020'), 'desktop payment row should not appear with Billing / Subscription only');
+      assert(rows.every((row) => row.platform === 'desktop'), 'non-desktop rows leaked into desktop billing scenario');
+    },
+  },
+  {
+    name: 'desktop + File Upload excludes File Download',
+    config: cfg({ categories: ['desktop'], engagementType: 'Grey-Box', features: { 'desktop:file-upload': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'DSK-CT-048'), 'desktop file upload validation row missing');
+      assert(!rows.some((row) => row.id === 'DSK-CT-049'), 'desktop file download row should not appear with File Upload only');
+      assert(rows.every((row) => row.platform === 'desktop'), 'non-desktop rows leaked into desktop file upload scenario');
+    },
+  },
+  {
+    name: 'desktop + File Download excludes File Upload',
+    config: cfg({ categories: ['desktop'], engagementType: 'Grey-Box', features: { 'desktop:file-download': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'DSK-CT-049'), 'desktop file download authorization row missing');
+      assert(!rows.some((row) => row.id === 'DSK-CT-048'), 'desktop file upload row should not appear with File Download only');
+      assert(rows.every((row) => row.platform === 'desktop'), 'non-desktop rows leaked into desktop file download scenario');
+    },
+  },
+  {
     name: 'mixed platform respects selected categories',
     config: cfg({
       categories: ['web', 'mobile'],
@@ -125,7 +231,7 @@ const scenarios = [
       features: {
         'web:login': true,
         'mobile:payment': true,
-        'desktop:document-export': true,
+        'desktop:export': true,
       },
     }),
     run(rows) {
@@ -143,19 +249,51 @@ const scenarios = [
     },
   },
   {
-    name: 'curated export/import rows appear correctly',
+    name: 'curated export rows appear without import rows',
     config: cfg({
       categories: ['web'],
       engagementType: 'Grey-Box',
       features: {
         'web:export': true,
-        'web:import': true,
       },
     }),
     run(rows) {
       assert(rows.some((row) => row.id === 'WEB-CT-082'), 'curated export row missing');
+      assert(rows.some((row) => row.id === 'WEB-CT-083'), 'curated report export row missing');
+      assert(!rows.some((row) => row.id === 'WEB-CT-084'), 'curated import row should not appear with Export only');
+      assert(rows.some((row) => row.source === 'curated'), 'expected curated rows in export scenario');
+    },
+  },
+  {
+    name: 'curated import rows appear without export rows',
+    config: cfg({
+      categories: ['web'],
+      engagementType: 'Grey-Box',
+      features: {
+        'web:import': true,
+      },
+    }),
+    run(rows) {
       assert(rows.some((row) => row.id === 'WEB-CT-084'), 'curated import row missing');
-      assert(rows.some((row) => row.source === 'curated'), 'expected curated rows in export/import scenario');
+      assert(rows.some((row) => row.id === 'WEB-CT-085'), 'curated import mapping row missing');
+      assert(!rows.some((row) => row.id === 'WEB-CT-082'), 'curated export row should not appear with Import only');
+      assert(rows.some((row) => row.source === 'curated'), 'expected curated rows in import scenario');
+    },
+  },
+  {
+    name: 'mobile explicit biometric login feature',
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:login-biometric': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'MOB-CT-001'), 'mobile biometric login row missing');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into biometric login scenario');
+    },
+  },
+  {
+    name: 'mobile explicit registration OTP feature',
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:registration-otp': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'MOB-CT-023'), 'mobile registration OTP row missing');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into registration OTP scenario');
     },
   },
 ];

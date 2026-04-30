@@ -55,18 +55,22 @@ const WEB_FEATURE_SUBGROUPS: { label: string; keys: string[] }[] = [
   },
   {
     label: 'Payment',
-    keys: ['web:transaction', 'web:billing-subscription', 'web:coupon-promo', 'web:qr-khqr'],
+    keys: ['web:payment', 'web:coupon-promo', 'web:billing-subscription', 'web:qr-khqr'],
   },
 ];
 
 const MOBILE_FEATURE_SUBGROUPS: { label: string; keys: string[] }[] = [
   {
     label: 'Authentication',
-    keys: ['mobile:login-biometric', 'mobile:registration-otp', 'mobile:device-binding'],
+    keys: ['mobile:login-biometric', 'mobile:registration-otp', 'mobile:password-reset', 'mobile:device-binding'],
   },
   {
     label: 'Data & Storage',
-    keys: ['mobile:secure-storage', 'mobile:file-handling', 'mobile:backup-restore', 'mobile:offline-sync'],
+    keys: [
+      'mobile:secure-storage', 'mobile:file-handling', 'mobile:file-upload',
+      'mobile:file-download', 'mobile:backup-restore', 'mobile:offline-sync',
+      'mobile:import', 'mobile:export',
+    ],
   },
   {
     label: 'Feature',
@@ -74,7 +78,7 @@ const MOBILE_FEATURE_SUBGROUPS: { label: string; keys: string[] }[] = [
   },
   {
     label: 'Payment',
-    keys: ['mobile:payment'],
+    keys: ['mobile:payment', 'mobile:coupon-promo', 'mobile:billing-subscription', 'mobile:qr-khqr'],
   },
   {
     label: 'API',
@@ -85,11 +89,14 @@ const MOBILE_FEATURE_SUBGROUPS: { label: string; keys: string[] }[] = [
 const DESKTOP_FEATURE_SUBGROUPS: { label: string; keys: string[] }[] = [
   {
     label: 'Authentication',
-    keys: ['desktop:auth-login', 'desktop:license'],
+    keys: ['desktop:login', 'desktop:license'],
   },
   {
     label: 'Data & Storage',
-    keys: ['desktop:file-handling', 'desktop:local-db-cache', 'desktop:document-export'],
+    keys: [
+      'desktop:file-handling', 'desktop:file-upload', 'desktop:file-download',
+      'desktop:local-db-cache', 'desktop:import', 'desktop:export',
+    ],
   },
   {
     label: 'Feature',
@@ -101,7 +108,7 @@ const DESKTOP_FEATURE_SUBGROUPS: { label: string; keys: string[] }[] = [
   },
   {
     label: 'Payment',
-    keys: ['desktop:payment'],
+    keys: ['desktop:payment', 'desktop:coupon-promo', 'desktop:billing-subscription', 'desktop:qr-khqr'],
   },
   {
     label: 'Installer & Updates',
@@ -632,7 +639,6 @@ export const ChecklistGenerator: React.FC = () => {
                 </p>
                 <div className="space-y-3 flex-1">
                   <div>
-                    <p className="text-[9px] font-bold htb-text-faint uppercase tracking-[0.2em] mb-2">Server Technology</p>
                     <div className="flex flex-wrap gap-3">
                       <Toggle on={cfg.techStack.web.php}    onChange={() => setWebStack('php',    !cfg.techStack.web.php)}    label="PHP" />
                       <Toggle on={cfg.techStack.web.aspnet} onChange={() => setWebStack('aspnet', !cfg.techStack.web.aspnet)} label="ASP.NET" />
