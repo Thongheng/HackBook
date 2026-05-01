@@ -51,24 +51,25 @@ for (const sheet of sheets) {
     assert(expectedSheet === sheet.name, `${row.ref ?? row.id} was placed in ${sheet.name} instead of ${expectedSheet}`);
     assert(Array.isArray(row.tools) && row.tools.length >= 1 && row.tools.length <= 3, `${row.ref ?? row.id} must export 1-3 tools`);
     exportedRefs.add(row.ref ?? row.id);
-    if ((row.ref ?? row.id) === 'WEB-BL-087') {
+    if ((row.ref ?? row.id) === 'WEB-BL-004') {
       jsUrlAnalysisRow = row;
     }
   }
 }
 
 assert(exportedRefs.size === catalog.length, `expected ${catalog.length} exported refs, got ${exportedRefs.size}`);
-assert(jsUrlAnalysisRow, 'expected WEB-BL-087 in exported workbook rows');
+assert(jsUrlAnalysisRow, 'expected merged WEB-BL-004 in exported workbook rows');
 assert(
   Array.isArray(jsUrlAnalysisRow.tools) &&
-    jsUrlAnalysisRow.tools.join('|') === 'xnLinkFinder|Katana',
-  'WEB-BL-087 must carry xnLinkFinder and Katana tool metadata'
+    jsUrlAnalysisRow.tools.includes('xnLinkFinder') &&
+    jsUrlAnalysisRow.tools.includes('Katana'),
+  'WEB-BL-004 must carry merged xnLinkFinder and Katana tool metadata'
 );
 
 for (const ref of ['WEB-CT-082', 'MOB-CT-023', 'DSK-CT-022']) {
   assert(exportedRefs.has(ref), `missing curated row in full export: ${ref}`);
 }
-for (const ref of ['WEB-BL-021', 'MOB-CT-042', 'DSK-CT-040']) {
+for (const ref of ['WEB-BL-021', 'MOB-CT-042', 'DSK-CT-040', 'MOB-CT-019']) {
   assert(exportedRefs.has(ref), `missing protocol feature row in full export: ${ref}`);
 }
 

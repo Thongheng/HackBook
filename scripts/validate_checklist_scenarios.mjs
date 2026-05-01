@@ -36,7 +36,8 @@ const scenarios = [
     run(rows) {
       assert(rows.length > 0, 'expected rows');
       assert(rows.some((row) => row.id === 'WEB-BL-069'), 'generic HTML injection row missing');
-      assert(rows.some((row) => row.id === 'WEB-BL-087'), 'JS URL analysis row missing');
+      assert(rows.some((row) => row.id === 'WEB-BL-004'), 'merged JS URL analysis row missing');
+      assert(!rows.some((row) => row.id === 'WEB-BL-087'), 'old standalone JS URL analysis row should be merged away');
       assert(rows.every((row) => row.platform === 'web'), 'only web rows should export');
       assert(rows.every((row) => row.section === 'baseline'), 'no custom rows should export');
       assert(rows.every((row) => row.access !== 'greybox'), 'greybox-only rows leaked into blackbox scenario');
@@ -169,11 +170,12 @@ const scenarios = [
     },
   },
   {
-    name: 'mobile + API Backend blackbox',
-    config: cfg({ categories: ['mobile'], engagementType: 'Black-Box', features: { 'mobile:api-backend': true } }),
+    name: 'mobile API backend moved into baseline',
+    config: cfg({ categories: ['mobile'], engagementType: 'Black-Box' }),
     run(rows) {
       assert(rows.some((row) => row.id === 'MOB-CT-019'), 'mobile API BOLA row missing');
       assert(rows.some((row) => row.id === 'MOB-CT-037'), 'mobile API misconfiguration row missing');
+      assert(rows.every((row) => row.featureKey !== 'mobile:api-backend'), 'mobile API Backend feature should be removed');
       assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile API scenario');
     },
   },
@@ -282,11 +284,12 @@ const scenarios = [
     },
   },
   {
-    name: 'mobile explicit biometric login feature',
-    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:login-biometric': true } }),
+    name: 'mobile explicit login/auth feature',
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:login-auth': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'MOB-CT-001'), 'mobile biometric login row missing');
-      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into biometric login scenario');
+      assert(rows.some((row) => row.id === 'MOB-CT-001'), 'mobile login/auth row missing');
+      assert(rows.some((row) => row.id === 'MOB-BL-048'), 'moved mobile JWT/session row missing from login/auth feature');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into login/auth scenario');
     },
   },
   {
@@ -311,6 +314,32 @@ for (const scenario of scenarios) {
     failures += 1;
     console.error(`FAIL ${scenario.name}: ${error.message}`);
   }
+}
+
+try {
+  const removedFeatureKeys = new Set([
+    'web:admin',
+    'web:announcement',
+    'web:api-keys-tokens',
+    'web:api-webhook',
+    'web:reports-dashboard',
+    'web:vendor-profile',
+    'mobile:api-backend',
+    'mobile:intent-share',
+    'mobile:push-notifications',
+  ]);
+  assert(
+    !catalog.some((row) => removedFeatureKeys.has(row.featureKey)),
+    'removed feature groups should not remain in catalog'
+  );
+  assert(catalog.some((row) => row.id === 'WEB-BL-004' && row.section === 'baseline'), 'merged WEB-BL-004 must remain baseline');
+  assert(!catalog.some((row) => row.id === 'WEB-BL-087'), 'WEB-BL-087 must be merged into WEB-BL-004');
+  assert(catalog.some((row) => row.id === 'MOB-CT-019' && row.section === 'baseline'), 'MOB-CT-019 must move to baseline');
+  assert(catalog.some((row) => row.id === 'MOB-BL-048' && row.featureKey === 'mobile:login-auth'), 'MOB-BL-048 must move to login/auth feature');
+  console.log('PASS cleanup invariants: removed features, merged rows, and moved rows');
+} catch (error) {
+  failures += 1;
+  console.error(`FAIL cleanup invariants: ${error.message}`);
 }
 
 try {

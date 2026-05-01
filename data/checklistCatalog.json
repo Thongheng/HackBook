@@ -87,8 +87,8 @@
       "id": "WEB-BL-004",
       "stdRef": "WSTG-INFO-04",
       "group": "Recon",
-      "title": "JS file & source map analysis",
-      "objective": "Check for .map files, exposed source, hardcoded keys, internal endpoint refs in JS bundles",
+      "title": "JavaScript source, source map, and endpoint analysis",
+      "objective": "Check JS bundles and source maps for exposed source, hardcoded keys, internal endpoint references, URLs, API routes, hidden paths, and parameterized endpoints. Use static extraction plus crawling to correlate JS-linked endpoints with reachable attack surface.",
       "rowType": "test",
       "severity": "medium",
       "status": "Not Started",
@@ -108,33 +108,6 @@
         "Katana",
         "xnLinkFinder",
         "SecretFinder"
-      ]
-    },
-    {
-      "id": "WEB-BL-005",
-      "stdRef": "WSTG-INFO-03",
-      "group": "Recon",
-      "title": "robots.txt / sitemap / well-known URIs",
-      "objective": "Review disallowed paths, hidden endpoints, admin paths",
-      "rowType": "test",
-      "severity": "info",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-005",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Katana",
-        "httpx",
-        "ffuf"
       ]
     },
     {
@@ -163,61 +136,6 @@
         "httpx",
         "ffuf",
         "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-BL-007",
-      "stdRef": "WSTG-INFO-01",
-      "group": "Recon",
-      "title": "GitHub / public repo secrets scan",
-      "objective": "TruffleHog, GitLeaks — check org repos for API keys, creds, internal URLs",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "blackbox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-007",
-      "tags": [
-        "core",
-        "external_only"
-      ],
-      "tech": [],
-      "tools": [
-        "TruffleHog",
-        "Gitleaks",
-        "GitHub Dorks"
-      ]
-    },
-    {
-      "id": "WEB-BL-008",
-      "stdRef": "WSTG-INFO-02",
-      "group": "Recon",
-      "title": "WAF detection & bypass surface mapping",
-      "objective": "Identify WAF vendor, test bypass techniques (encoding, fragmentation)",
-      "rowType": "test",
-      "severity": "info",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-008",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "wafw00f",
-        "httpx",
-        "Burp Suite"
       ]
     },
     {
@@ -360,8 +278,8 @@
       "id": "WEB-BL-014",
       "stdRef": "WSTG-CONF-07",
       "group": "Config",
-      "title": "HTTP Strict Transport Security & cookie flags",
-      "objective": "Secure, HttpOnly, SameSite flags on session cookies; HSTS preload",
+      "title": "HTTP Strict Transport Security review",
+      "objective": "Verify HSTS is present, correctly scoped, long-lived enough for the engagement context, and compatible with preload expectations where applicable.",
       "rowType": "test",
       "severity": "medium",
       "status": "Not Started",
@@ -379,8 +297,8 @@
       "tech": [],
       "tools": [
         "Burp Suite",
-        "httpx",
-        "Nuclei"
+        "testssl.sh",
+        "securityheaders.com"
       ]
     },
     {
@@ -413,9 +331,9 @@
     {
       "id": "WEB-BL-016",
       "stdRef": "WSTG-CONF-06",
-      "group": "Config",
-      "title": "HTTP Request Smuggling",
-      "objective": "CL.TE / TE.CL desync via Burp HTTP Request Smuggler extension — cache poisoning, auth bypass",
+      "group": "Client",
+      "title": "HTTP Request Smuggling / desync testing",
+      "objective": "Test CL.TE, TE.CL, H2.CL, and H2.TE desync behavior to identify cache poisoning, front-end auth bypass, request queue poisoning, or delivered XSS through parser disagreement.",
       "rowType": "test",
       "severity": "high",
       "status": "Not Started",
@@ -435,465 +353,6 @@
         "Burp Suite",
         "smuggler",
         "httpx"
-      ]
-    },
-    {
-      "id": "WEB-BL-017",
-      "stdRef": "WSTG-ATHN-01",
-      "group": "AuthN",
-      "title": "Default credentials test",
-      "objective": "Try admin/admin, vendor defaults on login panels, admin paths",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-017",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-018",
-      "stdRef": "WSTG-ATHN-02",
-      "group": "AuthN",
-      "title": "Username enumeration",
-      "objective": "Compare response timing, size, message for valid vs invalid usernames",
-      "rowType": "test",
-      "severity": "low",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-018",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-019",
-      "stdRef": "WSTG-ATHN-03",
-      "group": "AuthN",
-      "title": "Brute force & rate limit",
-      "objective": "Ffuf/Hydra on login & password-reset; verify lockout threshold, CAPTCHA, rate limiting. Bypass: X-Forwarded-For rotation, IP spoofing headers, credential stuffing with slow timing.",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-019",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-020",
-      "stdRef": "WSTG-ATHN-04",
-      "group": "AuthN",
-      "title": "JWT security testing",
-      "objective": "alg:none, RS256→HS256 confusion, weak secret brute force (hashcat), JWK injection, kid path traversal, expired token acceptance",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-020",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "jwt_tool",
-        "Burp Suite",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-022",
-      "stdRef": "WSTG-ATHN-06",
-      "group": "AuthN",
-      "title": "MFA / OTP bypass",
-      "objective": "Response manipulation, code reuse, OTP brute force (6-digit = 1M combinations), backup code abuse. Bypass: remove MFA step from response, replay same OTP across accounts.",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "curated",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-022",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-023",
-      "stdRef": "WSTG-ATHN-08",
-      "group": "AuthN",
-      "title": "Password reset token security",
-      "objective": "Predictable tokens, token reuse, host header injection in reset email link",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "curated",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-023",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-024",
-      "stdRef": "WSTG-SESS-01",
-      "group": "Session",
-      "title": "Session token analysis",
-      "objective": "Check entropy, predictability, length of session tokens",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-024",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "mitmproxy",
-        "ffuf"
-      ]
-    },
-    {
-      "id": "WEB-BL-025",
-      "stdRef": "WSTG-SESS-02",
-      "group": "Session",
-      "title": "Cookie attribute review",
-      "objective": "Secure, HttpOnly, SameSite=Strict/Lax, Domain/Path scope",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-025",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "mitmproxy",
-        "ffuf"
-      ]
-    },
-    {
-      "id": "WEB-BL-026",
-      "stdRef": "WSTG-SESS-03",
-      "group": "Session",
-      "title": "Session fixation",
-      "objective": "Pre-auth session token reuse post-login — force victim to use known token",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-026",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "mitmproxy",
-        "ffuf"
-      ]
-    },
-    {
-      "id": "WEB-BL-027",
-      "stdRef": "WSTG-SESS-04",
-      "group": "Session",
-      "title": "CSRF testing",
-      "objective": "Missing/bypassable CSRF token, SameSite=None misuse, referer bypass",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-027",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "mitmproxy",
-        "ffuf"
-      ]
-    },
-    {
-      "id": "WEB-BL-028",
-      "stdRef": "WSTG-SESS-06",
-      "group": "Session",
-      "title": "Session invalidation on logout",
-      "objective": "Confirm server-side session destruction, token blacklisting on logout",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-028",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "mitmproxy",
-        "ffuf"
-      ]
-    },
-    {
-      "id": "WEB-BL-029",
-      "stdRef": "WSTG-SESS-09",
-      "group": "Session",
-      "title": "Session timeout enforcement",
-      "objective": "Idle timeout, absolute timeout — verify server enforces, not just client",
-      "rowType": "test",
-      "severity": "low",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-029",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "mitmproxy",
-        "ffuf"
-      ]
-    },
-    {
-      "id": "WEB-BL-030",
-      "stdRef": "WSTG-ATHZ-01",
-      "group": "AuthZ",
-      "title": "Forced browsing / direct object reference",
-      "objective": "Access restricted pages/objects without proper authorization (IDOR)",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-030",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-031",
-      "stdRef": "WSTG-ATHZ-02",
-      "group": "AuthZ",
-      "title": "Horizontal privilege escalation",
-      "objective": "Access resources belonging to peer-level users by manipulating IDs",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-031",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-032",
-      "stdRef": "WSTG-ATHZ-03",
-      "group": "AuthZ",
-      "title": "Vertical privilege escalation",
-      "objective": "Access admin/higher-privilege functions as a low-privilege user",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-032",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-033",
-      "stdRef": "WSTG-ATHZ-04",
-      "group": "AuthZ",
-      "title": "Path traversal",
-      "objective": "Test ../../etc/passwd in file params; encoded variants: %2F, ..%2F, %252F, ..;/. Null byte %00 to truncate extensions. PHP: php://filter, file:// wrappers.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-033",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-BL-034",
-      "stdRef": "API5-2023",
-      "group": "AuthZ",
-      "title": "Broken Function Level Authorization (BFLA)",
-      "objective": "Access admin-level API endpoints as regular user by direct call",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-034",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
       ]
     },
     {
@@ -954,8 +413,8 @@
       "id": "WEB-BL-037",
       "stdRef": "WSTG-INPV-01",
       "group": "Injection",
-      "title": "Reflected XSS",
-      "objective": "All user-controlled input reflected in response — test encoding bypasses",
+      "title": "Cross-Site Scripting (reflected, stored, and DOM)",
+      "objective": "Test reflected, stored, and DOM-based XSS across user-controlled inputs, URL fragments, client-side data flows, and rendered persisted content. Include encoding, context, and sanitizer bypass checks inside the parent XSS test rather than as standalone bypass rows.",
       "rowType": "test",
       "severity": "medium",
       "status": "Not Started",
@@ -967,33 +426,6 @@
       "source": "catalog",
       "sourceSheet": "WEB - Baseline",
       "sourceRef": "WEB-BL-037",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Dalfox",
-        "Burp Suite",
-        "XSStrike"
-      ]
-    },
-    {
-      "id": "WEB-BL-038",
-      "stdRef": "WSTG-INPV-02",
-      "group": "Injection",
-      "title": "Stored XSS",
-      "objective": "Payloads persisted and rendered to other users — higher impact than reflected",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-038",
       "tags": [
         "core"
       ],
@@ -1110,249 +542,6 @@
         "Burp Suite",
         "mitmproxy",
         "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-BL-043",
-      "stdRef": "WSTG-INPV-07",
-      "group": "SSRF",
-      "title": "Basic SSRF",
-      "objective": "URL params pointing to internal services, cloud metadata (169.254.169.254/latest/meta-data, 100.100.100.200 Alibaba). Test internal port scan via response time/error differences.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-043",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "SSRFmap",
-        "Burp Suite",
-        "interactsh"
-      ]
-    },
-    {
-      "id": "WEB-BL-044",
-      "stdRef": "WSTG-INPV-07",
-      "group": "SSRF",
-      "title": "SSRF bypass variants",
-      "objective": "Filter bypass: IPv6 [::1], decimal IP (2130706433), URL-encoded dots, DNS rebinding, redirect chains (open redirect -> internal), parser confusion with @, #, backslash.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-044",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "SSRFmap",
-        "Burp Suite",
-        "interactsh"
-      ]
-    },
-    {
-      "id": "WEB-BL-045",
-      "stdRef": "WSTG-INPV-07",
-      "group": "SSRF",
-      "title": "Protocol smuggling via SSRF",
-      "objective": "dict://, gopher:// to reach Redis, memcached, SMTP internally",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-045",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "SSRFmap",
-        "Burp Suite",
-        "interactsh"
-      ]
-    },
-    {
-      "id": "WEB-BL-046",
-      "stdRef": "WSTG-UPLD-01",
-      "group": "File",
-      "title": "Web shell upload bypass",
-      "objective": "MIME bypass: change Content-Type to image/jpeg; double ext (.php.jpg); null byte (shell.php%00.jpg); magic bytes prepend. Check server-side execution path and storage location.",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "curated",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-046",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-BL-047",
-      "stdRef": "WSTG-UPLD-02",
-      "group": "File",
-      "title": "Malicious file type upload",
-      "objective": "SVG XSS, HTML SSRF, polyglot files — check server-side validation depth",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureKey": null,
-      "featureLabel": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-047",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Dalfox",
-        "Burp Suite",
-        "XSStrike"
-      ]
-    },
-    {
-      "id": "WEB-BL-048",
-      "stdRef": "WSTG-INPV-11",
-      "group": "File",
-      "title": "Path traversal in download",
-      "objective": "Filename/path param to ../../etc/passwd; zip slip (../evil.jsp inside archive); encoded traversal. LFI wrappers: php://filter/convert.base64-encode/resource=index.php.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureKey": null,
-      "featureLabel": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-048",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-BL-049",
-      "stdRef": "WSTG-BUSL-01",
-      "group": "Logic",
-      "title": "Race conditions",
-      "objective": "Concurrent requests on limit-once operations — coupon use, refund, account creation",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "curated",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-049",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "Turbo Intruder",
-        "ffuf"
-      ]
-    },
-    {
-      "id": "WEB-BL-050",
-      "stdRef": "WSTG-BUSL-02",
-      "group": "Logic",
-      "title": "Negative / zero value inputs",
-      "objective": "Negative price, zero quantity in payment/transaction flows",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "curated",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-050",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "Turbo Intruder"
-      ]
-    },
-    {
-      "id": "WEB-BL-051",
-      "stdRef": "WSTG-BUSL-09",
-      "group": "Logic",
-      "title": "Workflow / step bypass",
-      "objective": "Skip payment step, confirmation step — manipulate sequence via direct requests",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "curated",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-051",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "Turbo Intruder"
       ]
     },
     {
@@ -1491,87 +680,6 @@
       ]
     },
     {
-      "id": "WEB-BL-061",
-      "stdRef": "API10-2023",
-      "group": "API",
-      "title": "Unsafe third-party API consumption",
-      "objective": "Does app blindly trust 3rd-party API data without validation? SSRF via webhook URL",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-061",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "SSRFmap",
-        "Burp Suite",
-        "interactsh"
-      ]
-    },
-    {
-      "id": "WEB-BL-062",
-      "stdRef": "WSTG-CLNT-01",
-      "group": "Client",
-      "title": "DOM-based XSS",
-      "objective": "Track user-controlled data flow into dangerous sinks (innerHTML, eval, document.write)",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-062",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Dalfox",
-        "Burp Suite",
-        "XSStrike"
-      ]
-    },
-    {
-      "id": "WEB-BL-063",
-      "stdRef": "WSTG-CLNT-09",
-      "group": "Client",
-      "title": "Clickjacking",
-      "objective": "X-Frame-Options / CSP frame-ancestors missing — frame the app to trick clicks",
-      "rowType": "test",
-      "severity": "low",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-063",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "Dalfox",
-        "mitmproxy"
-      ]
-    },
-    {
       "id": "WEB-BL-064",
       "stdRef": "WSTG-CLNT-10",
       "group": "Client",
@@ -1599,36 +707,9 @@
       ]
     },
     {
-      "id": "WEB-BL-065",
-      "stdRef": "WSTG-INPV-18",
-      "group": "Client",
-      "title": "LLM / AI prompt injection",
-      "objective": "User-controlled input passed to AI features — inject instructions to alter AI behavior or exfil data",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-065",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "Dalfox",
-        "mitmproxy"
-      ]
-    },
-    {
       "id": "WEB-BL-067",
       "stdRef": "WSTG-CONF-01",
-      "group": "Infra",
+      "group": "Recon",
       "title": "Known vulnerability scan",
       "objective": "Nuclei, Nikto — check CVEs for identified web server, framework versions",
       "rowType": "test",
@@ -1650,33 +731,6 @@
         "Burp Suite",
         "httpx",
         "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-BL-068",
-      "stdRef": "WSTG-CONF-09",
-      "group": "Infra",
-      "title": "HTTP Request Smuggling — TE.CL / CL.TE",
-      "objective": "Burp HTTP Request Smuggler — desync to poison cache, bypass front-end auth, deliver XSS",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureKey": null,
-      "featureLabel": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-068",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "smuggler",
-        "httpx"
       ]
     },
     {
@@ -1710,8 +764,8 @@
       "id": "WEB-BL-070",
       "stdRef": "WSTG-MAP-04",
       "group": "Recon",
-      "title": "Directory & content discovery",
-      "objective": "Ffuf/Gobuster with SecLists raft-large. Tech extensions: PHP -> .php,.inc,.phtml; ASP.NET -> .asp,.aspx,.config; Java -> .jsp,.do,.action; Node -> .js,.json. Fuzz /api/, /v1/, /v2/, /internal/, /admin/ recursively.",
+      "title": "Directory, content, robots, sitemap, and well-known discovery",
+      "objective": "Fuzz directories and content recursively, review robots.txt, sitemap.xml, and /.well-known/ paths, and enumerate hidden/admin/debug/API paths. Include tech extensions where relevant: PHP .php/.inc/.phtml, ASP.NET .asp/.aspx/.config, Java .jsp/.do/.action, Node .js/.json.",
       "rowType": "test",
       "severity": "medium",
       "status": "Not Started",
@@ -1758,33 +812,6 @@
         "Burp Suite",
         "httpx",
         "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-BL-072",
-      "stdRef": "WSTG-INPV-19",
-      "group": "SSRF",
-      "title": "Blind SSRF",
-      "objective": "OOB detection via Burp Collaborator or interactsh. Inject in URL params, Referer, Host, X-Forwarded-For, PDF/image generation inputs, webhook fields. Confirm with DNS callback even if no HTTP response body.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-072",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "SSRFmap",
-        "Burp Suite",
-        "interactsh"
       ]
     },
     {
@@ -1866,168 +893,6 @@
         "Burp Suite",
         "httpx",
         "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-BL-076",
-      "stdRef": "WSTG-INPV-05",
-      "group": "Injection",
-      "title": "Unicode & encoding normalization bypass",
-      "objective": "Unicode normalization (NFC/NFD) to bypass filters: overlong UTF-8 %C0%AF for slash, fullwidth chars for XSS. Target: WAF bypass, path traversal, username collision (admin vs Unicode lookalike). Test in auth, path params, search.",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-076",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "wafw00f",
-        "httpx",
-        "Burp Suite"
-      ]
-    },
-    {
-      "id": "WEB-BL-077",
-      "stdRef": "WSTG-INPV-17",
-      "group": "Injection",
-      "title": "Content-Type confusion",
-      "objective": "Swap Content-Type JSON<->form-urlencoded<->multipart — parsers may accept both, bypassing WAF or field validation. Test XML where JSON expected (XXE). Submit JSON as text/plain to bypass SameSite CSRF protections.",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-077",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "wafw00f",
-        "httpx",
-        "Burp Suite"
-      ]
-    },
-    {
-      "id": "WEB-BL-078",
-      "stdRef": "WSTG-INPV-12",
-      "group": "Injection",
-      "title": "JSONP endpoint abuse",
-      "objective": "Find ?callback= params — JSONP bypasses SOP allowing attacker page to exfiltrate JSON. Test if callback is validated (alphanumeric only) or allows arbitrary JS. Check for JSONP on authenticated endpoints returning sensitive data.",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-078",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "httpx",
-        "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-BL-079",
-      "stdRef": "WSTG-AUTHN-03",
-      "group": "AuthN",
-      "title": "Email verification bypass",
-      "objective": "Access authenticated endpoints before verifying email. Test: change email to victim after verifying original, reuse token across accounts, IDOR on verify endpoint (/verify?token=X&user=Y), skip verification step via response manipulation.",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-079",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-080",
-      "stdRef": "WSTG-AUTHN-08",
-      "group": "AuthN",
-      "title": "Password policy enforcement",
-      "objective": "Test min length (try 1-char), complexity bypass, common passwords (check Pwned Passwords). Verify server-side enforcement not just client-side JS. Test change/reset flows separately — policy often inconsistently applied.",
-      "rowType": "test",
-      "severity": "low",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-080",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-BL-081",
-      "stdRef": "WSTG-CLNT-11",
-      "group": "Client",
-      "title": "XS-Leaks",
-      "objective": "Cross-site info leakage via browser side-channels: frame count, response timing, error events, redirects. Tools: xsleaks.dev, XSinator. Test: can attacker page detect if victim is logged in, or infer account data via timing/oracle?",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-081",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "XSinator",
-        "xsleaks.dev",
-        "Burp Suite"
       ]
     },
     {
@@ -2174,29 +1039,840 @@
       ]
     },
     {
-      "id": "WEB-BL-087",
-      "stdRef": "WSTG-INFO-04",
-      "group": "Recon",
-      "title": "JavaScript URL and endpoint extraction",
-      "objective": "Extract URLs, API routes, hidden paths, and parameterized endpoints from JavaScript bundles and discovered assets. Use xnLinkFinder for static extraction and Katana to crawl and surface additional JS-linked endpoints.",
+      "id": "WEB-BL-017",
+      "stdRef": "WSTG-ATHN-01",
+      "group": "Login",
+      "title": "Default credentials test",
+      "objective": "Try admin/admin, vendor defaults on login panels, admin paths",
       "rowType": "test",
-      "severity": "medium",
+      "severity": "high",
       "status": "Not Started",
       "platform": "web",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
+      "section": "custom",
+      "featureLabel": "Login",
+      "featureKey": "web:login",
       "access": "both",
       "source": "catalog",
-      "sourceSheet": "WEB - Baseline",
-      "sourceRef": "WEB-BL-087",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-017",
       "tags": [
         "core"
       ],
       "tech": [],
       "tools": [
-        "xnLinkFinder",
-        "Katana"
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-018",
+      "stdRef": "WSTG-ATHN-02",
+      "group": "Login",
+      "title": "Username enumeration",
+      "objective": "Compare response timing, size, message for valid vs invalid usernames",
+      "rowType": "test",
+      "severity": "low",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Login",
+      "featureKey": "web:login",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-018",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-019",
+      "stdRef": "WSTG-ATHN-03",
+      "group": "Login",
+      "title": "Brute force & rate limit",
+      "objective": "Ffuf/Hydra on login & password-reset; verify lockout threshold, CAPTCHA, rate limiting. Bypass: X-Forwarded-For rotation, IP spoofing headers, credential stuffing with slow timing.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Login",
+      "featureKey": "web:login",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-019",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-020",
+      "stdRef": "WSTG-ATHN-04",
+      "group": "Session",
+      "title": "JWT security testing",
+      "objective": "alg:none, RS256→HS256 confusion, weak secret brute force (hashcat), JWK injection, kid path traversal, expired token acceptance",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Session",
+      "featureKey": "web:session",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-020",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "jwt_tool",
+        "Burp Suite",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-022",
+      "stdRef": "WSTG-ATHN-06",
+      "group": "Login",
+      "title": "MFA / OTP bypass",
+      "objective": "Response manipulation, code reuse, OTP brute force (6-digit = 1M combinations), backup code abuse. Bypass: remove MFA step from response, replay same OTP across accounts.",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Login",
+      "featureKey": "web:login",
+      "access": "greybox",
+      "source": "curated",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-022",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-023",
+      "stdRef": "WSTG-ATHN-08",
+      "group": "Password Reset",
+      "title": "Password reset token security",
+      "objective": "Predictable tokens, token reuse, host header injection in reset email link",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Password Reset",
+      "featureKey": "web:password-reset",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-023",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-024",
+      "stdRef": "WSTG-SESS-01",
+      "group": "Session",
+      "title": "Session token analysis",
+      "objective": "Check entropy, predictability, length of session tokens",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Session",
+      "featureKey": "web:session",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-024",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "ffuf"
+      ]
+    },
+    {
+      "id": "WEB-BL-025",
+      "stdRef": "WSTG-SESS-02",
+      "group": "Session",
+      "title": "Cookie attribute review",
+      "objective": "Secure, HttpOnly, SameSite=Strict/Lax, Domain/Path scope",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Session",
+      "featureKey": "web:session",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-025",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "ffuf"
+      ]
+    },
+    {
+      "id": "WEB-BL-026",
+      "stdRef": "WSTG-SESS-03",
+      "group": "Session",
+      "title": "Session fixation",
+      "objective": "Pre-auth session token reuse post-login — force victim to use known token",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Session",
+      "featureKey": "web:session",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-026",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "ffuf"
+      ]
+    },
+    {
+      "id": "WEB-BL-027",
+      "stdRef": "WSTG-SESS-04",
+      "group": "Session",
+      "title": "CSRF testing",
+      "objective": "Missing/bypassable CSRF token, SameSite=None misuse, referer bypass",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Session",
+      "featureKey": "web:session",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-027",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "ffuf"
+      ]
+    },
+    {
+      "id": "WEB-BL-028",
+      "stdRef": "WSTG-SESS-06",
+      "group": "Session",
+      "title": "Session invalidation on logout",
+      "objective": "Confirm server-side session destruction, token blacklisting on logout",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Session",
+      "featureKey": "web:session",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-028",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "ffuf"
+      ]
+    },
+    {
+      "id": "WEB-BL-029",
+      "stdRef": "WSTG-SESS-09",
+      "group": "Session",
+      "title": "Session timeout enforcement",
+      "objective": "Idle timeout, absolute timeout — verify server enforces, not just client",
+      "rowType": "test",
+      "severity": "low",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Session",
+      "featureKey": "web:session",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-029",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "ffuf"
+      ]
+    },
+    {
+      "id": "WEB-BL-030",
+      "stdRef": "WSTG-ATHZ-01",
+      "group": "Access Control",
+      "title": "Forced browsing / direct object reference",
+      "objective": "Access restricted pages/objects without proper authorization (IDOR)",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Access Control",
+      "featureKey": "web:access-control",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-030",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-031",
+      "stdRef": "WSTG-ATHZ-02",
+      "group": "Access Control",
+      "title": "Horizontal privilege escalation",
+      "objective": "Access resources belonging to peer-level users by manipulating IDs",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Access Control",
+      "featureKey": "web:access-control",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-031",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-032",
+      "stdRef": "WSTG-ATHZ-03",
+      "group": "Access Control",
+      "title": "Vertical privilege escalation",
+      "objective": "Access admin/higher-privilege functions as a low-privilege user",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Access Control",
+      "featureKey": "web:access-control",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-032",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-033",
+      "stdRef": "WSTG-ATHZ-04",
+      "group": "File Download",
+      "title": "Path traversal",
+      "objective": "Test ../../etc/passwd in file params; encoded variants: %2F, ..%2F, %252F, ..;/. Null byte %00 to truncate extensions. PHP: php://filter, file:// wrappers.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "File Download",
+      "featureKey": "web:file-download",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-033",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "Nuclei"
+      ]
+    },
+    {
+      "id": "WEB-BL-034",
+      "stdRef": "API5-2023",
+      "group": "Access Control",
+      "title": "Broken Function Level Authorization (BFLA)",
+      "objective": "Access admin-level API endpoints as regular user by direct call",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Access Control",
+      "featureKey": "web:access-control",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-034",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-043",
+      "stdRef": "WSTG-INPV-07",
+      "group": "URL Fetch / SSRF",
+      "title": "Basic SSRF",
+      "objective": "URL params pointing to internal services, cloud metadata (169.254.169.254/latest/meta-data, 100.100.100.200 Alibaba). Test internal port scan via response time/error differences.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "URL Fetch / SSRF",
+      "featureKey": "web:url-fetch-ssrf",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-043",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "SSRFmap",
+        "Burp Suite",
+        "interactsh"
+      ]
+    },
+    {
+      "id": "WEB-BL-044",
+      "stdRef": "WSTG-INPV-07",
+      "group": "URL Fetch / SSRF",
+      "title": "SSRF bypass variants",
+      "objective": "Filter bypass: IPv6 [::1], decimal IP (2130706433), URL-encoded dots, DNS rebinding, redirect chains (open redirect -> internal), parser confusion with @, #, backslash.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "URL Fetch / SSRF",
+      "featureKey": "web:url-fetch-ssrf",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-044",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "SSRFmap",
+        "Burp Suite",
+        "interactsh"
+      ]
+    },
+    {
+      "id": "WEB-BL-045",
+      "stdRef": "WSTG-INPV-07",
+      "group": "URL Fetch / SSRF",
+      "title": "Protocol smuggling via SSRF",
+      "objective": "dict://, gopher:// to reach Redis, memcached, SMTP internally",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "URL Fetch / SSRF",
+      "featureKey": "web:url-fetch-ssrf",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-045",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "SSRFmap",
+        "Burp Suite",
+        "interactsh"
+      ]
+    },
+    {
+      "id": "WEB-BL-046",
+      "stdRef": "WSTG-UPLD-01",
+      "group": "File Upload",
+      "title": "Web shell upload bypass",
+      "objective": "MIME bypass: change Content-Type to image/jpeg; double ext (.php.jpg); null byte (shell.php%00.jpg); magic bytes prepend. Check server-side execution path and storage location.",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "File Upload",
+      "featureKey": "web:file-upload",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-046",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "Nuclei"
+      ]
+    },
+    {
+      "id": "WEB-BL-047",
+      "stdRef": "WSTG-UPLD-02",
+      "group": "File Upload",
+      "title": "Malicious file type upload",
+      "objective": "SVG XSS, HTML SSRF, polyglot files — check server-side validation depth",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureKey": "web:file-upload",
+      "featureLabel": "File Upload",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-047",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Dalfox",
+        "Burp Suite",
+        "XSStrike"
+      ]
+    },
+    {
+      "id": "WEB-BL-048",
+      "stdRef": "WSTG-INPV-11",
+      "group": "File Download",
+      "title": "Path traversal in download",
+      "objective": "Filename/path param to ../../etc/passwd; zip slip (../evil.jsp inside archive); encoded traversal. LFI wrappers: php://filter/convert.base64-encode/resource=index.php.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureKey": "web:file-download",
+      "featureLabel": "File Download",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-048",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "Nuclei"
+      ]
+    },
+    {
+      "id": "WEB-BL-049",
+      "stdRef": "WSTG-BUSL-01",
+      "group": "Business Logic",
+      "title": "Race conditions",
+      "objective": "Concurrent requests on limit-once operations — coupon use, refund, account creation",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Business Logic",
+      "featureKey": "web:business-logic",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-049",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Turbo Intruder",
+        "ffuf"
+      ]
+    },
+    {
+      "id": "WEB-BL-050",
+      "stdRef": "WSTG-BUSL-02",
+      "group": "Business Logic",
+      "title": "Negative / zero value inputs",
+      "objective": "Negative price, zero quantity in payment/transaction flows",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Business Logic",
+      "featureKey": "web:business-logic",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-050",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "Turbo Intruder"
+      ]
+    },
+    {
+      "id": "WEB-BL-051",
+      "stdRef": "WSTG-BUSL-09",
+      "group": "Business Logic",
+      "title": "Workflow / step bypass",
+      "objective": "Skip payment step, confirmation step — manipulate sequence via direct requests",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Business Logic",
+      "featureKey": "web:business-logic",
+      "access": "greybox",
+      "source": "curated",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-051",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "Turbo Intruder"
+      ]
+    },
+    {
+      "id": "WEB-BL-061",
+      "stdRef": "API10-2023",
+      "group": "URL Fetch / SSRF",
+      "title": "Unsafe third-party API consumption",
+      "objective": "Does app blindly trust 3rd-party API data without validation? SSRF via webhook URL",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "URL Fetch / SSRF",
+      "featureKey": "web:url-fetch-ssrf",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-061",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "SSRFmap",
+        "Burp Suite",
+        "interactsh"
+      ]
+    },
+    {
+      "id": "WEB-BL-065",
+      "stdRef": "WSTG-INPV-18",
+      "group": "AI / LLM",
+      "title": "LLM / AI prompt injection",
+      "objective": "User-controlled input passed to AI features — inject instructions to alter AI behavior or exfil data",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "AI / LLM",
+      "featureKey": "web:ai-llm",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-065",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Dalfox",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-072",
+      "stdRef": "WSTG-INPV-19",
+      "group": "URL Fetch / SSRF",
+      "title": "Blind SSRF",
+      "objective": "OOB detection via Burp Collaborator or interactsh. Inject in URL params, Referer, Host, X-Forwarded-For, PDF/image generation inputs, webhook fields. Confirm with DNS callback even if no HTTP response body.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "URL Fetch / SSRF",
+      "featureKey": "web:url-fetch-ssrf",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-072",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "SSRFmap",
+        "Burp Suite",
+        "interactsh"
+      ]
+    },
+    {
+      "id": "WEB-BL-079",
+      "stdRef": "WSTG-AUTHN-03",
+      "group": "Registration",
+      "title": "Email verification bypass",
+      "objective": "Access authenticated endpoints before verifying email. Test: change email to victim after verifying original, reuse token across accounts, IDOR on verify endpoint (/verify?token=X&user=Y), skip verification step via response manipulation.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Registration",
+      "featureKey": "web:registration",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-079",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "WEB-BL-080",
+      "stdRef": "WSTG-AUTHN-08",
+      "group": "Password Change",
+      "title": "Password policy enforcement",
+      "objective": "Test min length (try 1-char), complexity bypass, common passwords (check Pwned Passwords). Verify server-side enforcement not just client-side JS. Test change/reset flows separately — policy often inconsistently applied.",
+      "rowType": "test",
+      "severity": "low",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "custom",
+      "featureLabel": "Password Change",
+      "featureKey": "web:password-change",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "WEB - Custom",
+      "sourceRef": "WEB-BL-080",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "ffuf",
+        "mitmproxy"
       ]
     },
     {
@@ -2764,114 +2440,6 @@
         "Burp Suite",
         "mitmproxy",
         "jwt_tool"
-      ]
-    },
-    {
-      "id": "WEB-CT-021",
-      "stdRef": "API1-2023",
-      "group": "Vendor Profile",
-      "title": "Cross-vendor data access (IDOR)",
-      "objective": "Access or read another vendor's store profile by manipulating vendor_id",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "Vendor Profile",
-      "featureKey": "web:vendor-profile",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-021",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-CT-022",
-      "stdRef": "WSTG-ATHZ-03",
-      "group": "Vendor Profile",
-      "title": "Low-privilege vendor modification",
-      "objective": "Use staff/employee role to modify top-level vendor settings",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "Vendor Profile",
-      "featureKey": "web:vendor-profile",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-022",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "httpx",
-        "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-CT-023",
-      "stdRef": "WSTG-UPLD-01",
-      "group": "Vendor Profile",
-      "title": "Unrestricted file upload in profile",
-      "objective": "Upload web shell or malicious file via vendor logo/document upload",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "Vendor Profile",
-      "featureKey": "web:vendor-profile",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-023",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-CT-024",
-      "stdRef": "WSTG-INPV-11",
-      "group": "Vendor Profile",
-      "title": "LFI in file path parameters",
-      "objective": "Vendor document/image path parameters — test for local file inclusion",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "Vendor Profile",
-      "featureKey": "web:vendor-profile",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-024",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "httpx",
-        "Nuclei"
       ]
     },
     {
@@ -3523,114 +3091,6 @@
       ]
     },
     {
-      "id": "WEB-CT-051",
-      "stdRef": "WSTG-INPV-01",
-      "group": "Announcement",
-      "title": "Parameter/header injection in listing",
-      "objective": "Inject into filter/sort params — SQLi, SSTI, header injection",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "Announcement",
-      "featureKey": "web:announcement",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-051",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "tplmap",
-        "Burp Suite",
-        "ffuf"
-      ]
-    },
-    {
-      "id": "WEB-CT-052",
-      "stdRef": "WSTG-INPV-02",
-      "group": "Announcement",
-      "title": "Stored XSS in admin-created content",
-      "objective": "Admin-authored content rendered to all users — stored XSS fires broadly",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "Announcement",
-      "featureKey": "web:announcement",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-052",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Dalfox",
-        "Burp Suite",
-        "XSStrike"
-      ]
-    },
-    {
-      "id": "WEB-CT-053",
-      "stdRef": "API5-2023",
-      "group": "Admin",
-      "title": "Admin function access by normal user",
-      "objective": "Direct call to admin API endpoint — BFLA bypass without admin role",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "Admin",
-      "featureKey": "web:admin",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-053",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-CT-054",
-      "stdRef": "WSTG-ATHN-09",
-      "group": "Admin",
-      "title": "User reset enumeration & token reuse",
-      "objective": "Admin user-reset token — check expiry, reuse, enumeration via timing",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "Admin",
-      "featureKey": "web:admin",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-054",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "httpx",
-        "Nuclei"
-      ]
-    },
-    {
       "id": "WEB-CT-055",
       "stdRef": "WSTG-INPV-05",
       "group": "Search",
@@ -3820,33 +3280,6 @@
       ]
     },
     {
-      "id": "WEB-CT-059",
-      "stdRef": "API7-2023",
-      "group": "API / Webhook",
-      "title": "SSRF via webhook URL",
-      "objective": "User-controlled URL in webhook config — redirect to internal metadata or services",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "API / Webhook",
-      "featureKey": "web:api-webhook",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-059",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "SSRFmap",
-        "Burp Suite",
-        "interactsh"
-      ]
-    },
-    {
       "id": "WEB-BL-060",
       "stdRef": "WSTG-SESS-07",
       "group": "WebSocket",
@@ -3871,60 +3304,6 @@
         "Burp Suite",
         "mitmproxy",
         "websocat"
-      ]
-    },
-    {
-      "id": "WEB-CT-060",
-      "stdRef": "API3-2023",
-      "group": "API / Webhook",
-      "title": "Mass assignment on API resource",
-      "objective": "POST hidden fields (role, is_admin, credit) — does server accept and write them?",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "API / Webhook",
-      "featureKey": "web:api-webhook",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-060",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "httpx",
-        "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-CT-061",
-      "stdRef": "API9-2023",
-      "group": "API / Webhook",
-      "title": "Outdated / shadow API version access",
-      "objective": "Access /v1/ endpoints with deprecated auth — weaker controls than current version",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "API / Webhook",
-      "featureKey": "web:api-webhook",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-061",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "httpx",
-        "Nuclei"
       ]
     },
     {
@@ -4279,60 +3658,6 @@
       ]
     },
     {
-      "id": "WEB-CT-074",
-      "stdRef": "API2-2023",
-      "group": "API Keys / Tokens",
-      "title": "Over-privileged API key creation",
-      "objective": "Create personal/service tokens and verify scope, expiry, IP restrictions, and role boundaries are enforced",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "API Keys / Tokens",
-      "featureKey": "web:api-keys-tokens",
-      "access": "greybox",
-      "source": "curated",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-074",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "httpx",
-        "Nuclei"
-      ]
-    },
-    {
-      "id": "WEB-CT-075",
-      "stdRef": "WSTG-SESS-06",
-      "group": "API Keys / Tokens",
-      "title": "Revoked token still accepted",
-      "objective": "Use deleted, rotated, or expired keys against sensitive endpoints to verify server-side revocation",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "API Keys / Tokens",
-      "featureKey": "web:api-keys-tokens",
-      "access": "greybox",
-      "source": "curated",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-075",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "httpx",
-        "Nuclei"
-      ]
-    },
-    {
       "id": "WEB-CT-076",
       "stdRef": "WSTG-INPV-02",
       "group": "Comments / Rich Text",
@@ -4438,60 +3763,6 @@
         "Burp Suite",
         "Turbo Intruder",
         "ffuf"
-      ]
-    },
-    {
-      "id": "WEB-CT-080",
-      "stdRef": "WSTG-ATHZ-03",
-      "group": "Reports / Dashboard",
-      "title": "Cross-tenant dashboard filter tampering",
-      "objective": "Manipulate saved filters, report IDs, or tenant identifiers to pull another customer’s analytics",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "Reports / Dashboard",
-      "featureKey": "web:reports-dashboard",
-      "access": "greybox",
-      "source": "curated",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-080",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "ffuf",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "WEB-CT-081",
-      "stdRef": "WSTG-INPV-12",
-      "group": "Reports / Dashboard",
-      "title": "Unsafe formula execution in dashboard widgets",
-      "objective": "Inject expressions, template helpers, or chart config payloads that trigger server/client-side execution",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "web",
-      "section": "custom",
-      "featureLabel": "Reports / Dashboard",
-      "featureKey": "web:reports-dashboard",
-      "access": "greybox",
-      "source": "curated",
-      "sourceSheet": "WEB - Custom",
-      "sourceRef": "WEB-CT-081",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "httpx",
-        "Nuclei"
       ]
     },
     {
@@ -4658,89 +3929,6 @@
       ]
     },
     {
-      "id": "MOB-BL-002",
-      "stdRef": "MASTG-TECH-0012",
-      "group": "Setup",
-      "title": "Root setup — emulator (rootAVD)",
-      "objective": "rootAVD for AVD root; Magisk + AlwaysTrustUserCerts module for system cert install",
-      "rowType": "setup",
-      "severity": "info",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-002",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "MobSF",
-        "jadx",
-        "Frida"
-      ]
-    },
-    {
-      "id": "MOB-BL-003",
-      "stdRef": "MASTG-TECH-0011",
-      "group": "Setup",
-      "title": "Burp certificate install (system store)",
-      "objective": "AlwaysTrustUserCerts Magisk module or manual push to /system/etc/security/cacerts/",
-      "rowType": "setup",
-      "severity": "info",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-003",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Frida",
-        "MobSF",
-        "jadx"
-      ]
-    },
-    {
-      "id": "MOB-BL-004",
-      "stdRef": "MASTG-TECH-0011",
-      "group": "Setup",
-      "title": "Proxy setup via ADB",
-      "objective": "adb shell settings put global http_proxy <IP>:8080 — note: does not work for Flutter",
-      "rowType": "setup",
-      "severity": "info",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-004",
-      "tags": [
-        "core"
-      ],
-      "tech": [
-        "flutter"
-      ],
-      "tools": [
-        "adb",
-        "Burp Suite",
-        "mitmproxy"
-      ]
-    },
-    {
       "id": "MOB-BL-005",
       "stdRef": "MASTG-TECH-0011",
       "group": "Setup",
@@ -4797,35 +3985,6 @@
       ]
     },
     {
-      "id": "MOB-BL-007",
-      "stdRef": "MASTG-TECH-0003",
-      "group": "Setup",
-      "title": "Flutter-specific proxy setup",
-      "objective": "iptables DNAT for port 80/443 to Burp — Flutter ignores system proxy; or use Reflutter repack",
-      "rowType": "setup",
-      "severity": "info",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-007",
-      "tags": [
-        "core"
-      ],
-      "tech": [
-        "flutter"
-      ],
-      "tools": [
-        "adb",
-        "Burp Suite",
-        "mitmproxy"
-      ]
-    },
-    {
       "id": "MOB-BL-008",
       "stdRef": "MASTG-TEST-0001",
       "group": "Static",
@@ -4856,8 +4015,8 @@
       "id": "MOB-BL-009",
       "stdRef": "MASTG-TEST-0002",
       "group": "Static",
-      "title": "Exported component enumeration",
-      "objective": "Exported activities/services/receivers with intent-filter — direct invocation via ADB to bypass auth",
+      "title": "Android component exposure review",
+      "objective": "Review AndroidManifest.xml and runtime registrations for exported activities, services, receivers, providers, intent filters, deep-link handlers, FileProvider paths, and unsafe component exposure. Test direct invocation, provider leakage, receiver abuse, intent redirection, and fragment injection inside this parent component review.",
       "rowType": "test",
       "severity": "high",
       "status": "Not Started",
@@ -4874,9 +4033,9 @@
       ],
       "tech": [],
       "tools": [
+        "Jadx",
         "adb",
-        "Burp Suite",
-        "mitmproxy"
+        "MobSF"
       ]
     },
     {
@@ -4969,8 +4128,8 @@
       "id": "MOB-BL-013",
       "stdRef": "MASTG-TEST-0004",
       "group": "Static",
-      "title": "Deep link enumeration",
-      "objective": "adb shell dumpsys package — find all registered scheme:// handlers; check for unsanitized params",
+      "title": "Deep link and app link enumeration",
+      "objective": "Enumerate registered scheme, intent-filter, and app-link handlers with dumpsys/Jadx. Keep exploitation payloads in the Deep Links feature rows.",
       "rowType": "test",
       "severity": "medium",
       "status": "Not Started",
@@ -5155,146 +4314,11 @@
       ]
     },
     {
-      "id": "MOB-BL-020",
-      "stdRef": "MASVS-CRYPTO-1",
-      "group": "Crypto",
-      "title": "Weak or custom encryption",
-      "objective": "Jadx — identify use of MD5, SHA1, ECB mode, custom crypto — flag for weak algorithm",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-020",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "jadx",
-        "Apktool",
-        "MobSF"
-      ]
-    },
-    {
-      "id": "MOB-BL-021",
-      "stdRef": "MASVS-CRYPTO-2",
-      "group": "Crypto",
-      "title": "Hardcoded crypto keys",
-      "objective": "Jadx decompile — grep for AES, DES, RSA, SecretKeySpec with hardcoded byte arrays. Static IV: new IvParameterSpec(new byte[]{0,0,...}). Flag ECB mode (no IV at all).",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-021",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "jadx",
-        "Apktool",
-        "MobSF"
-      ]
-    },
-    {
-      "id": "MOB-BL-022",
-      "stdRef": "MASVS-AUTH-1",
-      "group": "Auth",
-      "title": "Biometric bypass via Frida",
-      "objective": "Frida: hook BiometricPrompt.AuthenticationCallback.onAuthenticationSucceeded — force call success. Objection: android hooking search classes BiometricPrompt. Also patch CryptoObject null check.",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-022",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Frida",
-        "Objection",
-        "Burp Suite"
-      ]
-    },
-    {
-      "id": "MOB-BL-023",
-      "stdRef": "MASVS-AUTH-2",
-      "group": "Auth",
-      "title": "Token storage security",
-      "objective": "adb shell \"run-as <pkg> cat shared_prefs/*.xml\" — token in SharedPreferences = insecure. Secure = Android Keystore (KeyStore.getInstance(\"AndroidKeyStore\")). Check with Jadx for storage location.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-023",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "adb",
-        "Burp Suite",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "MOB-BL-024",
-      "stdRef": "MASVS-AUTH-3",
-      "group": "Auth",
-      "title": "Session management — token reuse after logout",
-      "objective": "Log out, capture auth token beforehand via Burp. Replay token after logout — expect 401. Also test: reinstall app, replay old token. Frida: dump token from memory post-logout.",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-024",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Frida",
-        "Objection",
-        "Burp Suite"
-      ]
-    },
-    {
       "id": "MOB-BL-025",
       "stdRef": "MASVS-NETWORK-1",
-      "group": "Network",
-      "title": "Cleartext HTTP traffic",
-      "objective": "Check AndroidManifest usesCleartextTraffic=true; Wireshark — any HTTP (not HTTPS) traffic",
+      "group": "Static",
+      "title": "Cleartext traffic configuration review",
+      "objective": "Review AndroidManifest.xml, network security config, and static endpoint strings for cleartext HTTP allowance or plaintext service URLs.",
       "rowType": "test",
       "severity": "high",
       "status": "Not Started",
@@ -5317,146 +4341,9 @@
       ]
     },
     {
-      "id": "MOB-BL-026",
-      "stdRef": "MASVS-NETWORK-2",
-      "group": "Network",
-      "title": "TLS certificate validation",
-      "objective": "After pinning bypass: swap Burp cert for self-signed with wrong CN. App should reject. Also test: expired cert acceptance, null hostname verifier (Jadx: ALLOW_ALL_HOSTNAME_VERIFIER).",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-026",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "jadx",
-        "Apktool",
-        "MobSF"
-      ]
-    },
-    {
-      "id": "MOB-BL-027",
-      "stdRef": "MASVS-NETWORK-2",
-      "group": "Network",
-      "title": "API security from mobile context",
-      "objective": "Burp Suite via proxy — intercept all API calls. Run OWASP API Top 10: BOLA (change user ID), BFLA (call admin endpoints), mass assignment (add role field to request body).",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-027",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "mitmproxy",
-        "Frida"
-      ]
-    },
-    {
-      "id": "MOB-BL-028",
-      "stdRef": "MASVS-PLATFORM-1",
-      "group": "Platform",
-      "title": "Exported component abuse",
-      "objective": "adb shell am start/startservice/broadcast — invoke exported components directly, test for bypass",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-028",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "adb",
-        "Burp Suite",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "MOB-BL-029",
-      "stdRef": "MASVS-PLATFORM-2",
-      "group": "Platform",
-      "title": "Deep link parameter injection",
-      "objective": "adb shell am start -W -a android.intent.action.VIEW -d \"scheme://path?param=../../../etc\" <pkg> — test open redirect, path traversal, XSS if loaded in WebView.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-029",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "adb",
-        "Burp Suite",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "MOB-BL-030",
-      "stdRef": "MASVS-PLATFORM-3",
-      "group": "Platform",
-      "title": "WebView security",
-      "objective": "Jadx — check WebView.addJavascriptInterface (pre-API17 RCE), setAllowFileAccess(true), setJavaScriptEnabled on non-trusted URL. Frida: hook loadUrl to observe loaded URLs.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-030",
-      "tags": [
-        "core"
-      ],
-      "tech": [
-        "native"
-      ],
-      "tools": [
-        "Frida",
-        "Objection",
-        "Burp Suite"
-      ]
-    },
-    {
       "id": "MOB-BL-031",
       "stdRef": "MASVS-PLATFORM-4",
-      "group": "Platform",
+      "group": "Privacy",
       "title": "Clipboard data leakage",
       "objective": "After login, trigger copy of sensitive data (password, token). adb shell \"service call clipboard 2\" or malicious app to read ClipboardManager. FLAG_SECURE does not protect clipboard.",
       "rowType": "test",
@@ -5483,7 +4370,7 @@
     {
       "id": "MOB-BL-032",
       "stdRef": "MASVS-CODE-1",
-      "group": "Code",
+      "group": "Status",
       "title": "Debug mode enabled in release build",
       "objective": "android:debuggable=true in manifest of release APK — enables ADB debugging on non-rooted device",
       "rowType": "test",
@@ -5505,33 +4392,6 @@
         "adb",
         "Burp Suite",
         "mitmproxy"
-      ]
-    },
-    {
-      "id": "MOB-BL-033",
-      "stdRef": "MASVS-CODE-2",
-      "group": "Code",
-      "title": "Injection in local processing",
-      "objective": "Jadx — find SQLiteDatabase.rawQuery with string concatenation (SQLi). Runtime.exec() or ProcessBuilder with user input (cmd injection). Frida: hook exec to log all subprocess calls.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-033",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Frida",
-        "Objection",
-        "Burp Suite"
       ]
     },
     {
@@ -5724,87 +4584,6 @@
       ]
     },
     {
-      "id": "MOB-BL-041",
-      "stdRef": "MASTG-TEST-0024",
-      "group": "Platform",
-      "title": "Content provider leakage",
-      "objective": "adb shell content query --uri content://<pkg>.provider/ — exported ContentProviders exposing sensitive data. SQL injection via content:// URI selection args. File provider path traversal (../../etc/hosts via content URI).",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-041",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "adb",
-        "Burp Suite",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "MOB-BL-042",
-      "stdRef": "MASTG-TEST-0026",
-      "group": "Platform",
-      "title": "Broadcast receiver abuse",
-      "objective": "adb shell am broadcast -a <action> — invoke exported receivers directly. Test for sensitive actions triggered without permission (auth bypass, data wipe, feature unlock). Check dynamic receivers registered without proper permission check.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-042",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "adb",
-        "Burp Suite",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "MOB-BL-043",
-      "stdRef": "MASTG-TEST-0049",
-      "group": "Storage",
-      "title": "Firebase / cloud DB misconfiguration",
-      "objective": "Jadx: grep for firebaseio.com, .firebaseapp.com, google-services.json. curl https://<proj>.firebaseio.com/.json — if returns data = unauthenticated read. Test .write via PUT. Check Storage: gsutil ls gs://<bucket>.",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-043",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "jadx",
-        "Apktool",
-        "MobSF"
-      ]
-    },
-    {
       "id": "MOB-BL-044",
       "stdRef": "MASTG-TEST-0031",
       "group": "Platform",
@@ -5859,114 +4638,6 @@
       ]
     },
     {
-      "id": "MOB-BL-046",
-      "stdRef": "MASTG-TEST-0030",
-      "group": "Platform",
-      "title": "Intent redirection",
-      "objective": "Exported activity accepts Intent with embedded target Intent — attacker redirects to unexported component. adb: am start with nested intent extras. Jadx: find getIntent().getParcelableExtra() passed to startActivity().",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-046",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "adb",
-        "Burp Suite",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "MOB-BL-047",
-      "stdRef": "MASTG-TEST-0025",
-      "group": "Platform",
-      "title": "Fragment injection",
-      "objective": "PreferenceActivity with exported=true on Android < 4.4 — attacker sends fragment class name to load arbitrary fragment. adb: am start -n <pkg>/.SettingsActivity --es :android:show_fragment com.pkg.PrivilegedFragment. Check Jadx for isValidFragment() override.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-047",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "adb",
-        "Burp Suite",
-        "mitmproxy"
-      ]
-    },
-    {
-      "id": "MOB-BL-048",
-      "stdRef": "MASTG-TEST-0016",
-      "group": "Auth",
-      "title": "JWT / token expiry not enforced",
-      "objective": "Capture auth token. Wait past expiry window or manually decode JWT (jwt.io) and check exp claim. Replay expired token — server should return 401. Also test: modify exp to future value, re-sign with none algorithm.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-048",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Frida",
-        "Burp Suite",
-        "MobSF"
-      ]
-    },
-    {
-      "id": "MOB-BL-049",
-      "stdRef": "MASTG-TEST-0015",
-      "group": "Crypto",
-      "title": "Insecure random / predictable token",
-      "objective": "Jadx: find java.util.Random (not SecureRandom) used for token/OTP/session generation. Collect multiple tokens and check entropy/predictability. SecureRandom is required for cryptographic values.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Baseline",
-      "sourceRef": "MOB-BL-049",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "jadx",
-        "Apktool",
-        "MobSF"
-      ]
-    },
-    {
       "id": "MOB-BL-050",
       "stdRef": "MASTG-TEST-0029",
       "group": "Platform",
@@ -5994,9 +4665,335 @@
       ]
     },
     {
+      "id": "MOB-CT-019",
+      "stdRef": "API1-2023",
+      "group": "API",
+      "title": "BOLA on mobile API endpoints",
+      "objective": "Mobile API often uses different auth or lacks server-side checks — test IDOR on all object IDs",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "baseline",
+      "featureLabel": null,
+      "featureKey": null,
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Baseline",
+      "sourceRef": "MOB-CT-019",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Frida",
+        "Burp Suite",
+        "MobSF"
+      ]
+    },
+    {
+      "id": "MOB-CT-020",
+      "stdRef": "API5-2023",
+      "group": "API",
+      "title": "BFLA — admin functions via mobile API",
+      "objective": "Call privileged API functions available only via mobile client but not enforced server-side",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "baseline",
+      "featureLabel": null,
+      "featureKey": null,
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Baseline",
+      "sourceRef": "MOB-CT-020",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "Frida"
+      ]
+    },
+    {
+      "id": "MOB-CT-021",
+      "stdRef": "API3-2023",
+      "group": "API",
+      "title": "Mass assignment on mobile endpoints",
+      "objective": "POST extra fields to mobile-specific endpoints — role, balance, is_verified",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "baseline",
+      "featureLabel": null,
+      "featureKey": null,
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Baseline",
+      "sourceRef": "MOB-CT-021",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "Frida"
+      ]
+    },
+    {
+      "id": "MOB-CT-022",
+      "stdRef": "API2-2023",
+      "group": "API",
+      "title": "Weak auth on mobile-specific endpoints",
+      "objective": "Mobile app uses API key or device ID instead of proper auth — test without credentials",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "baseline",
+      "featureLabel": null,
+      "featureKey": null,
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Baseline",
+      "sourceRef": "MOB-CT-022",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Frida",
+        "Burp Suite",
+        "MobSF"
+      ]
+    },
+    {
+      "id": "MOB-CT-037",
+      "stdRef": "API8-2023",
+      "group": "API",
+      "title": "API security misconfiguration on mobile backend",
+      "objective": "Check mobile-used endpoints for exposed OpenAPI/Swagger docs, debug or staging endpoints, verbose errors, weak gateway policy, and default credentials/misconfig inherited from the shared API tier",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "baseline",
+      "featureLabel": null,
+      "featureKey": null,
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Baseline",
+      "sourceRef": "MOB-CT-037",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "Frida"
+      ]
+    },
+    {
+      "id": "MOB-BL-022",
+      "stdRef": "MASVS-AUTH-1",
+      "group": "Login / Auth",
+      "title": "Biometric bypass via Frida",
+      "objective": "Frida: hook BiometricPrompt.AuthenticationCallback.onAuthenticationSucceeded — force call success. Objection: android hooking search classes BiometricPrompt. Also patch CryptoObject null check.",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Login / Auth",
+      "featureKey": "mobile:login-auth",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-BL-022",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Frida",
+        "Objection",
+        "Burp Suite"
+      ]
+    },
+    {
+      "id": "MOB-BL-023",
+      "stdRef": "MASVS-AUTH-2",
+      "group": "Login / Auth",
+      "title": "Token storage security",
+      "objective": "adb shell \"run-as <pkg> cat shared_prefs/*.xml\" — token in SharedPreferences = insecure. Secure = Android Keystore (KeyStore.getInstance(\"AndroidKeyStore\")). Check with Jadx for storage location.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Login / Auth",
+      "featureKey": "mobile:login-auth",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-BL-023",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "adb",
+        "Burp Suite",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "MOB-BL-024",
+      "stdRef": "MASVS-AUTH-3",
+      "group": "Login / Auth",
+      "title": "Session management — token reuse after logout",
+      "objective": "Log out, capture auth token beforehand via Burp. Replay token after logout — expect 401. Also test: reinstall app, replay old token. Frida: dump token from memory post-logout.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Login / Auth",
+      "featureKey": "mobile:login-auth",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-BL-024",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Frida",
+        "Objection",
+        "Burp Suite"
+      ]
+    },
+    {
+      "id": "MOB-BL-029",
+      "stdRef": "MASVS-PLATFORM-2",
+      "group": "Deep Links",
+      "title": "Deep link parameter injection",
+      "objective": "adb shell am start -W -a android.intent.action.VIEW -d \"scheme://path?param=../../../etc\" <pkg> — test open redirect, path traversal, XSS if loaded in WebView.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Deep Links",
+      "featureKey": "mobile:deep-links",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-BL-029",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "adb",
+        "Burp Suite",
+        "mitmproxy"
+      ]
+    },
+    {
+      "id": "MOB-BL-030",
+      "stdRef": "MASVS-PLATFORM-3",
+      "group": "WebView",
+      "title": "WebView security",
+      "objective": "Jadx — check WebView.addJavascriptInterface (pre-API17 RCE), setAllowFileAccess(true), setJavaScriptEnabled on non-trusted URL. Frida: hook loadUrl to observe loaded URLs.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "WebView",
+      "featureKey": "mobile:webview",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-BL-030",
+      "tags": [
+        "core"
+      ],
+      "tech": [
+        "native"
+      ],
+      "tools": [
+        "Frida",
+        "Objection",
+        "Burp Suite"
+      ]
+    },
+    {
+      "id": "MOB-BL-043",
+      "stdRef": "MASTG-TEST-0049",
+      "group": "Cloud Backend",
+      "title": "Firebase / cloud DB misconfiguration",
+      "objective": "Jadx: grep for firebaseio.com, .firebaseapp.com, google-services.json. curl https://<proj>.firebaseio.com/.json — if returns data = unauthenticated read. Test .write via PUT. Check Storage: gsutil ls gs://<bucket>.",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Cloud Backend",
+      "featureKey": "mobile:cloud-backend",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-BL-043",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "jadx",
+        "Apktool",
+        "MobSF"
+      ]
+    },
+    {
+      "id": "MOB-BL-048",
+      "stdRef": "MASTG-TEST-0016",
+      "group": "Login / Auth",
+      "title": "JWT / token expiry not enforced",
+      "objective": "Capture auth token. Wait past expiry window or manually decode JWT (jwt.io) and check exp claim. Replay expired token — server should return 401. Also test: modify exp to future value, re-sign with none algorithm.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Login / Auth",
+      "featureKey": "mobile:login-auth",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-BL-048",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Frida",
+        "Burp Suite",
+        "MobSF"
+      ]
+    },
+    {
       "id": "MOB-CT-001",
       "stdRef": "MASVS-AUTH-1",
-      "group": "Login / Biometric",
+      "group": "Login / Auth",
       "title": "Biometric hook bypass",
       "objective": "Frida hook on biometric callback — call success branch directly without real biometric",
       "rowType": "test",
@@ -6004,8 +5001,8 @@
       "status": "Not Started",
       "platform": "mobile",
       "section": "custom",
-      "featureLabel": "Login / Biometric",
-      "featureKey": "mobile:login-biometric",
+      "featureLabel": "Login / Auth",
+      "featureKey": "mobile:login-auth",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "MOBILE - Custom",
@@ -6023,7 +5020,7 @@
     {
       "id": "MOB-CT-002",
       "stdRef": "MASVS-AUTH-2",
-      "group": "Login / Biometric",
+      "group": "Login / Auth",
       "title": "Auth token extraction from memory",
       "objective": "Fridump during authenticated session — search memory for JWT/Bearer tokens",
       "rowType": "test",
@@ -6031,8 +5028,8 @@
       "status": "Not Started",
       "platform": "mobile",
       "section": "custom",
-      "featureLabel": "Login / Biometric",
-      "featureKey": "mobile:login-biometric",
+      "featureLabel": "Login / Auth",
+      "featureKey": "mobile:login-auth",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "MOBILE - Custom",
@@ -6050,7 +5047,7 @@
     {
       "id": "MOB-CT-003",
       "stdRef": "MASVS-AUTH-3",
-      "group": "Login / Biometric",
+      "group": "Login / Auth",
       "title": "Login response manipulation",
       "objective": "Intercept login response — change false→true, 401→200 in auth response fields",
       "rowType": "test",
@@ -6058,8 +5055,8 @@
       "status": "Not Started",
       "platform": "mobile",
       "section": "custom",
-      "featureLabel": "Login / Biometric",
-      "featureKey": "mobile:login-biometric",
+      "featureLabel": "Login / Auth",
+      "featureKey": "mobile:login-auth",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "MOBILE - Custom",
@@ -6077,7 +5074,7 @@
     {
       "id": "MOB-CT-004",
       "stdRef": "MASVS-AUTH-2",
-      "group": "Login / Biometric",
+      "group": "Login / Auth",
       "title": "Credential storage location",
       "objective": "Confirm passwords/tokens use Android Keystore — not SharedPreferences or hardcoded",
       "rowType": "test",
@@ -6085,8 +5082,8 @@
       "status": "Not Started",
       "platform": "mobile",
       "section": "custom",
-      "featureLabel": "Login / Biometric",
-      "featureKey": "mobile:login-biometric",
+      "featureLabel": "Login / Auth",
+      "featureKey": "mobile:login-auth",
       "access": "greybox",
       "source": "catalog",
       "sourceSheet": "MOBILE - Custom",
@@ -6291,60 +5288,6 @@
       ]
     },
     {
-      "id": "MOB-CT-012",
-      "stdRef": "MASVS-PRIVACY-1",
-      "group": "Push Notifications",
-      "title": "Notification content leakage",
-      "objective": "Check if notification payload shows sensitive data (balance, OTP, PII) on locked screen",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "custom",
-      "featureLabel": "Push Notifications",
-      "featureKey": "mobile:push-notifications",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Custom",
-      "sourceRef": "MOB-CT-012",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Frida",
-        "Burp Suite",
-        "MobSF"
-      ]
-    },
-    {
-      "id": "MOB-CT-013",
-      "stdRef": "MASVS-NETWORK-1",
-      "group": "Push Notifications",
-      "title": "FCM token leakage",
-      "objective": "FCM registration token logged or stored insecurely — allows notification spoofing",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "custom",
-      "featureLabel": "Push Notifications",
-      "featureKey": "mobile:push-notifications",
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Custom",
-      "sourceRef": "MOB-CT-013",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "MobSF",
-        "jadx",
-        "Frida"
-      ]
-    },
-    {
       "id": "MOB-CT-014",
       "stdRef": "MASVS-PLATFORM-3",
       "group": "WebView",
@@ -6479,114 +5422,6 @@
         "MobSF",
         "jadx",
         "Frida"
-      ]
-    },
-    {
-      "id": "MOB-CT-019",
-      "stdRef": "API1-2023",
-      "group": "API Backend",
-      "title": "BOLA on mobile API endpoints",
-      "objective": "Mobile API often uses different auth or lacks server-side checks — test IDOR on all object IDs",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "custom",
-      "featureLabel": "API Backend",
-      "featureKey": "mobile:api-backend",
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Custom",
-      "sourceRef": "MOB-CT-019",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Frida",
-        "Burp Suite",
-        "MobSF"
-      ]
-    },
-    {
-      "id": "MOB-CT-020",
-      "stdRef": "API5-2023",
-      "group": "API Backend",
-      "title": "BFLA — admin functions via mobile API",
-      "objective": "Call privileged API functions available only via mobile client but not enforced server-side",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "custom",
-      "featureLabel": "API Backend",
-      "featureKey": "mobile:api-backend",
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Custom",
-      "sourceRef": "MOB-CT-020",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "mitmproxy",
-        "Frida"
-      ]
-    },
-    {
-      "id": "MOB-CT-021",
-      "stdRef": "API3-2023",
-      "group": "API Backend",
-      "title": "Mass assignment on mobile endpoints",
-      "objective": "POST extra fields to mobile-specific endpoints — role, balance, is_verified",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "custom",
-      "featureLabel": "API Backend",
-      "featureKey": "mobile:api-backend",
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Custom",
-      "sourceRef": "MOB-CT-021",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "mitmproxy",
-        "Frida"
-      ]
-    },
-    {
-      "id": "MOB-CT-022",
-      "stdRef": "API2-2023",
-      "group": "API Backend",
-      "title": "Weak auth on mobile-specific endpoints",
-      "objective": "Mobile app uses API key or device ID instead of proper auth — test without credentials",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "custom",
-      "featureLabel": "API Backend",
-      "featureKey": "mobile:api-backend",
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Custom",
-      "sourceRef": "MOB-CT-022",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Frida",
-        "Burp Suite",
-        "MobSF"
       ]
     },
     {
@@ -6752,60 +5587,6 @@
       ]
     },
     {
-      "id": "MOB-CT-029",
-      "stdRef": "MASVS-PLATFORM-1",
-      "group": "Intent / Share",
-      "title": "Exported share target abuse",
-      "objective": "Send crafted intents/activities with oversized, malformed, or privileged payloads into exposed share handlers",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "custom",
-      "featureLabel": "Intent / Share",
-      "featureKey": "mobile:intent-share",
-      "access": "both",
-      "source": "curated",
-      "sourceSheet": "MOBILE - Custom",
-      "sourceRef": "MOB-CT-029",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "adb",
-        "Frida",
-        "Burp Suite"
-      ]
-    },
-    {
-      "id": "MOB-CT-030",
-      "stdRef": "MASVS-PLATFORM-1",
-      "group": "Intent / Share",
-      "title": "Unauthorized file URI consumption",
-      "objective": "Provide attacker-controlled content:// or file:// URIs and confirm the app enforces type, path, and permission checks",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "custom",
-      "featureLabel": "Intent / Share",
-      "featureKey": "mobile:intent-share",
-      "access": "both",
-      "source": "curated",
-      "sourceSheet": "MOBILE - Custom",
-      "sourceRef": "MOB-CT-030",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Frida",
-        "Burp Suite",
-        "MobSF"
-      ]
-    },
-    {
       "id": "MOB-CT-031",
       "stdRef": "MASVS-NETWORK-1",
       "group": "Update / Remote Config",
@@ -6965,33 +5746,6 @@
         "MobSF",
         "jadx",
         "adb"
-      ]
-    },
-    {
-      "id": "MOB-CT-037",
-      "stdRef": "API8-2023",
-      "group": "API Backend",
-      "title": "API security misconfiguration on mobile backend",
-      "objective": "Check mobile-used endpoints for exposed OpenAPI/Swagger docs, debug or staging endpoints, verbose errors, weak gateway policy, and default credentials/misconfig inherited from the shared API tier",
-      "rowType": "test",
-      "severity": "medium",
-      "status": "Not Started",
-      "platform": "mobile",
-      "section": "custom",
-      "featureLabel": "API Backend",
-      "featureKey": "mobile:api-backend",
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "MOBILE - Custom",
-      "sourceRef": "MOB-CT-037",
-      "tags": [
-        "feature-specific"
-      ],
-      "tech": [],
-      "tools": [
-        "Burp Suite",
-        "mitmproxy",
-        "Frida"
       ]
     },
     {
@@ -7481,6 +6235,303 @@
       ]
     },
     {
+      "id": "MOB-CT-056",
+      "stdRef": "MASVS-GENERIC",
+      "group": "Import",
+      "title": "Cross-account mobile import mapping abuse",
+      "objective": "Modify import mappings, owner IDs, tenant/account IDs, or object identifiers so imported records overwrite or attach to another user or tenant.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Import",
+      "featureKey": "mobile:import",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-056",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Jadx",
+        "adb"
+      ]
+    },
+    {
+      "id": "MOB-CT-057",
+      "stdRef": "MASVS-GENERIC",
+      "group": "Export",
+      "title": "Mobile export authorization and path handling",
+      "objective": "Tamper export IDs, report IDs, local destination paths, and cached export references to confirm exported documents cannot expose another user data or write to unsafe locations.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Export",
+      "featureKey": "mobile:export",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-057",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "adb",
+        "Jadx"
+      ]
+    },
+    {
+      "id": "MOB-CT-058",
+      "stdRef": "MASVS-GENERIC",
+      "group": "File Upload",
+      "title": "Mobile active-content upload handling",
+      "objective": "Upload HTML, SVG, PDF, archive, and polyglot files from the mobile client and verify same-origin serving, active content, malware, size, and server-side validation controls.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "File Upload",
+      "featureKey": "mobile:file-upload",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-058",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Jadx",
+        "MobSF"
+      ]
+    },
+    {
+      "id": "MOB-CT-059",
+      "stdRef": "MASVS-GENERIC",
+      "group": "File Download",
+      "title": "Mobile cached download and signed URL reuse",
+      "objective": "Replay cached file paths, signed URLs, content URIs, and download tokens across users/devices to verify authorization is enforced on every retrieval.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "File Download",
+      "featureKey": "mobile:file-download",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-059",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "adb",
+        "Jadx"
+      ]
+    },
+    {
+      "id": "MOB-CT-060",
+      "stdRef": "MASVS-GENERIC",
+      "group": "Payment",
+      "title": "Mobile payment replay and idempotency",
+      "objective": "Replay payment confirmation, callback, and receipt requests from the mobile app to verify duplicate settlement, refund, and recipient changes are rejected server-side.",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Payment",
+      "featureKey": "mobile:payment",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-060",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Frida",
+        "adb"
+      ]
+    },
+    {
+      "id": "MOB-CT-061",
+      "stdRef": "MASVS-GENERIC",
+      "group": "Coupon / Promo",
+      "title": "Mobile coupon stacking race condition",
+      "objective": "Apply promo/coupon codes concurrently across app sessions, carts, and devices to verify stacking, reuse, and campaign limits are enforced server-side.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Coupon / Promo",
+      "featureKey": "mobile:coupon-promo",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-061",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Frida",
+        "adb"
+      ]
+    },
+    {
+      "id": "MOB-CT-062",
+      "stdRef": "MASVS-GENERIC",
+      "group": "Billing / Subscription",
+      "title": "Mobile entitlement cache rollback",
+      "objective": "Modify or roll back cached subscription, purchase, and entitlement state on the device and verify backend checks prevent unauthorized feature access.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "Billing / Subscription",
+      "featureKey": "mobile:billing-subscription",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-062",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Jadx",
+        "Frida",
+        "adb"
+      ]
+    },
+    {
+      "id": "MOB-CT-063",
+      "stdRef": "MASVS-GENERIC",
+      "group": "OAuth / OIDC",
+      "title": "Mobile OAuth state and tenant tampering",
+      "objective": "Alter state, nonce, relay, tenant, account, and return parameters in mobile OAuth/OIDC flows to verify callback binding and anti-CSRF controls.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "OAuth / OIDC",
+      "featureKey": "mobile:oauth-oidc",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-063",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "adb",
+        "Jadx"
+      ]
+    },
+    {
+      "id": "MOB-CT-064",
+      "stdRef": "MASVS-GENERIC",
+      "group": "WebSocket",
+      "title": "Mobile cross-site WebSocket handshake abuse",
+      "objective": "Test WebSocket handshakes for missing Origin validation, weak token binding, and unauthorized cross-account channel establishment from attacker-controlled contexts.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "WebSocket",
+      "featureKey": "mobile:websocket",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-064",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "websocat",
+        "Frida"
+      ]
+    },
+    {
+      "id": "MOB-CT-065",
+      "stdRef": "MASVS-GENERIC",
+      "group": "GraphQL",
+      "title": "Mobile GraphQL depth and batching abuse",
+      "objective": "Send deeply nested, aliased, and batched mobile GraphQL operations to test resource exhaustion, authorization drift, and hidden mutation exposure.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "GraphQL",
+      "featureKey": "mobile:graphql",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-065",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "GraphQL Voyager",
+        "InQL"
+      ]
+    },
+    {
+      "id": "MOB-CT-066",
+      "stdRef": "MASVS-GENERIC",
+      "group": "QR / KHQR",
+      "title": "Mobile QR replay and confirmation binding",
+      "objective": "Replay scanned QR/KHQR payloads and confirmation requests across devices/accounts to verify amount, merchant, session, and nonce binding.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "custom",
+      "featureLabel": "QR / KHQR",
+      "featureKey": "mobile:qr-khqr",
+      "access": "both",
+      "source": "curated",
+      "sourceSheet": "MOBILE - Custom",
+      "sourceRef": "MOB-CT-066",
+      "tags": [
+        "curated"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "Frida",
+        "adb"
+      ]
+    },
+    {
       "id": "DSK-BL-001",
       "stdRef": "TASVS-INFO-1",
       "group": "Recon",
@@ -7757,33 +6808,6 @@
       ]
     },
     {
-      "id": "DSK-BL-011",
-      "stdRef": "TASVS-STOR-1",
-      "group": "File",
-      "title": "Temp file credential capture technique",
-      "objective": "Lock Temp folder (disable Delete permission) before running app — credentials written to temp persist for inspection",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-011",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Procmon",
-        "ILSpy",
-        "Frida"
-      ]
-    },
-    {
       "id": "DSK-BL-012",
       "stdRef": "TASVS-STOR-2",
       "group": "File",
@@ -7835,33 +6859,6 @@
         "Procmon",
         "ILSpy",
         "Frida"
-      ]
-    },
-    {
-      "id": "DSK-BL-014",
-      "stdRef": "TASVS-STOR-1",
-      "group": "File",
-      "title": "Unquoted service path",
-      "objective": "sc qc <service> — look for BINARY_PATH_NAME with spaces and no quotes. wmic service get name,pathname — automated check. Plant binary at first unquoted segment (e.g. C:\\Program Files\\Evil.exe).",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-014",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Procmon",
-        "Frida",
-        "Wireshark"
       ]
     },
     {
@@ -7983,7 +6980,7 @@
       "stdRef": "TASVS-NETW-1",
       "group": "Network",
       "title": "Non-HTTP traffic analysis",
-      "objective": "Wireshark: filter by process via capture filter or Procmon network events. Look for TCP/UDP custom protocols, named pipe traffic. API Monitor — hook WSASend/WSARecv for low-level socket data.",
+      "objective": "Analyze TCP/UDP custom protocols and non-HTTP socket traffic with Wireshark, Procmon network events, and API Monitor hooks. Keep named pipe/local socket authorization checks in the IPC feature.",
       "rowType": "test",
       "severity": "high",
       "status": "Not Started",
@@ -8204,8 +7201,8 @@
       "id": "DSK-BL-027",
       "stdRef": "TASVS-STOR-4",
       "group": "Memory",
-      "title": "Sensitive data in process memory",
-      "objective": "Process Hacker: right-click process > Properties > Memory > Strings. Filter length > 20, search for token/Bearer/password. Alternatively: procdump -ma <pid> then run strings on the dump and grep for auth artifacts.",
+      "title": "Sensitive data and credential extraction from process memory",
+      "objective": "Inspect process memory and dumps for credentials, bearer tokens, passwords, private keys, and sensitive runtime artifacts during authenticated workflows. Use Process Hacker/procdump/strings and debugger-assisted dumping where needed.",
       "rowType": "test",
       "severity": "high",
       "status": "Not Started",
@@ -8225,170 +7222,6 @@
         "Procmon",
         "ILSpy",
         "Frida"
-      ]
-    },
-    {
-      "id": "DSK-BL-028",
-      "stdRef": "TASVS-STOR-4",
-      "group": "Memory",
-      "title": "Credential extraction from memory dump",
-      "objective": "Attach x64dbg / Process Hacker — dump and search memory during auth operation",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-028",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Procmon",
-        "ILSpy",
-        "Frida"
-      ]
-    },
-    {
-      "id": "DSK-BL-029",
-      "stdRef": "TASVS-CODE-1",
-      "group": "MSI",
-      "title": "AlwaysInstallElevated check",
-      "objective": "reg query HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer /v AlwaysInstallElevated && reg query HKLM\\... — both must be 0x1. If set: msiexec /quiet /i malicious.msi installs as SYSTEM.",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-029",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "lessmsi",
-        "Orca",
-        "Procmon"
-      ]
-    },
-    {
-      "id": "DSK-BL-030",
-      "stdRef": "TASVS-CODE-1",
-      "group": "MSI",
-      "title": "Custom Action DLL hijack",
-      "objective": "Procmon during install: filter msiexec.exe + CreateFile + NAME NOT FOUND — DLL in writable path = hijack",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-030",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "lessmsi",
-        "Orca",
-        "Procmon"
-      ]
-    },
-    {
-      "id": "DSK-BL-031",
-      "stdRef": "TASVS-CODE-1",
-      "group": "MSI",
-      "title": "Credentials in MSI tables",
-      "objective": "MyMSIAnalyzer / strings — check Property, Registry, CustomAction tables for plaintext credentials",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-031",
-      "tags": [
-        "core"
-      ],
-      "tech": [
-        "dotnet"
-      ],
-      "tools": [
-        "lessmsi",
-        "Orca",
-        "Procmon"
-      ]
-    },
-    {
-      "id": "DSK-BL-032",
-      "stdRef": "TASVS-CODE-1",
-      "group": "MSI",
-      "title": "MSI repair mode privilege escalation",
-      "objective": "GuiFinder — identify MSIs running GUI as SYSTEM; exploit explorer.exe escape to get SYSTEM shell",
-      "rowType": "test",
-      "severity": "critical",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-032",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "lessmsi",
-        "Orca",
-        "Procmon"
-      ]
-    },
-    {
-      "id": "DSK-BL-033",
-      "stdRef": "TASVS-CODE-1",
-      "group": "MSI",
-      "title": "MST transform backdoor (unsigned MSI)",
-      "objective": "If MSI unsigned: craft malicious .mst transform, execute: msiexec /i legit.msi TRANSFORMS=evil.mst",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-033",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "lessmsi",
-        "Orca",
-        "Procmon"
       ]
     },
     {
@@ -8450,89 +7283,6 @@
       ]
     },
     {
-      "id": "DSK-BL-036",
-      "stdRef": "TASVS-CODE-3",
-      "group": "Common",
-      "title": "Embedded WebView full web pentest",
-      "objective": "Embedded CEF/Edge/WebView2 — run full web pentest: XSS (does it reach native?), file:// access, navigation to attacker URL, postMessage abuse. DevTools: --remote-debugging-port if enabled.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-036",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Electronegativity",
-        "Frida",
-        "asar"
-      ]
-    },
-    {
-      "id": "DSK-BL-037",
-      "stdRef": "TASVS-CODE-3",
-      "group": "Common",
-      "title": "DPAPI credential storage",
-      "objective": "CryptUnprotectData called by same user context decrypts DPAPI blobs — Mimikatz: dpapi::blob or dpapi::cred. Find blob: dir /s %APPDATA%\\*.dat. Check if app stores DPAPI-encrypted creds in registry or file.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "greybox",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-037",
-      "tags": [
-        "core"
-      ],
-      "tech": [
-        "dotnet"
-      ],
-      "tools": [
-        "dnSpyEx",
-        "ILSpy",
-        "Procmon"
-      ]
-    },
-    {
-      "id": "DSK-BL-038",
-      "stdRef": "TASVS-CODE-3",
-      "group": "Common",
-      "title": "Named pipe / local socket auth",
-      "objective": "pipelist.exe to enumerate named pipes. AccessChk to check ACLs on each pipe. Connect via CreateFile to test for missing auth or command injection. Look for privilege escalation via unauthenticated local pipe.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-038",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "Procmon",
-        "ILSpy",
-        "Frida"
-      ]
-    },
-    {
       "id": "DSK-BL-039",
       "stdRef": "WSTG-CONF-02",
       "group": "Infra",
@@ -8560,33 +7310,6 @@
       ]
     },
     {
-      "id": "DSK-BL-040",
-      "stdRef": "WSTG-CONF-11",
-      "group": "Infra",
-      "title": "Update mechanism MITM",
-      "objective": "Intercept update check traffic (Burp/Fiddler). Does update URL use HTTPS? Is response signature verified? Test: return crafted update manifest pointing to malicious binary. Check: pinning on update channel, version downgrade accepted.",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-040",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "mitmproxy",
-        "Wireshark",
-        "Procmon"
-      ]
-    },
-    {
       "id": "DSK-BL-041",
       "stdRef": "WSTG-ERRH-01",
       "group": "Infra",
@@ -8611,6 +7334,307 @@
         "Procmon",
         "ILSpy",
         "Frida"
+      ]
+    },
+    {
+      "id": "DSK-BL-011",
+      "stdRef": "TASVS-STOR-1",
+      "group": "Local DB / Cache",
+      "title": "Temp file credential capture technique",
+      "objective": "Lock Temp folder (disable Delete permission) before running app — credentials written to temp persist for inspection",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Local DB / Cache",
+      "featureKey": "desktop:local-db-cache",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-011",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Procmon",
+        "ILSpy",
+        "Frida"
+      ]
+    },
+    {
+      "id": "DSK-BL-014",
+      "stdRef": "TASVS-STOR-1",
+      "group": "Background Service",
+      "title": "Unquoted service path",
+      "objective": "sc qc <service> — look for BINARY_PATH_NAME with spaces and no quotes. wmic service get name,pathname — automated check. Plant binary at first unquoted segment (e.g. C:\\Program Files\\Evil.exe).",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Background Service",
+      "featureKey": "desktop:background-service",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-014",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Procmon",
+        "Frida",
+        "Wireshark"
+      ]
+    },
+    {
+      "id": "DSK-BL-029",
+      "stdRef": "TASVS-CODE-1",
+      "group": "Installer / Repair",
+      "title": "AlwaysInstallElevated check",
+      "objective": "reg query HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer /v AlwaysInstallElevated && reg query HKLM\\... — both must be 0x1. If set: msiexec /quiet /i malicious.msi installs as SYSTEM.",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Installer / Repair",
+      "featureKey": "desktop:installer-repair",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-029",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "lessmsi",
+        "Orca",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-BL-030",
+      "stdRef": "TASVS-CODE-1",
+      "group": "Installer / Repair",
+      "title": "Custom Action DLL hijack",
+      "objective": "Procmon during install: filter msiexec.exe + CreateFile + NAME NOT FOUND — DLL in writable path = hijack",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Installer / Repair",
+      "featureKey": "desktop:installer-repair",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-030",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "lessmsi",
+        "Orca",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-BL-031",
+      "stdRef": "TASVS-CODE-1",
+      "group": "Installer / Repair",
+      "title": "Credentials in MSI tables",
+      "objective": "MyMSIAnalyzer / strings — check Property, Registry, CustomAction tables for plaintext credentials",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Installer / Repair",
+      "featureKey": "desktop:installer-repair",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-031",
+      "tags": [
+        "core"
+      ],
+      "tech": [
+        "dotnet"
+      ],
+      "tools": [
+        "lessmsi",
+        "Orca",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-BL-032",
+      "stdRef": "TASVS-CODE-1",
+      "group": "Installer / Repair",
+      "title": "MSI repair mode privilege escalation",
+      "objective": "GuiFinder — identify MSIs running GUI as SYSTEM; exploit explorer.exe escape to get SYSTEM shell",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Installer / Repair",
+      "featureKey": "desktop:installer-repair",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-032",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "lessmsi",
+        "Orca",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-BL-033",
+      "stdRef": "TASVS-CODE-1",
+      "group": "Installer / Repair",
+      "title": "MST transform backdoor (unsigned MSI)",
+      "objective": "If MSI unsigned: craft malicious .mst transform, execute: msiexec /i legit.msi TRANSFORMS=evil.mst",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Installer / Repair",
+      "featureKey": "desktop:installer-repair",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-033",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "lessmsi",
+        "Orca",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-BL-036",
+      "stdRef": "TASVS-CODE-3",
+      "group": "WebView",
+      "title": "Embedded WebView full web pentest",
+      "objective": "Embedded CEF/Edge/WebView2 — run full web pentest: XSS (does it reach native?), file:// access, navigation to attacker URL, postMessage abuse. DevTools: --remote-debugging-port if enabled.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "WebView",
+      "featureKey": "desktop:webview",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-036",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Electronegativity",
+        "Frida",
+        "asar"
+      ]
+    },
+    {
+      "id": "DSK-BL-037",
+      "stdRef": "TASVS-CODE-3",
+      "group": "Local DB / Cache",
+      "title": "DPAPI credential storage",
+      "objective": "CryptUnprotectData called by same user context decrypts DPAPI blobs — Mimikatz: dpapi::blob or dpapi::cred. Find blob: dir /s %APPDATA%\\*.dat. Check if app stores DPAPI-encrypted creds in registry or file.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Local DB / Cache",
+      "featureKey": "desktop:local-db-cache",
+      "access": "greybox",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-037",
+      "tags": [
+        "core"
+      ],
+      "tech": [
+        "dotnet"
+      ],
+      "tools": [
+        "dnSpyEx",
+        "ILSpy",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-BL-038",
+      "stdRef": "TASVS-CODE-3",
+      "group": "IPC",
+      "title": "Named pipe / local socket auth",
+      "objective": "pipelist.exe to enumerate named pipes. AccessChk to check ACLs on each pipe. Connect via CreateFile to test for missing auth or command injection. Look for privilege escalation via unauthenticated local pipe.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "IPC",
+      "featureKey": "desktop:ipc",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-038",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "Procmon",
+        "ILSpy",
+        "Frida"
+      ]
+    },
+    {
+      "id": "DSK-BL-040",
+      "stdRef": "WSTG-CONF-11",
+      "group": "Auto-Update",
+      "title": "Update mechanism MITM",
+      "objective": "Intercept update check traffic (Burp/Fiddler). Does update URL use HTTPS? Is response signature verified? Test: return crafted update manifest pointing to malicious binary. Check: pinning on update channel, version downgrade accepted.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "Auto-Update",
+      "featureKey": "desktop:auto-update",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-040",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "mitmproxy",
+        "Wireshark",
+        "Procmon"
       ]
     },
     {
