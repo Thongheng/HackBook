@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   FileDown, ChevronDown, ChevronUp, Globe, Smartphone, Monitor,
-  Eye, EyeOff, AlertTriangle, Download, Building2, Building,
+  Eye, AlertTriangle, Download, Building2, Building, X, RotateCcw,
 } from 'lucide-react';
 import { ALL_ROWS, FEATURE_GROUPS, FEATURE_REGISTRY, ChecklistRow, Category, Scope } from '../../data/checklistData';
 import { filterCatalogRows } from '../../logic/checklistEngine.js';
-import { buildChecklistReviewHtml } from '../../logic/checklistReviewHtml.js';
+import { applyPreviewExclusions, buildPreviewGroups, buildPreviewSections, checklistRowRef, prunePreviewExclusions } from '../../logic/checklistPreview.js';
 import { buildWorkbookMetadataRows, buildWorkbookSheets } from '../../logic/checklistWorkbook.js';
 import { saveWorkbookFile } from '../../logic/checklistWorkbookXlsx.js';
 
@@ -177,17 +177,6 @@ async function exportFullCatalogXLSX(rows: ChecklistRow[]) {
   saveWorkbookFile(sheets, 'checklist_catalog_full.xlsx');
 }
 
-function exportReviewHtml(rows: ChecklistRow[]) {
-  const html = buildChecklistReviewHtml(rows);
-  const blob = new Blob([html], { type: 'text/html' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = `checklist_review_${new Date().toISOString().split('T')[0]}.html`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 function exportMarkdown(filtered: ChecklistRow[], cfg: Config) {
   const lines: string[] = [];
   const safe = safeFilename(cfg.targetName);
@@ -313,43 +302,189 @@ const SummaryRail: React.FC<{ filtered: ChecklistRow[] }> = ({ filtered }) => {
   );
 };
 
-const PreviewTable: React.FC<{ rows: ChecklistRow[] }> = ({ rows }) => (
-  <div className={`${PANEL_SHELL} rounded-2xl overflow-hidden`}>
-    <div className="overflow-x-auto max-h-72 overflow-y-auto">
-      <table className="w-full text-left">
-        <thead className={`sticky top-0 ${PANEL_HEADER} z-10`}>
-          <tr>
-            {['Ref','Category','Test Case','Tools','Sev','Mode','Type'].map(h => (
-              <th key={h} className="px-3 py-2.5 text-[9px] font-bold htb-text-muted uppercase tracking-widest border-b border-white/[0.08] whitespace-nowrap">{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className={PANEL_BODY}>
-          {rows.map((r, i) => (
-            <tr key={r.ref} className={i % 2 === 0 ? 'bg-[#101820]/78' : 'bg-[#0c1319]/92'}>
-              <td className="px-3 py-2 text-[10px] font-mono htb-text-faint whitespace-nowrap">{r.ref}</td>
-              <td className="px-3 py-2">
-                <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${
-                  r.category === 'web'    ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' :
-                  r.category === 'mobile' ? 'text-green-400 bg-green-500/10 border-green-500/20' :
-                                            'text-purple-400 bg-purple-500/10 border-purple-500/20'}`}>
-                  {r.category.toUpperCase()}
+const PreviewModal: React.FC<{
+  rows: ChecklistRow[];
+  excludedRefs: Set<string>;
+  onToggleRow: (ref: string) => void;
+  onClearExclusions: () => void;
+  onClose: () => void;
+}> = ({ rows, excludedRefs, onToggleRow, onClearExclusions, onClose }) => {
+  const sections = useMemo(() => buildPreviewSections(rows), [rows]);
+  const [activeSectionName, setActiveSectionName] = useState(sections[0]?.name ?? '');
+
+  useEffect(() => {
+    if (!sections.length) {
+      setActiveSectionName('');
+      return;
+    }
+    if (!sections.some((section: any) => section.name === activeSectionName)) {
+      setActiveSectionName(sections[0].name);
+    }
+  }, [sections, activeSectionName]);
+
+  const activeSection = sections.find((section: any) => section.name === activeSectionName) ?? sections[0];
+  const excludedCount = rows.filter(row => excludedRefs.has(checklistRowRef(row))).length;
+  const exportCount = rows.length - excludedCount;
+  const showFeatureColumn = activeSection?.sheetType === 'custom';
+  const headers = showFeatureColumn
+    ? ['Ref', 'Feature', 'Test Case', 'Tools', 'Sev', 'Mode', 'Type', 'Export']
+    : ['Ref', 'Test Case', 'Tools', 'Sev', 'Mode', 'Type', 'Export'];
+  const activeGroups = useMemo(() => buildPreviewGroups(activeSection?.rows ?? []), [activeSection]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/72 px-3 py-4 backdrop-blur-sm">
+      <div className="flex h-[92vh] w-full max-w-7xl flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-[#0b1118] shadow-[0_28px_90px_rgba(0,0,0,0.55)]">
+        <div className="flex flex-col gap-3 border-b border-white/[0.08] bg-[#070b10] px-4 py-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] htb-text-muted">Checklist Preview</p>
+              <span className="rounded border border-[#9fef00]/20 bg-[#9fef00]/8 px-2 py-0.5 text-[9px] font-bold text-[#9fef00]/75">
+                {exportCount} export / {rows.length} selected
+              </span>
+              {excludedCount > 0 && (
+                <span className="rounded border border-slate-500/20 bg-slate-500/10 px-2 py-0.5 text-[9px] font-bold text-slate-300/70">
+                  {excludedCount} excluded
                 </span>
-              </td>
-              <td className="px-3 py-2 text-[11px] htb-text-muted max-w-[240px] truncate">{r.testCase}</td>
-              <td className="px-3 py-2 text-[10px] htb-text-faint max-w-[220px] truncate">{r.tools.length ? r.tools.join(', ') : '—'}</td>
-              <td className="px-3 py-2">
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${SEV_COLOR[r.severity]}`}>{r.severityLabel}</span>
-              </td>
-              <td className="px-3 py-2 text-[10px] htb-text-faint whitespace-nowrap">{r.mode}</td>
-              <td className="px-3 py-2 text-[10px] htb-text-faint">{r.type}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              )}
+            </div>
+            <p className="mt-1 text-[10px] htb-text-faint">Click a row to grey it out from filtered export. Click it again to restore.</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onClearExclusions}
+              disabled={excludedCount === 0}
+              className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-[10px] font-bold uppercase tracking-[0.12em] transition-colors ${
+                excludedCount === 0
+                  ? 'cursor-not-allowed border-white/[0.05] bg-white/[0.03] htb-text-faint'
+                  : 'border-white/[0.08] bg-[#141d26]/94 htb-text-muted hover:bg-[#18222d] hover:htb-text'
+              }`}
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Clear exclusions
+            </button>
+            <button
+              onClick={onClose}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-[#141d26]/94 htb-text-muted transition-colors hover:bg-[#18222d] hover:htb-text"
+              aria-label="Close preview"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)]">
+          <div className="border-b border-white/[0.08] bg-[#0a0f16] p-3 lg:border-b-0 lg:border-r">
+            <div className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-x-visible">
+              {sections.map((section: any) => {
+                const active = activeSection?.name === section.name;
+                const sectionExcluded = section.rows.filter((row: ChecklistRow) => excludedRefs.has(checklistRowRef(row))).length;
+                return (
+                  <button
+                    key={section.name}
+                    onClick={() => setActiveSectionName(section.name)}
+                    className={`min-w-[190px] rounded-xl border px-3 py-3 text-left transition-colors lg:min-w-0 ${
+                      active
+                        ? 'border-[#9fef00]/25 bg-[#9fef00]/8 text-[#9fef00]'
+                        : 'border-white/[0.08] bg-[#111921]/92 htb-text-muted hover:bg-[#16202a] hover:htb-text'
+                    }`}
+                  >
+                    <div className="text-[10px] font-bold uppercase tracking-[0.14em]">{section.name}</div>
+                    <div className="mt-1 text-[9px] opacity-65">
+                      {section.rows.length - sectionExcluded} export / {section.rows.length} rows
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="min-h-0 overflow-auto bg-[#101821]/96">
+            {activeSection ? (
+              <table className="w-full min-w-[880px] text-left">
+                <thead className="sticky top-0 z-10 bg-[#070b10]">
+                  <tr>
+                    {headers.map(h => (
+                      <th key={h} className="border-b border-white/[0.08] px-3 py-3 text-[9px] font-bold uppercase tracking-widest htb-text-muted whitespace-nowrap">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {activeGroups.map((group: any) => {
+                    const groupExcluded = group.rows.filter((row: ChecklistRow) => excludedRefs.has(checklistRowRef(row))).length;
+                    return (
+                      <React.Fragment key={group.name}>
+                        <tr className="bg-[#273340]/92">
+                          <td colSpan={headers.length} className="px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-200">
+                            <div className="flex items-center justify-between gap-3">
+                              <span>{group.name}</span>
+                              <span className="text-[9px] font-bold text-slate-400">{group.rows.length - groupExcluded} export / {group.rows.length} rows</span>
+                            </div>
+                          </td>
+                        </tr>
+                        {group.rows.map((row: ChecklistRow, index: number) => {
+                          const ref = checklistRowRef(row);
+                          const excluded = excludedRefs.has(ref);
+                          return (
+                            <tr
+                              key={ref}
+                              role="button"
+                              tabIndex={0}
+                              onClick={() => onToggleRow(ref)}
+                              onKeyDown={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                  event.preventDefault();
+                                  onToggleRow(ref);
+                                }
+                              }}
+                              className={`cursor-pointer border-b border-white/[0.04] transition-colors ${
+                                excluded
+                                  ? 'bg-slate-950/70 text-slate-500 opacity-55'
+                                  : index % 2 === 0
+                                    ? 'bg-[#101820]/78 hover:bg-[#18222d]'
+                                    : 'bg-[#0c1319]/92 hover:bg-[#18222d]'
+                              }`}
+                            >
+                              <td className={`px-3 py-3 text-[10px] font-mono whitespace-nowrap ${excluded ? 'text-slate-500 line-through' : 'htb-text-faint'}`}>{ref}</td>
+                              {showFeatureColumn && (
+                                <td className={`px-3 py-3 text-[10px] font-semibold max-w-[160px] ${excluded ? 'text-slate-500 line-through' : 'htb-text-muted'}`}>
+                                  {row.feature || row.group}
+                                </td>
+                              )}
+                              <td className={`px-3 py-3 text-[11px] max-w-[340px] ${excluded ? 'text-slate-500 line-through' : 'htb-text-muted'}`}>{row.testCase}</td>
+                              <td className={`px-3 py-3 text-[10px] max-w-[240px] ${excluded ? 'text-slate-500' : 'htb-text-faint'}`}>{row.tools.length ? row.tools.join(', ') : '-'}</td>
+                              <td className="px-3 py-3">
+                                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${excluded ? 'border-slate-600/30 bg-slate-700/10 text-slate-500' : SEV_COLOR[row.severity]}`}>{row.severityLabel}</span>
+                              </td>
+                              <td className={`px-3 py-3 text-[10px] whitespace-nowrap ${excluded ? 'text-slate-500' : 'htb-text-faint'}`}>{row.mode}</td>
+                              <td className={`px-3 py-3 text-[10px] ${excluded ? 'text-slate-500' : 'htb-text-faint'}`}>{row.type}</td>
+                              <td className="px-3 py-3">
+                                <span className={`rounded border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] ${
+                                  excluded
+                                    ? 'border-slate-500/20 bg-slate-500/10 text-slate-400'
+                                    : 'border-[#9fef00]/20 bg-[#9fef00]/8 text-[#9fef00]/75'
+                                }`}>
+                                  {excluded ? 'Excluded' : 'Included'}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
+                    );
+                  })}
+                </tbody>
+              </table>
+            ) : (
+              <div className="flex h-full items-center justify-center p-8 text-[11px] htb-text-faint">
+                No rows available for the current filter.
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ─── Feature sub-group renderer (web / mobile / desktop) ──────────────────────
 const FeatureSubGroups: React.FC<{
@@ -456,10 +591,21 @@ export const ChecklistGenerator: React.FC = () => {
     });
   };
 
-  const [exportingAction, setExportingAction] = useState<null | 'filtered' | 'full' | 'review'>(null);
-  const [showPreview,     setShowPreview]      = useState(false);
+  const [exportingAction, setExportingAction] = useState<null | 'filtered' | 'full'>(null);
+  const [isPreviewOpen,   setIsPreviewOpen]    = useState(false);
+  const [excludedRefs,    setExcludedRefs]      = useState<Set<string>>(() => new Set());
 
   const filtered = useMemo(() => filterCatalogRows(ALL_ROWS, cfg), [cfg]);
+  const exportRows = useMemo(() => applyPreviewExclusions(filtered, excludedRefs), [filtered, excludedRefs]);
+  const excludedCount = filtered.length - exportRows.length;
+
+  useEffect(() => {
+    setExcludedRefs(previous => {
+      const next = prunePreviewExclusions(filtered, previous);
+      if (next.size === previous.size && [...next].every(ref => previous.has(ref))) return previous;
+      return next;
+    });
+  }, [filtered]);
 
   const selectedFeatureGroups  = useMemo(
     () => FEATURE_REGISTRY.filter(f => cfg.categories.includes(f.platform)),
@@ -497,20 +643,24 @@ export const ChecklistGenerator: React.FC = () => {
   const setMobStack  = (k: keyof TechStack['mobile'],  v: boolean) => setCfg(p => ({ ...p, techStack: { ...p.techStack, mobile:  { ...p.techStack.mobile,  [k]: v } } }));
   const setDeskStack = (k: keyof TechStack['desktop'], v: boolean) => setCfg(p => ({ ...p, techStack: { ...p.techStack, desktop: { ...p.techStack.desktop, [k]: v } } }));
 
+  const togglePreviewExclusion = (ref: string) => {
+    setExcludedRefs(previous => {
+      const next = new Set(previous);
+      if (next.has(ref)) next.delete(ref);
+      else next.add(ref);
+      return next;
+    });
+  };
+
   const handleGenerate = async () => {
-    if (!filtered.length) return;
+    if (!exportRows.length) return;
     setExportingAction('filtered');
-    try { await exportXLSX(filtered, cfg); } finally { setExportingAction(null); }
+    try { await exportXLSX(exportRows, cfg); } finally { setExportingAction(null); }
   };
   const handleExportFullCatalog = async () => {
     if (!ALL_ROWS.length) return;
     setExportingAction('full');
     try { await exportFullCatalogXLSX(ALL_ROWS); } finally { setExportingAction(null); }
-  };
-  const handleExportReviewHtml = () => {
-    if (!ALL_ROWS.length) return;
-    setExportingAction('review');
-    try { exportReviewHtml(ALL_ROWS); } finally { setExportingAction(null); }
   };
 
   const previewFilename = cfg.targetName
@@ -625,7 +775,7 @@ export const ChecklistGenerator: React.FC = () => {
           </Section>
         </div>
 
-        {/* ── Right: Profile + Features + Preview ── */}
+        {/* ── Right: Profile + Features ── */}
         <div className="space-y-5 xl:overflow-y-auto xl:max-h-[calc(100vh-180px)] xl:pr-1">
 
           {/* Target Profile */}
@@ -723,26 +873,18 @@ export const ChecklistGenerator: React.FC = () => {
             </p>
           </Section>
 
-          {/* Output Preview */}
-          <Section title="Output Preview">
-            <div className="space-y-4">
-              {filtered.length > 0 && (
-                <button onClick={() => setShowPreview(p => !p)}
-                  className="w-full flex items-center justify-between px-5 py-3 rounded-xl border border-white/[0.08] bg-[#141d26]/92 hover:bg-[#18222d] transition-colors">
-                  <div className="flex items-center gap-2">
-                    {showPreview ? <EyeOff className="w-3.5 h-3.5 htb-text-faint" /> : <Eye className="w-3.5 h-3.5 htb-text-faint" />}
-                    <span className="text-[11px] font-bold htb-text-muted uppercase tracking-[0.18em]">
-                      {showPreview ? 'Hide Preview' : `Preview (${filtered.length} rows)`}
-                    </span>
-                  </div>
-                  {showPreview ? <ChevronUp className="w-3.5 h-3.5 htb-text-faint" /> : <ChevronDown className="w-3.5 h-3.5 htb-text-faint" />}
-                </button>
-              )}
-              {showPreview && filtered.length > 0 && <PreviewTable rows={filtered} />}
-            </div>
-          </Section>
         </div>
       </div>
+
+      {isPreviewOpen && (
+        <PreviewModal
+          rows={filtered}
+          excludedRefs={excludedRefs}
+          onToggleRow={togglePreviewExclusion}
+          onClearExclusions={() => setExcludedRefs(new Set())}
+          onClose={() => setIsPreviewOpen(false)}
+        />
+      )}
 
       {/* Export panel */}
       <div className={`${PANEL_SHELL} rounded-2xl overflow-hidden`}>
@@ -750,17 +892,36 @@ export const ChecklistGenerator: React.FC = () => {
           <span className="text-[10px] font-bold htb-text-muted uppercase tracking-[0.18em]">Export</span>
         </div>
         <div className={`px-4 py-3 ${PANEL_BODY} space-y-2`}>
+          <button
+            onClick={() => filtered.length > 0 && setIsPreviewOpen(true)}
+            disabled={filtered.length === 0}
+            className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border transition-colors ${
+              filtered.length === 0
+                ? 'border-white/[0.05] bg-white/[0.03] htb-text-faint cursor-not-allowed'
+                : 'border-white/[0.08] bg-[#141d26]/94 htb-text-muted hover:bg-[#18222d] hover:htb-text'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Eye className="w-4 h-4" />
+              <span className="text-[11px] font-bold uppercase tracking-[0.12em]">
+                {filtered.length === 0 ? 'No preview available' : `Output Preview (${exportRows.length})`}
+              </span>
+            </div>
+            <span className="text-[9px] font-bold htb-text-faint">
+              {excludedCount > 0 ? `${excludedCount} excluded` : `${filtered.length} selected`}
+            </span>
+          </button>
           <div className="flex gap-2">
-            <button onClick={handleGenerate} disabled={exportingAction !== null || filtered.length === 0}
+            <button onClick={handleGenerate} disabled={exportingAction !== null || exportRows.length === 0}
               className={`w-1/2 flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-[11px] uppercase tracking-[0.12em] transition-all ${
-                filtered.length === 0
+                exportRows.length === 0
                   ? 'bg-white/5 border border-white/5 htb-text-faint cursor-not-allowed'
                   : exportingAction === 'filtered'
                     ? 'bg-[#9fef00]/10 border border-[#9fef00]/20 htb-text-muted cursor-wait'
                     : 'bg-[#9fef00] text-black hover:shadow-[0_0_25px_rgba(159,239,0,0.2)] active:scale-[0.99]'
               }`}>
               <Download className="w-4 h-4" />
-              {exportingAction === 'filtered' ? 'Building…' : filtered.length === 0 ? 'Select category' : `Export ${filtered.length}`}
+              {exportingAction === 'filtered' ? 'Building…' : filtered.length === 0 ? 'Select category' : exportRows.length === 0 ? 'All rows excluded' : `Export ${exportRows.length}`}
             </button>
             <button onClick={handleExportFullCatalog} disabled={exportingAction !== null || ALL_ROWS.length === 0}
               className={`w-1/2 flex items-center justify-center gap-2 py-2.5 rounded-lg border font-bold text-[11px] uppercase tracking-[0.12em] transition-all ${
@@ -774,17 +935,6 @@ export const ChecklistGenerator: React.FC = () => {
               Full Catalog
             </button>
           </div>
-          <button onClick={handleExportReviewHtml} disabled={exportingAction !== null || ALL_ROWS.length === 0}
-            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border font-bold text-[11px] uppercase tracking-[0.12em] transition-all ${
-              ALL_ROWS.length === 0
-                ? 'bg-white/5 border-white/5 htb-text-faint cursor-not-allowed'
-                : exportingAction === 'review'
-                  ? 'bg-white/[0.05] border-white/[0.08] htb-text-faint cursor-wait'
-                  : 'bg-[#141d26]/94 border-white/[0.08] htb-text-muted hover:htb-text hover:bg-[#18222d]'
-            }`}>
-            <FileDown className="w-4 h-4" />
-            {exportingAction === 'review' ? 'Building Review…' : 'Review HTML'}
-          </button>
           <p className="text-[9px] htb-text-faint leading-relaxed font-mono">
             {previewFilename}
           </p>

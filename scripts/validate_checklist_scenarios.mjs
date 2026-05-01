@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { filterCatalogRows, getScenarioSummary } from '../logic/checklistEngine.js';
+import { applyPreviewExclusions, buildPreviewGroups, buildPreviewSections, prunePreviewExclusions } from '../logic/checklistPreview.js';
 
 const root = process.cwd();
 const catalog = JSON.parse(fs.readFileSync(path.join(root, 'data/checklistCatalog.json'), 'utf8')).rows;
@@ -310,6 +311,49 @@ for (const scenario of scenarios) {
     failures += 1;
     console.error(`FAIL ${scenario.name}: ${error.message}`);
   }
+}
+
+try {
+  const rows = filterCatalogRows(
+    catalog,
+    cfg({
+      categories: ['web', 'mobile'],
+      engagementType: 'Grey-Box',
+      features: {
+        'web:login': true,
+        'mobile:payment': true,
+      },
+    })
+  );
+  const webBaseline = rows.find((row) => row.platform === 'web' && row.section === 'baseline');
+  const webCustom = rows.find((row) => row.id === 'WEB-CT-001');
+  const mobileCustom = rows.find((row) => row.id === 'MOB-CT-008');
+  assert(webBaseline && webCustom && mobileCustom, 'preview helper test requires representative baseline and custom rows');
+
+  const excluded = new Set([webBaseline.id, webCustom.id, mobileCustom.id]);
+  const exportRows = applyPreviewExclusions(rows, excluded);
+  assert(!exportRows.some((row) => row.id === webBaseline.id), 'preview exclusion should remove baseline row from export');
+  assert(!exportRows.some((row) => row.id === webCustom.id), 'preview exclusion should remove web custom row from export');
+  assert(!exportRows.some((row) => row.id === mobileCustom.id), 'preview exclusion should remove mobile custom row from export');
+  assert(rows.some((row) => row.id === webCustom.id), 'preview exclusion should not mutate source rows');
+
+  const sections = buildPreviewSections(rows);
+  assert(sections.some((section) => section.name === 'WEB - Baseline' && section.rows.some((row) => row.id === webBaseline.id)), 'preview sections should include WEB - Baseline rows');
+  assert(sections.some((section) => section.name === 'WEB - Custom' && section.rows.some((row) => row.id === webCustom.id)), 'preview sections should include WEB - Custom rows');
+  assert(sections.some((section) => section.name === 'MOBILE - Custom' && section.rows.some((row) => row.id === mobileCustom.id)), 'preview sections should include MOBILE - Custom rows');
+  assert(!sections.some((section) => section.name === 'DESKTOP - Custom'), 'preview sections should hide empty sections');
+
+  const webCustomSection = sections.find((section) => section.name === 'WEB - Custom');
+  const previewGroups = buildPreviewGroups(webCustomSection.rows);
+  assert(previewGroups.some((group) => group.name === webCustom.group && group.rows.some((row) => row.id === webCustom.id)), 'preview groups should preserve Excel-style group rows');
+
+  const pruned = prunePreviewExclusions(rows.filter((row) => row.id !== mobileCustom.id), excluded);
+  assert(pruned.has(webBaseline.id), 'preview pruning should keep refs still present in current filter');
+  assert(!pruned.has(mobileCustom.id), 'preview pruning should remove stale refs');
+  console.log('PASS preview exclusion helper: export filtering, section grouping, and pruning');
+} catch (error) {
+  failures += 1;
+  console.error(`FAIL preview exclusion helper: ${error.message}`);
 }
 
 if (failures > 0) {
