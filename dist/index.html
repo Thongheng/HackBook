@@ -77,6 +77,33 @@
             transition: background-color 0.25s ease, color 0.25s ease;
         }
 
+        html.theme-transitioning *,
+        html.theme-transitioning *::before,
+        html.theme-transitioning *::after {
+            transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, text-shadow, filter;
+            transition-duration: 260ms;
+            transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation-duration: 320ms;
+            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html.theme-transitioning *,
+            html.theme-transitioning *::before,
+            html.theme-transitioning *::after {
+                transition-duration: 1ms;
+            }
+
+            ::view-transition-old(root),
+            ::view-transition-new(root) {
+                animation-duration: 1ms;
+            }
+        }
+
         /* Theme-aware text classes */
         .htb-text {
             color: var(--htb-text);
@@ -451,7 +478,7 @@
       }
     }
     </script>
-  <script type="module" crossorigin src="./assets/index-DO1z_BTO.js"></script>
+  <script type="module" crossorigin src="./assets/index-BBH0BpMI.js"></script>
 </head>
 
 <body class="grid-dots">

@@ -332,12 +332,12 @@ const PreviewModal: React.FC<{
   const activeGroups = useMemo(() => buildPreviewGroups(activeSection?.rows ?? []), [activeSection]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/72 px-3 py-4 backdrop-blur-sm">
-      <div className="flex h-[92vh] w-full max-w-7xl flex-col overflow-hidden rounded-2xl border border-white/[0.1] bg-[#0b1118] shadow-[0_28px_90px_rgba(0,0,0,0.55)]">
-        <div className="flex flex-col gap-3 border-b border-white/[0.08] bg-[#070b10] px-4 py-4 lg:flex-row lg:items-center lg:justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[var(--htb-bg)] px-3 py-4 overscroll-contain">
+      <div className="flex h-[92vh] w-full max-w-7xl flex-col overflow-hidden rounded-2xl border border-[var(--htb-border)] bg-[var(--htb-surface)] shadow-[0_28px_90px_var(--htb-shadow)]">
+        <div className="flex flex-col gap-3 border-b border-[var(--htb-border)] bg-[var(--htb-bg)] px-4 py-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] htb-text-muted">Checklist Preview</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] htb-text">Checklist Preview</p>
               <span className="rounded border border-[#9fef00]/20 bg-[#9fef00]/8 px-2 py-0.5 text-[9px] font-bold text-[#9fef00]/75">
                 {exportCount} export / {rows.length} selected
               </span>
@@ -355,8 +355,8 @@ const PreviewModal: React.FC<{
               disabled={excludedCount === 0}
               className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-[10px] font-bold uppercase tracking-[0.12em] transition-colors ${
                 excludedCount === 0
-                  ? 'cursor-not-allowed border-white/[0.05] bg-white/[0.03] htb-text-faint'
-                  : 'border-white/[0.08] bg-[#141d26]/94 htb-text-muted hover:bg-[#18222d] hover:htb-text'
+                  ? 'cursor-not-allowed border-[var(--htb-border)] bg-[var(--htb-overlay)] htb-text-faint'
+                  : 'border-[var(--htb-border)] bg-[var(--htb-surface)] htb-text hover:bg-[var(--htb-overlay-hover)]'
               }`}
             >
               <RotateCcw className="h-3.5 w-3.5" />
@@ -364,7 +364,7 @@ const PreviewModal: React.FC<{
             </button>
             <button
               onClick={onClose}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.08] bg-[#141d26]/94 htb-text-muted transition-colors hover:bg-[#18222d] hover:htb-text"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--htb-border)] bg-[var(--htb-surface)] htb-text transition-colors hover:bg-[var(--htb-overlay-hover)]"
               aria-label="Close preview"
             >
               <X className="h-4 w-4" />
@@ -373,7 +373,7 @@ const PreviewModal: React.FC<{
         </div>
 
         <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)]">
-          <div className="border-b border-white/[0.08] bg-[#0a0f16] p-3 lg:border-b-0 lg:border-r">
+          <div className="border-b border-[var(--htb-border)] bg-[var(--htb-bg)] p-3 lg:border-b-0 lg:border-r">
             <div className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-x-visible">
               {sections.map((section: any) => {
                 const active = activeSection?.name === section.name;
@@ -385,7 +385,7 @@ const PreviewModal: React.FC<{
                     className={`min-w-[190px] rounded-xl border px-3 py-3 text-left transition-colors lg:min-w-0 ${
                       active
                         ? 'border-[#9fef00]/25 bg-[#9fef00]/8 text-[#9fef00]'
-                        : 'border-white/[0.08] bg-[#111921]/92 htb-text-muted hover:bg-[#16202a] hover:htb-text'
+                        : 'border-[var(--htb-border)] bg-[var(--htb-surface)] htb-text hover:bg-[var(--htb-overlay-hover)]'
                     }`}
                   >
                     <div className="text-[10px] font-bold uppercase tracking-[0.14em]">{section.name}</div>
@@ -398,13 +398,13 @@ const PreviewModal: React.FC<{
             </div>
           </div>
 
-          <div className="min-h-0 overflow-auto bg-[#101821]/96">
+          <div className="min-h-0 overflow-auto bg-[var(--htb-surface)]">
             {activeSection ? (
               <table className="w-full min-w-[880px] text-left">
-                <thead className="sticky top-0 z-10 bg-[#070b10]">
+                <thead className="sticky top-0 z-10 bg-[var(--htb-bg)]">
                   <tr>
                     {headers.map(h => (
-                      <th key={h} className="border-b border-white/[0.08] px-3 py-3 text-[9px] font-bold uppercase tracking-widest htb-text-muted whitespace-nowrap">{h}</th>
+                      <th key={h} className="border-b border-[var(--htb-border)] px-3 py-3 text-[9px] font-bold uppercase tracking-widest htb-text whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -413,11 +413,11 @@ const PreviewModal: React.FC<{
                     const groupExcluded = group.rows.filter((row: ChecklistRow) => excludedRefs.has(checklistRowRef(row))).length;
                     return (
                       <React.Fragment key={group.name}>
-                        <tr className="bg-[#273340]/92">
-                          <td colSpan={headers.length} className="px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-200">
+                        <tr className="bg-[var(--htb-overlay-hover)]">
+                          <td colSpan={headers.length} className="px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] htb-text">
                             <div className="flex items-center justify-between gap-3">
                               <span>{group.name}</span>
-                              <span className="text-[9px] font-bold text-slate-400">{group.rows.length - groupExcluded} export / {group.rows.length} rows</span>
+                              <span className="text-[9px] font-bold htb-text-muted">{group.rows.length - groupExcluded} export / {group.rows.length} rows</span>
                             </div>
                           </td>
                         </tr>
@@ -436,27 +436,27 @@ const PreviewModal: React.FC<{
                                   onToggleRow(ref);
                                 }
                               }}
-                              className={`cursor-pointer border-b border-white/[0.04] transition-colors ${
+                              className={`cursor-pointer border-b border-[var(--htb-border)] transition-colors ${
                                 excluded
-                                  ? 'bg-slate-950/70 text-slate-500 opacity-55'
+                                  ? 'bg-slate-500/10 text-slate-500 opacity-65'
                                   : index % 2 === 0
-                                    ? 'bg-[#101820]/78 hover:bg-[#18222d]'
-                                    : 'bg-[#0c1319]/92 hover:bg-[#18222d]'
+                                    ? 'bg-[var(--htb-surface)] hover:bg-[var(--htb-overlay-hover)]'
+                                    : 'bg-[var(--htb-overlay)] hover:bg-[var(--htb-overlay-hover)]'
                               }`}
                             >
-                              <td className={`px-3 py-3 text-[10px] font-mono whitespace-nowrap ${excluded ? 'text-slate-500 line-through' : 'htb-text-faint'}`}>{ref}</td>
+                              <td className={`px-3 py-3 text-[10px] font-mono whitespace-nowrap ${excluded ? 'text-slate-500 line-through' : 'htb-text'}`}>{ref}</td>
                               {showFeatureColumn && (
-                                <td className={`px-3 py-3 text-[10px] font-semibold max-w-[160px] ${excluded ? 'text-slate-500 line-through' : 'htb-text-muted'}`}>
+                                <td className={`px-3 py-3 text-[10px] font-semibold max-w-[160px] ${excluded ? 'text-slate-500 line-through' : 'htb-text'}`}>
                                   {row.feature || row.group}
                                 </td>
                               )}
-                              <td className={`px-3 py-3 text-[11px] max-w-[340px] ${excluded ? 'text-slate-500 line-through' : 'htb-text-muted'}`}>{row.testCase}</td>
-                              <td className={`px-3 py-3 text-[10px] max-w-[240px] ${excluded ? 'text-slate-500' : 'htb-text-faint'}`}>{row.tools.length ? row.tools.join(', ') : '-'}</td>
+                              <td className={`px-3 py-3 text-[11px] max-w-[340px] ${excluded ? 'text-slate-500 line-through' : 'htb-text'}`}>{row.testCase}</td>
+                              <td className={`px-3 py-3 text-[10px] max-w-[240px] ${excluded ? 'text-slate-500' : 'htb-text'}`}>{row.tools.length ? row.tools.join(', ') : '-'}</td>
                               <td className="px-3 py-3">
                                 <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${excluded ? 'border-slate-600/30 bg-slate-700/10 text-slate-500' : SEV_COLOR[row.severity]}`}>{row.severityLabel}</span>
                               </td>
-                              <td className={`px-3 py-3 text-[10px] whitespace-nowrap ${excluded ? 'text-slate-500' : 'htb-text-faint'}`}>{row.mode}</td>
-                              <td className={`px-3 py-3 text-[10px] ${excluded ? 'text-slate-500' : 'htb-text-faint'}`}>{row.type}</td>
+                              <td className={`px-3 py-3 text-[10px] whitespace-nowrap ${excluded ? 'text-slate-500' : 'htb-text'}`}>{row.mode}</td>
+                              <td className={`px-3 py-3 text-[10px] ${excluded ? 'text-slate-500' : 'htb-text'}`}>{row.type}</td>
                               <td className="px-3 py-3">
                                 <span className={`rounded border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] ${
                                   excluded
@@ -606,6 +606,21 @@ export const ChecklistGenerator: React.FC = () => {
       return next;
     });
   }, [filtered]);
+
+  useEffect(() => {
+    if (!isPreviewOpen) return;
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [isPreviewOpen]);
 
   const selectedFeatureGroups  = useMemo(
     () => FEATURE_REGISTRY.filter(f => cfg.categories.includes(f.platform)),
