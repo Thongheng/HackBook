@@ -1,5 +1,5 @@
 import catalog from './checklistCatalog.json';
-import { accessModeLabel, buildFeatureRegistry, featureRegistryByPlatform } from '../logic/checklistEngine.js';
+import { accessModeLabel, buildFeatureRegistry, buildFeatureSubgroups, featureRegistryByPlatform } from '../logic/checklistEngine.js';
 
 export type Category = 'web' | 'mobile' | 'desktop';
 export type SheetType = 'baseline' | 'custom';
@@ -73,6 +73,13 @@ export const ALL_ROWS: ChecklistRow[] = CATALOG_ROWS.map((row) => ({
 
 export const FEATURE_REGISTRY = buildFeatureRegistry(CATALOG_ROWS);
 export const FEATURE_GROUPS = featureRegistryByPlatform(CATALOG_ROWS) as Record<Category, typeof FEATURE_REGISTRY>;
+
+export interface FeatureSubgroup {
+  label: string;
+  keys: string[];
+}
+
+export const FEATURE_SUBGROUPS = buildFeatureSubgroups(FEATURE_GROUPS) as Record<Category, FeatureSubgroup[]>;
 export const FEATURES: Record<Category, string[]> = {
   web: FEATURE_GROUPS.web.map((feature) => feature.label),
   mobile: FEATURE_GROUPS.mobile.map((feature) => feature.label),

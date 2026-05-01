@@ -66,7 +66,7 @@ assert(
   'WEB-BL-004 must carry merged xnLinkFinder and Katana tool metadata'
 );
 
-for (const ref of ['WEB-CT-082', 'MOB-CT-023', 'DSK-CT-022']) {
+for (const ref of ['WEB-CT-064', 'MOB-CT-023', 'DSK-CT-022']) {
   assert(exportedRefs.has(ref), `missing curated row in full export: ${ref}`);
 }
 for (const ref of ['WEB-BL-021', 'MOB-CT-042', 'DSK-CT-040', 'MOB-CT-019']) {

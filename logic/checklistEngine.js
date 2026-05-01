@@ -93,6 +93,81 @@ export function featureRegistryByPlatform(rows) {
   }, { web: [], mobile: [], desktop: [] });
 }
 
+export const FEATURE_SUBGROUP_ORDER = {
+  web: [
+    'Auth & Access',
+    'Data & Files',
+    'API & Server-Side',
+    'Payment & Commerce',
+    'Product Features',
+  ],
+  mobile: [
+    'Auth & Identity',
+    'Data & Storage',
+    'API & Backend',
+    'Payment & Commerce',
+    'Platform Features',
+  ],
+  desktop: [
+    'Auth & Licensing',
+    'Installer & Updates',
+    'Data & Files',
+    'API & Protocols',
+    'Payment & Commerce',
+    'Platform Features',
+  ],
+};
+
+function featureTokens(key, label) {
+  return `${key} ${label}`.toLowerCase();
+}
+
+export function featureSubgroupLabel(platform, key, label) {
+  const tokens = featureTokens(key, label);
+
+  if (platform === 'web') {
+    if (/(login|registration|password|session|sso|access-control|users|invitations|membership)/.test(tokens)) return 'Auth & Access';
+    if (/((^|[:\s-])file($|[:\s-])|import|export)/.test(tokens)) return 'Data & Files';
+    if (/(graphql|websocket|url-fetch|ssrf|oauth)/.test(tokens)) return 'API & Server-Side';
+    if (/(payment|coupon|billing|subscription|qr|khqr)/.test(tokens)) return 'Payment & Commerce';
+    return 'Product Features';
+  }
+
+  if (platform === 'mobile') {
+    if (/(login|registration|otp|password|device-binding)/.test(tokens)) return 'Auth & Identity';
+    if (/(secure-storage|storage|offline|backup|restore|(^|[:\s-])file($|[:\s-])|import|export)/.test(tokens)) return 'Data & Storage';
+    if (/(cloud-backend|graphql|websocket|oauth)/.test(tokens)) return 'API & Backend';
+    if (/(payment|coupon|billing|subscription|qr|khqr)/.test(tokens)) return 'Payment & Commerce';
+    return 'Platform Features';
+  }
+
+  if (/(login|license)/.test(tokens)) return 'Auth & Licensing';
+  if (/(installer|repair|auto-update|updater|update)/.test(tokens)) return 'Installer & Updates';
+  if (/(local-db|cache|(^|[:\s-])file($|[:\s-])|import|export)/.test(tokens)) return 'Data & Files';
+  if (/(graphql|websocket|ipc|protocol|oauth)/.test(tokens)) return 'API & Protocols';
+  if (/(payment|coupon|billing|subscription|qr|khqr)/.test(tokens)) return 'Payment & Commerce';
+  return 'Platform Features';
+}
+
+export function buildFeatureSubgroups(featuresByPlatform) {
+  return ['web', 'mobile', 'desktop'].reduce((acc, platform) => {
+    const subgroupMap = new Map(
+      FEATURE_SUBGROUP_ORDER[platform].map((label) => [label, { label, keys: [] }])
+    );
+
+    for (const feature of featuresByPlatform[platform] || []) {
+      const label = featureSubgroupLabel(platform, feature.key, feature.label);
+      if (!subgroupMap.has(label)) {
+        subgroupMap.set(label, { label, keys: [] });
+      }
+      subgroupMap.get(label).keys.push(feature.key);
+    }
+
+    acc[platform] = [...subgroupMap.values()].filter((group) => group.keys.length > 0);
+    return acc;
+  }, { web: [], mobile: [], desktop: [] });
+}
+
 export function getScenarioSummary(rows) {
   return {
     total: rows.length,

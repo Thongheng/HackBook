@@ -21,11 +21,11 @@ assert(html.includes('xnLinkFinder'), 'review html must render xnLinkFinder tool
 assert(html.includes('Katana'), 'review html must render Katana tool metadata');
 assert(html.includes('Burp Suite'), 'review html must render populated tool metadata beyond the JS analysis row');
 
-for (const ref of ['WEB-BL-001', 'WEB-BL-004', 'WEB-BL-021', 'MOB-CT-019', 'MOB-CT-042', 'DSK-CT-040', 'WEB-CT-082', 'MOB-CT-023', 'DSK-CT-022']) {
+for (const ref of ['WEB-BL-001', 'WEB-BL-004', 'WEB-BL-021', 'MOB-CT-019', 'MOB-CT-042', 'DSK-CT-040', 'WEB-CT-064', 'MOB-CT-023', 'DSK-CT-022']) {
   assert(html.includes(ref), `review html missing catalog row ${ref}`);
 }
 
-for (const removedRef of ['WEB-BL-087', 'WEB-BL-063', 'MOB-BL-033']) {
+for (const removedRef of ['WEB-BL-087', 'WEB-BL-063', 'MOB-BL-033', 'WEB-CT-082', 'WEB-CT-083', 'WEB-CT-084', 'WEB-CT-085']) {
   assert(!html.includes(removedRef), `review html should not include removed catalog row ${removedRef}`);
 }
 

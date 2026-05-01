@@ -3,14 +3,16 @@ import {
   FileDown, ChevronDown, ChevronUp, Globe, Smartphone, Monitor,
   Eye, AlertTriangle, Download, Building2, Building, X, RotateCcw,
 } from 'lucide-react';
-import { ALL_ROWS, FEATURE_GROUPS, FEATURE_REGISTRY, ChecklistRow, Category, Scope } from '../../data/checklistData';
+import { ALL_ROWS, FEATURE_GROUPS, FEATURE_REGISTRY, FEATURE_SUBGROUPS, ChecklistRow, Category, Scope } from '../../data/checklistData';
 import { filterCatalogRows } from '../../logic/checklistEngine.js';
+import { buildChecklistMarkdown } from '../../logic/checklistMarkdown.js';
 import { applyPreviewExclusions, buildPreviewGroups, buildPreviewSections, checklistRowRef, prunePreviewExclusions } from '../../logic/checklistPreview.js';
 import { buildWorkbookMetadataRows, buildWorkbookSheets } from '../../logic/checklistWorkbook.js';
 import { saveWorkbookFile } from '../../logic/checklistWorkbookXlsx.js';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type EngagementType = 'Black-Box' | 'Grey-Box';
+type ExportFormat = 'xlsx' | 'markdown';
 
 interface TechStack {
   web: { php: boolean; aspnet: boolean; tomcat: boolean; nodejs: boolean; };
@@ -26,101 +28,6 @@ interface Config {
   techStack: TechStack;
   features: Record<string, boolean>;
 }
-
-// ─── Feature sub-group definitions ────────────────────────────────────────────
-const WEB_FEATURE_SUBGROUPS: { label: string; keys: string[] }[] = [
-  {
-    label: 'Authentication & Authorization',
-    keys: [
-      'web:login', 'web:password-change', 'web:password-reset',
-      'web:sso-magic-link', 'web:registration', 'web:session',
-      'web:admin', 'web:users-mgmt', 'web:invitations-membership',
-    ],
-  },
-  {
-    label: 'Data & Files',
-    keys: ['web:file-upload', 'web:file-download', 'web:import', 'web:export'],
-  },
-  {
-    label: 'Feature',
-    keys: [
-      'web:search', 'web:comments-rich-text', 'web:announcement',
-      'web:set-language', 'web:api-webhook', 'web:api-keys-tokens',
-      'web:email-notify', 'web:profile', 'web:vendor-profile', 'web:reports-dashboard',
-    ],
-  },
-  {
-    label: 'API & Protocols',
-    keys: ['web:graphql', 'web:websocket', 'web:oauth-oidc'],
-  },
-  {
-    label: 'Payment',
-    keys: ['web:payment', 'web:coupon-promo', 'web:billing-subscription', 'web:qr-khqr'],
-  },
-];
-
-const MOBILE_FEATURE_SUBGROUPS: { label: string; keys: string[] }[] = [
-  {
-    label: 'Authentication',
-    keys: ['mobile:login-biometric', 'mobile:registration-otp', 'mobile:password-reset', 'mobile:device-binding'],
-  },
-  {
-    label: 'Data & Storage',
-    keys: [
-      'mobile:secure-storage', 'mobile:file-handling', 'mobile:file-upload',
-      'mobile:file-download', 'mobile:backup-restore', 'mobile:offline-sync',
-      'mobile:import', 'mobile:export',
-    ],
-  },
-  {
-    label: 'Feature',
-    keys: ['mobile:push-notifications', 'mobile:deep-links', 'mobile:intent-share', 'mobile:webview', 'mobile:update-remote-config'],
-  },
-  {
-    label: 'Payment',
-    keys: ['mobile:payment', 'mobile:coupon-promo', 'mobile:billing-subscription', 'mobile:qr-khqr'],
-  },
-  {
-    label: 'API',
-    keys: ['mobile:api-backend', 'mobile:graphql', 'mobile:websocket', 'mobile:oauth-oidc'],
-  },
-];
-
-const DESKTOP_FEATURE_SUBGROUPS: { label: string; keys: string[] }[] = [
-  {
-    label: 'Authentication',
-    keys: ['desktop:login', 'desktop:license'],
-  },
-  {
-    label: 'Data & Storage',
-    keys: [
-      'desktop:file-handling', 'desktop:file-upload', 'desktop:file-download',
-      'desktop:local-db-cache', 'desktop:import', 'desktop:export',
-    ],
-  },
-  {
-    label: 'Feature',
-    keys: ['desktop:webview', 'desktop:ipc', 'desktop:protocol-handlers', 'desktop:plugins-extensions', 'desktop:background-service'],
-  },
-  {
-    label: 'API & Protocols',
-    keys: ['desktop:graphql', 'desktop:websocket', 'desktop:oauth-oidc'],
-  },
-  {
-    label: 'Payment',
-    keys: ['desktop:payment', 'desktop:coupon-promo', 'desktop:billing-subscription', 'desktop:qr-khqr'],
-  },
-  {
-    label: 'Installer & Updates',
-    keys: ['desktop:installer-repair', 'desktop:auto-update', 'desktop:updater-config'],
-  },
-];
-
-const FEATURE_SUBGROUPS: Partial<Record<Category, { label: string; keys: string[] }[]>> = {
-  web:     WEB_FEATURE_SUBGROUPS,
-  mobile:  MOBILE_FEATURE_SUBGROUPS,
-  desktop: DESKTOP_FEATURE_SUBGROUPS,
-};
 
 // ─── Constants ──────────────────────────────────────────────────────────────────
 const SEV_COLOR: Record<string, string> = {
@@ -178,32 +85,9 @@ async function exportFullCatalogXLSX(rows: ChecklistRow[]) {
 }
 
 function exportMarkdown(filtered: ChecklistRow[], cfg: Config) {
-  const lines: string[] = [];
   const safe = safeFilename(cfg.targetName);
   const date = new Date().toISOString().split('T')[0];
-  lines.push(`# Pentest Checklist — ${cfg.targetName || 'Target'}`);
-  lines.push(`**Type:** ${cfg.engagementType} | **Scope:** ${cfg.scope} | **Generated:** ${new Date().toLocaleDateString()} | **Total:** ${filtered.length}`);
-  lines.push('', '---', '');
-  for (const cat of ['web','mobile','desktop'] as Category[]) {
-    const catRows = filtered.filter(r => r.category === cat);
-    if (!catRows.length) continue;
-    lines.push(`## ${CAT_LABEL[cat]}`, '');
-    for (const st of ['baseline','custom'] as const) {
-      const stRows = catRows.filter(r => r.sheetType === st);
-      if (!stRows.length) continue;
-      lines.push(`### ${st === 'baseline' ? 'Baseline Tests' : 'Feature Tests'}`, '');
-      for (const grp of [...new Set(stRows.map(r => r.group))]) {
-        lines.push(`#### ${grp}`, '');
-        for (const r of stRows.filter(x => x.group === grp)) {
-          lines.push(`- [ ] **[${r.severityLabel}]** ${r.testCase}  `);
-          lines.push(`  *${r.objective}*  `);
-          if (r.tools.length) lines.push(`  Tools: ${r.tools.join(', ')}  `);
-          lines.push(`  \`${r.ref}\` · ${r.stdRef} · Mode: ${r.mode}`, '');
-        }
-      }
-    }
-  }
-  const blob = new Blob([lines.join('\n')], { type: 'text/markdown' });
+  const blob = new Blob([buildChecklistMarkdown(filtered)], { type: 'text/markdown' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href     = url;
@@ -592,6 +476,7 @@ export const ChecklistGenerator: React.FC = () => {
   };
 
   const [exportingAction, setExportingAction] = useState<null | 'filtered' | 'full'>(null);
+  const [exportFormat, setExportFormat]        = useState<ExportFormat>('xlsx');
   const [isPreviewOpen,   setIsPreviewOpen]    = useState(false);
   const [excludedRefs,    setExcludedRefs]      = useState<Set<string>>(() => new Set());
 
@@ -670,7 +555,10 @@ export const ChecklistGenerator: React.FC = () => {
   const handleGenerate = async () => {
     if (!exportRows.length) return;
     setExportingAction('filtered');
-    try { await exportXLSX(exportRows, cfg); } finally { setExportingAction(null); }
+    try {
+      if (exportFormat === 'markdown') exportMarkdown(exportRows, cfg);
+      else await exportXLSX(exportRows, cfg);
+    } finally { setExportingAction(null); }
   };
   const handleExportFullCatalog = async () => {
     if (!ALL_ROWS.length) return;
@@ -679,8 +567,8 @@ export const ChecklistGenerator: React.FC = () => {
   };
 
   const previewFilename = cfg.targetName
-    ? `${safeFilename(cfg.targetName)}_Checklist_${new Date().toISOString().split('T')[0]}.xlsx`
-    : 'Target_Checklist_<date>.xlsx';
+    ? `${safeFilename(cfg.targetName)}_Checklist_${new Date().toISOString().split('T')[0]}.${exportFormat === 'markdown' ? 'md' : 'xlsx'}`
+    : `Target_Checklist_<date>.${exportFormat === 'markdown' ? 'md' : 'xlsx'}`;
 
   return (
     <div className="space-y-6 pb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -926,6 +814,24 @@ export const ChecklistGenerator: React.FC = () => {
               {excludedCount > 0 ? `${excludedCount} excluded` : `${filtered.length} selected`}
             </span>
           </button>
+          <div className="grid grid-cols-2 gap-2">
+            {([
+              { value: 'xlsx' as ExportFormat, label: 'XLSX' },
+              { value: 'markdown' as ExportFormat, label: 'Markdown' },
+            ]).map(option => (
+              <button
+                key={option.value}
+                onClick={() => setExportFormat(option.value)}
+                className={`rounded-lg border px-3 py-2 text-[10px] font-bold uppercase tracking-[0.14em] transition-all ${
+                  exportFormat === option.value
+                    ? 'border-[#9fef00]/30 bg-[#9fef00]/8 text-[#9fef00]'
+                    : 'border-white/[0.08] bg-[#141d26]/94 htb-text-muted hover:bg-[#18222d] hover:htb-text'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
           <div className="flex gap-2">
             <button onClick={handleGenerate} disabled={exportingAction !== null || exportRows.length === 0}
               className={`w-1/2 flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-[11px] uppercase tracking-[0.12em] transition-all ${

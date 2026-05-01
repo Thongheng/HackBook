@@ -49,7 +49,7 @@ const scenarios = [
     run(rows) {
       assert(rows.some((row) => row.id === 'WEB-CT-001'), 'login custom row missing');
       assert(rows.some((row) => row.id === 'WEB-CT-002'), 'HTTP verb confusion login row missing');
-      assert(rows.some((row) => row.id === 'WEB-CT-005'), 'login coverage incomplete');
+      assert(rows.some((row) => row.id === 'WEB-BL-018'), 'merged account enumeration login row missing');
       assert(!rows.some((row) => row.id === 'WEB-CT-014'), 'profile row should not appear without Profile feature');
       assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into web scenario');
     },
@@ -78,9 +78,8 @@ const scenarios = [
     name: 'web + File Upload excludes File Download',
     config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:file-upload': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'WEB-CT-046'), 'SVG upload XSS row missing');
-      assert(rows.some((row) => row.id === 'WEB-CT-086'), 'HTML file upload XSS row missing');
-      assert(!rows.some((row) => row.id === 'WEB-CT-049'), 'file download row should not appear with File Upload only');
+      assert(rows.some((row) => row.id === 'WEB-BL-047'), 'merged file upload validation/processing row missing');
+      assert(!rows.some((row) => row.id === 'WEB-BL-033'), 'file download row should not appear with File Upload only');
       assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into file upload scenario');
     },
   },
@@ -88,9 +87,8 @@ const scenarios = [
     name: 'web + File Download excludes File Upload',
     config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:file-download': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'WEB-CT-049'), 'file download traversal row missing');
-      assert(rows.some((row) => row.id === 'WEB-CT-050'), 'file download IDOR row missing');
-      assert(!rows.some((row) => row.id === 'WEB-CT-046'), 'file upload row should not appear with File Download only');
+      assert(rows.some((row) => row.id === 'WEB-BL-033'), 'merged file download traversal row missing');
+      assert(!rows.some((row) => row.id === 'WEB-BL-047'), 'file upload row should not appear with File Download only');
       assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into file download scenario');
     },
   },
@@ -202,8 +200,7 @@ const scenarios = [
     name: 'desktop + Billing / Subscription',
     config: cfg({ categories: ['desktop'], engagementType: 'Grey-Box', features: { 'desktop:billing-subscription': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'DSK-CT-046'), 'desktop billing entitlement row missing');
-      assert(rows.some((row) => row.id === 'DSK-CT-047'), 'desktop subscription status row missing');
+      assert(rows.some((row) => row.id === 'DSK-CT-046'), 'merged desktop billing entitlement/status row missing');
       assert(!rows.some((row) => row.id === 'DSK-CT-020'), 'desktop payment row should not appear with Billing / Subscription only');
       assert(rows.every((row) => row.platform === 'desktop'), 'non-desktop rows leaked into desktop billing scenario');
     },
@@ -261,9 +258,9 @@ const scenarios = [
       },
     }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'WEB-CT-082'), 'curated export row missing');
-      assert(rows.some((row) => row.id === 'WEB-CT-083'), 'curated report export row missing');
-      assert(!rows.some((row) => row.id === 'WEB-CT-084'), 'curated import row should not appear with Export only');
+      assert(rows.some((row) => row.id === 'WEB-CT-064'), 'merged export formula row missing');
+      assert(rows.some((row) => row.id === 'WEB-CT-066'), 'export authorization row missing');
+      assert(!rows.some((row) => row.id === 'WEB-CT-067'), 'curated import row should not appear with Export only');
       assert(rows.some((row) => row.source === 'curated'), 'expected curated rows in export scenario');
     },
   },
@@ -277,9 +274,9 @@ const scenarios = [
       },
     }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'WEB-CT-084'), 'curated import row missing');
-      assert(rows.some((row) => row.id === 'WEB-CT-085'), 'curated import mapping row missing');
-      assert(!rows.some((row) => row.id === 'WEB-CT-082'), 'curated export row should not appear with Import only');
+      assert(rows.some((row) => row.id === 'WEB-CT-067'), 'merged import parser row missing');
+      assert(rows.some((row) => row.id === 'WEB-CT-068'), 'merged import mapping row missing');
+      assert(!rows.some((row) => row.id === 'WEB-CT-064'), 'curated export row should not appear with Import only');
       assert(rows.some((row) => row.source === 'curated'), 'expected curated rows in import scenario');
     },
   },
@@ -287,8 +284,8 @@ const scenarios = [
     name: 'mobile explicit login/auth feature',
     config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:login-auth': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'MOB-CT-001'), 'mobile login/auth row missing');
-      assert(rows.some((row) => row.id === 'MOB-BL-048'), 'moved mobile JWT/session row missing from login/auth feature');
+      assert(rows.some((row) => row.id === 'MOB-BL-022'), 'merged mobile biometric auth row missing');
+      assert(rows.some((row) => row.id === 'MOB-BL-024'), 'merged mobile session token lifecycle row missing');
       assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into login/auth scenario');
     },
   },
@@ -334,8 +331,35 @@ try {
   );
   assert(catalog.some((row) => row.id === 'WEB-BL-004' && row.section === 'baseline'), 'merged WEB-BL-004 must remain baseline');
   assert(!catalog.some((row) => row.id === 'WEB-BL-087'), 'WEB-BL-087 must be merged into WEB-BL-004');
+  for (const mergedRef of [
+    'WEB-CT-082', 'WEB-CT-083', 'WEB-CT-084', 'WEB-CT-085',
+    'WEB-CT-069', 'WEB-BL-044', 'WEB-BL-045', 'WEB-BL-061', 'WEB-BL-072',
+    'WEB-BL-048', 'WEB-CT-049', 'WEB-CT-042', 'WEB-CT-045',
+    'WEB-CT-046', 'WEB-CT-048', 'WEB-CT-086',
+    'WEB-BL-046', 'WEB-CT-043', 'WEB-CT-044', 'WEB-CT-047',
+    'WEB-CT-050', 'WEB-CT-065', 'WEB-CT-003', 'WEB-CT-004', 'WEB-CT-005',
+    'WEB-CT-009', 'WEB-CT-010', 'WEB-CT-011', 'WEB-CT-017',
+    'WEB-CT-032', 'WEB-CT-033', 'WEB-CT-035',
+    'MOB-CT-001', 'MOB-CT-002', 'MOB-CT-004', 'MOB-BL-048',
+    'MOB-CT-005', 'MOB-CT-006', 'MOB-CT-007',
+    'MOB-CT-014', 'MOB-CT-015', 'MOB-CT-016',
+    'MOB-CT-028', 'MOB-CT-032', 'MOB-CT-036',
+    'MOB-CT-058', 'MOB-CT-059', 'MOB-CT-062', 'MOB-CT-049', 'MOB-CT-063',
+    'DSK-CT-012', 'DSK-CT-013', 'DSK-CT-009', 'DSK-CT-010',
+    'DSK-CT-017', 'DSK-CT-035', 'DSK-CT-041', 'DSK-CT-047',
+  ]) {
+    assert(!catalog.some((row) => row.id === mergedRef), `${mergedRef} must be merged into its parent test case`);
+  }
+  const orderIndex = (id) => catalog.findIndex((row) => row.id === id);
+  assert(orderIndex('WEB-BL-009') === orderIndex('WEB-BL-002') + 1, 'WEB-BL-009 must immediately follow subdomain enumeration');
+  assert(orderIndex('WEB-BL-070') < orderIndex('WEB-BL-004'), 'WEB-BL-070 discovery must stay in the recon block before JS endpoint analysis');
+  assert(orderIndex('WEB-BL-067') < orderIndex('WEB-BL-010'), 'WEB-BL-067 vulnerability scan must stay in the recon block');
+  assert(orderIndex('MOB-BL-034') === orderIndex('MOB-BL-006') + 1, 'mobile resilience must start immediately after root bypass setup');
+  assert(orderIndex('MOB-BL-032') < orderIndex('MOB-BL-014'), 'MOB-BL-032 status check must stay before storage review');
+  assert(!catalog.some((row) => row.group === 'Infra'), 'Infra group should not remain in the catalog');
+  assert(!catalog.some((row) => row.group === 'Network'), 'Network group should not remain in the catalog');
   assert(catalog.some((row) => row.id === 'MOB-CT-019' && row.section === 'baseline'), 'MOB-CT-019 must move to baseline');
-  assert(catalog.some((row) => row.id === 'MOB-BL-048' && row.featureKey === 'mobile:login-auth'), 'MOB-BL-048 must move to login/auth feature');
+  assert(catalog.some((row) => row.id === 'MOB-BL-024' && row.featureKey === 'mobile:login-auth'), 'MOB-BL-024 must remain in login/auth feature');
   console.log('PASS cleanup invariants: removed features, merged rows, and moved rows');
 } catch (error) {
   failures += 1;

@@ -1,11 +1,19 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { buildFeatureRegistry, filterCatalogRows, getAllowedAccess } from '../logic/checklistEngine.js';
+import {
+  buildFeatureRegistry,
+  buildFeatureSubgroups,
+  featureRegistryByPlatform,
+  filterCatalogRows,
+  getAllowedAccess,
+} from '../logic/checklistEngine.js';
 
 const root = process.cwd();
 const catalog = JSON.parse(fs.readFileSync(path.join(root, 'data/checklistCatalog.json'), 'utf8')).rows;
 const featureRegistry = buildFeatureRegistry(catalog);
+const featureGroups = featureRegistryByPlatform(catalog);
+const featureSubgroups = buildFeatureSubgroups(featureGroups);
 
 const defaultStack = {
   web: { php: false, aspnet: false, tomcat: false, nodejs: false },
@@ -57,6 +65,23 @@ function runCheck(name, fn) {
     failures.push(`${name}: ${error.message}`);
     console.error(`FAIL ${name}: ${error.message}`);
   }
+}
+
+for (const platform of ['web', 'mobile', 'desktop']) {
+  runCheck(`feature subgroup coverage: ${platform}`, () => {
+    const featureKeys = featureGroups[platform].map((feature) => feature.key);
+    const subgroupKeys = featureSubgroups[platform].flatMap((group) => group.keys);
+    const duplicateKeys = subgroupKeys.filter((key, index) => subgroupKeys.indexOf(key) !== index);
+    const missingKeys = featureKeys.filter((key) => !subgroupKeys.includes(key));
+    const staleKeys = subgroupKeys.filter((key) => !featureKeys.includes(key));
+
+    assert(featureSubgroups[platform].length > 1, 'expected multiple feature subgroups');
+    assert(featureSubgroups[platform].length < featureKeys.length, 'subgroups collapsed into one group per feature');
+    assert(featureSubgroups[platform].some((group) => group.keys.length > 1), 'expected at least one broad subgroup with multiple features');
+    assert(duplicateKeys.length === 0, `duplicate subgroup keys: ${duplicateKeys.join(', ')}`);
+    assert(missingKeys.length === 0, `features missing from subgroups: ${missingKeys.join(', ')}`);
+    assert(staleKeys.length === 0, `stale subgroup keys: ${staleKeys.join(', ')}`);
+  });
 }
 
 for (const feature of featureRegistry) {
