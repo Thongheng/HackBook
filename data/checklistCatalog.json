@@ -112,6 +112,34 @@
       ]
     },
     {
+      "id": "WEB-BL-088",
+      "stdRef": "WSTG-INFO-03",
+      "group": "Recon",
+      "title": "Port and service exposure scan",
+      "objective": "Run controlled TCP/UDP port discovery against in-scope web hosts and edge IPs, then fingerprint exposed services to identify unintended admin panels, databases, debug listeners, alternate HTTP services, or insecure management ports.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "web",
+      "section": "baseline",
+      "featureLabel": null,
+      "featureKey": null,
+      "access": "blackbox",
+      "source": "catalog",
+      "sourceSheet": "WEB - Baseline",
+      "sourceRef": "WEB-BL-088",
+      "tags": [
+        "core",
+        "external_only"
+      ],
+      "tech": [],
+      "tools": [
+        "Nmap",
+        "Naabu",
+        "httpx"
+      ]
+    },
+    {
       "id": "WEB-BL-070",
       "stdRef": "WSTG-MAP-04",
       "group": "Recon",
@@ -3065,6 +3093,34 @@
       ]
     },
     {
+      "id": "MOB-BL-056",
+      "stdRef": "MASTG-ARCH-1",
+      "group": "API",
+      "title": "Mobile backend port and service exposure scan",
+      "objective": "Identify backend hosts, IPs, and loopback services used by the mobile app, then run controlled port discovery and service fingerprinting to find unintended admin panels, databases, debug listeners, or alternate API ports.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "mobile",
+      "section": "baseline",
+      "featureLabel": null,
+      "featureKey": null,
+      "access": "blackbox",
+      "source": "catalog",
+      "sourceSheet": "MOBILE - Baseline",
+      "sourceRef": "MOB-BL-056",
+      "tags": [
+        "core",
+        "external_only"
+      ],
+      "tech": [],
+      "tools": [
+        "Nmap",
+        "Naabu",
+        "httpx"
+      ]
+    },
+    {
       "id": "MOB-BL-005",
       "stdRef": "MASTG-TECH-0011",
       "group": "Setup",
@@ -5705,33 +5761,6 @@
       ]
     },
     {
-      "id": "DSK-BL-021",
-      "stdRef": "TASVS-NETW-1",
-      "group": "API",
-      "title": "API security from desktop context",
-      "objective": "Run OWASP API Top 10 against the desktop app's backend API endpoints, including BOLA, mass assignment, BFLA, and security misconfiguration such as exposed docs, debug endpoints, verbose errors, and weak gateway policy",
-      "rowType": "test",
-      "severity": "high",
-      "status": "Not Started",
-      "platform": "desktop",
-      "section": "baseline",
-      "featureLabel": null,
-      "featureKey": null,
-      "access": "both",
-      "source": "catalog",
-      "sourceSheet": "DESKTOP - Baseline",
-      "sourceRef": "DSK-BL-021",
-      "tags": [
-        "core"
-      ],
-      "tech": [],
-      "tools": [
-        "mitmproxy",
-        "Wireshark",
-        "Procmon"
-      ]
-    },
-    {
       "id": "DSK-BL-022",
       "stdRef": "TASVS-NETW-2",
       "group": "Communication",
@@ -5982,6 +6011,277 @@
         "Procmon",
         "ILSpy",
         "Frida"
+      ]
+    },
+    {
+      "id": "DSK-BL-021",
+      "stdRef": "TASVS-NETW-1",
+      "group": "API",
+      "title": "API security from desktop context",
+      "objective": "Run OWASP API Top 10 against the desktop app's backend API endpoints, including BOLA, mass assignment, BFLA, and security misconfiguration such as exposed docs, debug endpoints, verbose errors, and weak gateway policy",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "API / Backend",
+      "featureKey": "desktop:api-backend",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-BL-021",
+      "tags": [
+        "core"
+      ],
+      "tech": [],
+      "tools": [
+        "mitmproxy",
+        "Wireshark",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-CT-050",
+      "stdRef": "TASVS-NETW-1",
+      "group": "API",
+      "title": "Desktop backend port and service exposure scan",
+      "objective": "Enumerate backend hosts, update endpoints, localhost listeners, and service IPs contacted by the desktop client, then run controlled port discovery and service fingerprinting to find unintended admin panels, databases, debug listeners, or alternate API ports.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "API / Backend",
+      "featureKey": "desktop:api-backend",
+      "access": "blackbox",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-050",
+      "tags": [
+        "feature-specific",
+        "external_only"
+      ],
+      "tech": [],
+      "tools": [
+        "Nmap",
+        "Naabu",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-CT-051",
+      "stdRef": "API1-2023",
+      "group": "API",
+      "title": "Desktop API object authorization / IDOR",
+      "objective": "Replay and tamper with object IDs, tenant/account IDs, document IDs, license/account references, and sync IDs observed in desktop API traffic to verify cross-user and cross-tenant resources cannot be accessed.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "API / Backend",
+      "featureKey": "desktop:api-backend",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-051",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-CT-052",
+      "stdRef": "API5-2023",
+      "group": "API",
+      "title": "Desktop API function-level authorization",
+      "objective": "Call privileged, admin, maintenance, license, support, or internal desktop API functions discovered in client traffic or binaries as a low-privilege user to verify server-side function authorization.",
+      "rowType": "test",
+      "severity": "critical",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "API / Backend",
+      "featureKey": "desktop:api-backend",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-052",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-CT-053",
+      "stdRef": "API3-2023",
+      "group": "API",
+      "title": "Desktop API mass assignment and excessive response exposure",
+      "objective": "Add role, account_id, tenant_id, license tier, entitlement flags, sync status, hidden admin booleans, or other unexpected fields to desktop API write requests and inspect responses for overexposed secrets or authorization data.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "API / Backend",
+      "featureKey": "desktop:api-backend",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-053",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-CT-054",
+      "stdRef": "API2-2023",
+      "group": "API",
+      "title": "Weak desktop API authentication and device trust binding",
+      "objective": "Test whether desktop API endpoints trust API keys, installation IDs, machine IDs, license IDs, device fingerprints, cached tokens, or desktop-only headers without server-side user/session authorization.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "API / Backend",
+      "featureKey": "desktop:api-backend",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-054",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "Procmon"
+      ]
+    },
+    {
+      "id": "DSK-CT-055",
+      "stdRef": "API8-2023",
+      "group": "API",
+      "title": "Desktop API inventory and misconfiguration",
+      "objective": "Enumerate /v1, /v2, /internal, /admin, /desktop, update, license, support, and staging API routes used by the desktop client; check exposed Swagger/OpenAPI docs, verbose errors, debug endpoints, default credentials, and weak gateway policy.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "API / Backend",
+      "featureKey": "desktop:api-backend",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-055",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "httpx",
+        "Nuclei"
+      ]
+    },
+    {
+      "id": "DSK-CT-056",
+      "stdRef": "API4-2023",
+      "group": "API",
+      "title": "Desktop API rate limit and resource consumption",
+      "objective": "Batch, replay, and stress expensive desktop API operations such as sync, export/job triggers, search/report generation, update checks, and license validation to verify rate limits, payload bounds, and server-side resource controls.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "API / Backend",
+      "featureKey": "desktop:api-backend",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-056",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "httpx",
+        "Nuclei"
+      ]
+    },
+    {
+      "id": "DSK-CT-057",
+      "stdRef": "API8-2023",
+      "group": "API",
+      "title": "Desktop API header trust and gateway bypass",
+      "objective": "Tamper Host, X-Forwarded-Host, X-Forwarded-For, X-Real-IP, X-Original-URL, X-Rewrite-URL, method override, Origin, Referer, User-Agent, app-version, channel, device, installation, and license headers to test auth bypass, routing bypass, rate-limit bypass, tenant confusion, and gateway policy drift.",
+      "rowType": "test",
+      "severity": "high",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "API / Backend",
+      "featureKey": "desktop:api-backend",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-057",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "mitmproxy",
+        "httpx"
+      ]
+    },
+    {
+      "id": "DSK-CT-058",
+      "stdRef": "API8-2023",
+      "group": "API",
+      "title": "Desktop API sensitive response headers and cache policy",
+      "objective": "Inspect desktop API responses for missing Cache-Control: no-store on token or PII responses, overexposed Server/version/debug headers, permissive CORS on shared API tiers, verbose WWW-Authenticate detail, leaked request IDs, and inconsistent headers between desktop and web/mobile API routes.",
+      "rowType": "test",
+      "severity": "medium",
+      "status": "Not Started",
+      "platform": "desktop",
+      "section": "custom",
+      "featureLabel": "API / Backend",
+      "featureKey": "desktop:api-backend",
+      "access": "both",
+      "source": "catalog",
+      "sourceSheet": "DESKTOP - Custom",
+      "sourceRef": "DSK-CT-058",
+      "tags": [
+        "feature-specific"
+      ],
+      "tech": [],
+      "tools": [
+        "Burp Suite",
+        "httpx",
+        "Nuclei"
       ]
     },
     {

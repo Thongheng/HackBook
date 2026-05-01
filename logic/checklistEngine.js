@@ -144,7 +144,7 @@ export function featureSubgroupLabel(platform, key, label) {
   if (/(login|license)/.test(tokens)) return 'Auth & Licensing';
   if (/(installer|repair|auto-update|updater|update)/.test(tokens)) return 'Installer & Updates';
   if (/(local-db|cache|(^|[:\s-])file($|[:\s-])|import|export)/.test(tokens)) return 'Data & Files';
-  if (/(graphql|websocket|ipc|protocol|oauth)/.test(tokens)) return 'API & Protocols';
+  if (/(api|graphql|websocket|ipc|protocol|oauth)/.test(tokens)) return 'API & Protocols';
   if (/(payment|coupon|billing|subscription|qr|khqr)/.test(tokens)) return 'Payment & Commerce';
   return 'Platform Features';
 }

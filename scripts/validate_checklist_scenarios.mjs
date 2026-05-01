@@ -35,6 +35,7 @@ const scenarios = [
     config: cfg({ categories: ['web'], engagementType: 'Black-Box' }),
     run(rows) {
       assert(rows.length > 0, 'expected rows');
+      assert(rows.some((row) => row.id === 'WEB-BL-088'), 'web baseline port scan row missing');
       assert(rows.some((row) => row.id === 'WEB-BL-069'), 'generic HTML injection row missing');
       assert(rows.some((row) => row.id === 'WEB-BL-004'), 'merged JS URL analysis row missing');
       assert(!rows.some((row) => row.id === 'WEB-BL-087'), 'old standalone JS URL analysis row should be merged away');
@@ -173,6 +174,7 @@ const scenarios = [
     run(rows) {
       assert(rows.some((row) => row.id === 'MOB-CT-019'), 'mobile API BOLA row missing');
       assert(rows.some((row) => row.id === 'MOB-CT-037'), 'mobile API misconfiguration row missing');
+      assert(rows.some((row) => row.id === 'MOB-BL-056'), 'mobile baseline port scan row missing');
       assert(rows.every((row) => row.featureKey !== 'mobile:api-backend'), 'mobile API Backend feature should be removed');
       assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile API scenario');
     },
@@ -181,10 +183,24 @@ const scenarios = [
     name: 'desktop + WebView + blackbox',
     config: cfg({ categories: ['desktop'], engagementType: 'Black-Box', features: { 'desktop:webview': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'DSK-BL-021'), 'desktop API baseline row missing');
+      assert(!rows.some((row) => row.id === 'DSK-BL-021'), 'desktop API feature row should not appear with WebView only');
+      assert(!rows.some((row) => row.id === 'DSK-CT-050'), 'desktop API port scan row should not appear with WebView only');
       assert(rows.every((row) => row.platform === 'desktop'), 'desktop-only scenario leaked other platforms');
       assert(!rows.some((row) => row.id === 'DSK-CT-015'), 'greybox-only desktop WebView row leaked into blackbox');
       assert(rows.every((row) => row.access !== 'greybox'), 'greybox access rows leaked into blackbox');
+    },
+  },
+  {
+    name: 'desktop + API / Backend',
+    config: cfg({ categories: ['desktop'], engagementType: 'Black-Box', features: { 'desktop:api-backend': true } }),
+    run(rows) {
+      assert(rows.some((row) => row.id === 'DSK-BL-021'), 'desktop API feature row missing');
+      assert(rows.some((row) => row.id === 'DSK-CT-050'), 'desktop API port scan row missing');
+      for (const id of ['DSK-CT-051', 'DSK-CT-052', 'DSK-CT-053', 'DSK-CT-054', 'DSK-CT-055', 'DSK-CT-056', 'DSK-CT-057', 'DSK-CT-058']) {
+        assert(rows.some((row) => row.id === id), `${id} desktop API row missing`);
+      }
+      assert(rows.some((row) => row.featureKey === 'desktop:api-backend'), 'desktop API feature key missing');
+      assert(rows.every((row) => row.platform === 'desktop'), 'non-desktop rows leaked into desktop API scenario');
     },
   },
   {
