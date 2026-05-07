@@ -13,8 +13,10 @@ export const WORKBOOK_HEADERS = {
 };
 
 export const WORKBOOK_COLUMN_WIDTHS = {
-  baseline: [5, 42, 48, 10, 24, 10, 12, 35],
-  custom: [5, 20, 38, 46, 24, 10, 8, 10, 12, 35],
+  baseline: [5, 42, 48, 10, 24, 10, 12, 35, { wch: 18, hidden: true }],
+  custom: [5, 20, 38, 46, 24, 10, 8, 10, 12, 35, { wch: 18, hidden: true }],
+  summary: [24, 72, 16],
+  markdown: [24, 110, { wch: 32, hidden: true }, { wch: 110, hidden: true }],
 };
 
 const SEVERITY_LABELS = {
@@ -23,6 +25,12 @@ const SEVERITY_LABELS = {
   medium: 'Medium',
   low: 'Low',
   info: 'Info',
+};
+
+const CATEGORY_LABELS = {
+  web: 'Web / API',
+  mobile: 'Mobile (Android)',
+  desktop: 'Desktop / Thick Client',
 };
 
 const ROW_TYPE_LABELS = {
@@ -227,9 +235,186 @@ function createDataCell(value, align = 'left') {
   return createStyledCell(value, style, styleKey);
 }
 
+function createFormulaCell(formula, fallbackValue = '') {
+  return {
+    ...createDataCell(fallbackValue),
+    f: formula,
+  };
+}
+
+function excelString(value) {
+  return `"${String(value).replace(/"/g, '""')}"`;
+}
+
+function quoteSheetName(name) {
+  return `'${String(name).replace(/'/g, "''")}'`;
+}
+
+function summaryAreaName(row) {
+  const sheetName = getWorkbookSheetName(row.category, row.sheetType);
+  return row.sheetType === 'custom'
+    ? `${sheetName}: ${row.feature || row.group || 'Feature-specific'}`
+    : `${sheetName}: ${row.group || 'General'}`;
+}
+
+function markdownSectionName(row) {
+  const platformLabel = CATEGORY_LABELS[row.category] ?? row.category;
+  const sectionLabel = row.sheetType === 'custom'
+    ? row.feature || row.group || 'Feature-specific'
+    : row.group || 'General';
+
+  return `${platformLabel} - ${sectionLabel}`.replace(/\s+/g, ' ').trim();
+}
+
+function detailSheetColumns(sheetType) {
+  return sheetType === 'custom'
+    ? { testCase: 'C', objective: 'D', severity: 'H', status: 'I', helper: 'K' }
+    : { testCase: 'B', objective: 'C', severity: 'F', status: 'G', helper: 'I' };
+}
+
+function keyChecksFormula(area) {
+  const columns = detailSheetColumns(area.sheetType);
+  const sheet = quoteSheetName(area.sheetName);
+  return `IFERROR(TEXTJOIN(", ",TRUE,TAKE(FILTER(${sheet}!$${columns.testCase}$1:$${columns.testCase}$1000,${sheet}!$${columns.helper}$1:$${columns.helper}$1000=${excelString(area.name)}),4)),"")`;
+}
+
+function markdownBlockFormula(area) {
+  const columns = detailSheetColumns(area.sheetType);
+  const sheet = quoteSheetName(area.sheetName);
+  const condition = `${sheet}!$${columns.helper}$1:$${columns.helper}$1000=${excelString(area.name)}`;
+  const testCaseRange = `${sheet}!$${columns.testCase}$1:$${columns.testCase}$1000`;
+  const objectiveRange = `${sheet}!$${columns.objective}$1:$${columns.objective}$1000`;
+  const line = `"- "&${testCaseRange}&" : "&${objectiveRange}`;
+
+  return `IFERROR(${excelString(area.markdownName)}&CHAR(10)&TEXTJOIN(CHAR(10),TRUE,FILTER(${line},${condition})),"")`;
+}
+
+function buildWorkbookAreas(normalizedRows) {
+  const areas = new Map();
+
+  for (const row of normalizedRows) {
+    const sheetName = getWorkbookSheetName(row.category, row.sheetType);
+    const areaName = summaryAreaName(row);
+
+    if (!areas.has(areaName)) {
+      areas.set(areaName, { name: areaName, markdownName: markdownSectionName(row), sheetName, sheetType: row.sheetType });
+    }
+  }
+
+  return [...areas.values()];
+}
+
+function buildSummaryRows(areas) {
+  return areas.map((area, index) => [
+    createDataCell(`${index + 1}. ${area.name}`),
+    createFormulaCell(keyChecksFormula(area)),
+    createDataCell(''),
+  ]);
+}
+
+function buildSummarySheet(normalizedRows) {
+  const data = [];
+
+  data.push([
+    createStyledCell('Checklist update:', titleStyle, 'title'),
+    createStyledCell('', titleStyle, 'title'),
+    createStyledCell('', titleStyle, 'title'),
+  ]);
+  data.push([
+    createStyledCell('After manually editing detail sheets, recalculate workbook to refresh key checks.', metaValueStyle, 'meta-value'),
+    createStyledCell('', metaValueStyle, 'meta-value'),
+    createStyledCell('', metaValueStyle, 'meta-value'),
+  ]);
+  data.push(['area', 'key checks', 'status'].map((header) => createHeaderCell(header)));
+
+  const summaryRows = buildSummaryRows(buildWorkbookAreas(normalizedRows));
+  if (summaryRows.length === 0) {
+    data.push([
+      createDataCell('No checklist rows'),
+      createDataCell('No checks for this configuration'),
+      createDataCell(''),
+    ]);
+  } else {
+    data.push(...summaryRows);
+  }
+
+  return {
+    name: 'Summary',
+    category: 'summary',
+    sheetType: 'summary',
+    rows: [],
+    data,
+    merges: [],
+    columnWidths: WORKBOOK_COLUMN_WIDTHS.summary,
+  };
+}
+
+function buildMarkdownRows(areas) {
+  const helperStartRow = 5;
+  const helperEndRow = Math.max(helperStartRow, helperStartRow + areas.length - 1);
+  const fullMarkdownFormula = areas.length > 0
+    ? `IFERROR(TEXTJOIN(CHAR(10)&CHAR(10),TRUE,$D$${helperStartRow}:$D$${helperEndRow}),"")`
+    : '""';
+  const rows = [
+    [
+      createDataCell('Full Markdown'),
+      createFormulaCell(fullMarkdownFormula),
+      createDataCell(''),
+      createDataCell(''),
+    ],
+  ];
+
+  rows.push(...areas.map((area) => [
+    createDataCell(''),
+    createDataCell(''),
+    createDataCell(area.name),
+    createFormulaCell(markdownBlockFormula(area)),
+  ]));
+
+  return rows;
+}
+
+function buildMarkdownSheet(normalizedRows) {
+  const data = [];
+
+  data.push([
+    createStyledCell('Copyable Markdown:', titleStyle, 'title'),
+    createStyledCell('', titleStyle, 'title'),
+  ]);
+  data.push([
+    createStyledCell('After manually editing detail sheets, recalculate workbook, then copy the full markdown from cell B4.', metaValueStyle, 'meta-value'),
+    createStyledCell('', metaValueStyle, 'meta-value'),
+    createStyledCell('', metaValueStyle, 'meta-value'),
+    createStyledCell('', metaValueStyle, 'meta-value'),
+  ]);
+  data.push(['copy', 'markdown', 'helper area', 'helper markdown'].map((header) => createHeaderCell(header)));
+
+  const markdownRows = buildMarkdownRows(buildWorkbookAreas(normalizedRows));
+  if (markdownRows.length === 0) {
+    data.push([
+      createDataCell('Full Markdown'),
+      createDataCell('No markdown for this configuration'),
+      createDataCell(''),
+      createDataCell(''),
+    ]);
+  } else {
+    data.push(...markdownRows);
+  }
+
+  return {
+    name: 'Markdown',
+    category: 'markdown',
+    sheetType: 'markdown',
+    rows: [],
+    data,
+    merges: [],
+    columnWidths: WORKBOOK_COLUMN_WIDTHS.markdown,
+  };
+}
+
 export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheets = false } = {}) {
   const normalizedRows = rows.map(normalizeWorkbookRow);
-  const sheets = [];
+  const sheets = [buildSummarySheet(normalizedRows), buildMarkdownSheet(normalizedRows)];
 
   for (const sheet of WORKBOOK_LAYOUT) {
     const sheetRows = normalizedRows.filter((row) => row.category === sheet.category && row.sheetType === sheet.sheetType);
@@ -241,7 +426,7 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
     const colCount = WORKBOOK_HEADERS[sheet.sheetType].length;
 
     // Add metadata to first sheet only
-    if (sheets.length === 0 && metadataRows.length > 0) {
+    if (sheets.length === 2 && metadataRows.length > 0) {
       metadataRows.forEach((row) => {
         const styledRow = [];
         if (row.length === 1 && row[0].includes('—')) {
@@ -276,7 +461,7 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
     currentRow++;
 
     // Add headers
-    const headerRow = WORKBOOK_HEADERS[sheet.sheetType].map(h => createHeaderCell(h));
+    const headerRow = [...WORKBOOK_HEADERS[sheet.sheetType], 'Summary Area'].map(h => createHeaderCell(h));
     data.push(headerRow);
     currentRow++;
 
@@ -302,12 +487,14 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
       for (let i = 1; i < colCount; i++) {
         groupRow.push(createGroupCell(''));
       }
+      groupRow.push(createGroupCell(''));
       data.push(groupRow);
-      merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: colCount - 1 } });
+      merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: colCount } });
       currentRow++;
 
       for (const row of groupRows) {
         const dataRow = [];
+        const summaryArea = summaryAreaName(row);
         if (sheet.sheetType === 'baseline') {
           dataRow.push(createDataCell(counter++, 'center'));
           dataRow.push(createDataCell(row.testCase));
@@ -317,6 +504,7 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
           dataRow.push(createSeverityCell(row.severityLabel));
           dataRow.push(createDataCell(row.status, 'center'));
           dataRow.push(createDataCell(''));
+          dataRow.push(createDataCell(summaryArea));
         } else {
           dataRow.push(createDataCell(counter++, 'center'));
           dataRow.push(createDataCell(row.feature || row.group));
@@ -328,6 +516,7 @@ export function buildWorkbookSheets(rows, { metadataRows = [], includeEmptySheet
           dataRow.push(createSeverityCell(row.severityLabel));
           dataRow.push(createDataCell(row.status, 'center'));
           dataRow.push(createDataCell(''));
+          dataRow.push(createDataCell(summaryArea));
         }
         data.push(dataRow);
         currentRow++;

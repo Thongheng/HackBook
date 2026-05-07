@@ -211,7 +211,7 @@ for (const techCase of techCases) {
   });
 }
 
-const outputCoverage = ['xlsx', 'markdown', 'findings'];
+const outputCoverage = ['xlsx', 'findings'];
 for (const outputFormat of outputCoverage) {
   runCheck(`output format config accepted: ${outputFormat}`, () => {
     const rows = filterCatalogRows(

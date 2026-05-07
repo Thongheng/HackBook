@@ -90,14 +90,14 @@ Validation and export checks:
 - `scripts/validate_checklist_matrix.mjs`
   Verifies feature toggles, access gating, tech filters, and output-format compatibility.
 - `scripts/validate_checklist_export.mjs`
-  Smoke-tests the shared workbook builder to ensure the full catalog still exports into the canonical six-sheet XLSX layout.
+  Smoke-tests the shared workbook builder to ensure the full catalog still exports into the Summary, Markdown, and canonical detail-sheet XLSX layout.
 
 App exports:
 
 - **Filtered export**
-  Uses the current checklist selections and can export XLSX, Markdown, or Findings skeleton output.
+  Uses the current checklist selections and exports XLSX. The workbook includes a Markdown sheet with one copyable formula-backed Markdown cell.
 - **Export Full Catalog XLSX**
-  Ignores the current filters and rebuilds the full six-sheet workbook directly from the JSON catalog, including curated-only rows.
+  Ignores the current filters and rebuilds the full workbook directly from the JSON catalog, including curated-only rows.
 
 The XLSX exports are generated directly from the bundled app code and the JSON catalog. They do not depend on a tracked Excel workbook or a runtime CDN script.
 

@@ -93,7 +93,16 @@ function toUint8Array(value) {
 
 function stripWorkbookCell(cell) {
   if (!cell || typeof cell !== 'object' || !('v' in cell)) return cell;
-  return { v: cell.v, t: cell.t };
+  const stripped = { v: cell.v, t: cell.t };
+  if (cell.f) {
+    stripped.f = cell.f;
+  }
+  return stripped;
+}
+
+function toColumnSpec(width) {
+  if (typeof width === 'number') return { wch: width };
+  return { ...width };
 }
 
 function buildWorkbookBytes(sheets) {
@@ -102,7 +111,7 @@ function buildWorkbookBytes(sheets) {
   for (const sheet of sheets) {
     const worksheetData = sheet.data.map((row) => row.map(stripWorkbookCell));
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    worksheet['!cols'] = sheet.columnWidths.map((width) => ({ wch: width }));
+    worksheet['!cols'] = sheet.columnWidths.map(toColumnSpec);
     if (sheet.merges?.length) {
       worksheet['!merges'] = sheet.merges;
     }

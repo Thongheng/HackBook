@@ -5,14 +5,12 @@ import {
 } from 'lucide-react';
 import { ALL_ROWS, FEATURE_GROUPS, FEATURE_REGISTRY, FEATURE_SUBGROUPS, ChecklistRow, Category, Scope } from '../../data/checklistData';
 import { filterCatalogRows } from '../../logic/checklistEngine.js';
-import { buildChecklistMarkdown } from '../../logic/checklistMarkdown.js';
 import { applyPreviewExclusions, buildPreviewGroups, buildPreviewSections, checklistRowRef, prunePreviewExclusions } from '../../logic/checklistPreview.js';
 import { buildWorkbookMetadataRows, buildWorkbookSheets } from '../../logic/checklistWorkbook.js';
 import { saveWorkbookFile } from '../../logic/checklistWorkbookXlsx.js';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type EngagementType = 'Black-Box' | 'Grey-Box';
-type ExportFormat = 'xlsx' | 'markdown';
 
 interface TechStack {
   web: { php: boolean; aspnet: boolean; tomcat: boolean; nodejs: boolean; };
@@ -82,18 +80,6 @@ async function exportFullCatalogXLSX(rows: ChecklistRow[]) {
   });
   const sheets = buildWorkbookSheets(rows, { metadataRows, includeEmptySheets: true });
   saveWorkbookFile(sheets, 'checklist_catalog_full.xlsx');
-}
-
-function exportMarkdown(filtered: ChecklistRow[], cfg: Config) {
-  const safe = safeFilename(cfg.targetName);
-  const date = new Date().toISOString().split('T')[0];
-  const blob = new Blob([buildChecklistMarkdown(filtered)], { type: 'text/markdown' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = `${safe}_Checklist_${date}.md`;
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 // ─── UI primitives ─────────────────────────────────────────────────────────────
@@ -476,9 +462,8 @@ export const ChecklistGenerator: React.FC = () => {
   };
 
   const [exportingAction, setExportingAction] = useState<null | 'filtered' | 'full'>(null);
-  const [exportFormat, setExportFormat]        = useState<ExportFormat>('xlsx');
-  const [isPreviewOpen,   setIsPreviewOpen]    = useState(false);
-  const [excludedRefs,    setExcludedRefs]      = useState<Set<string>>(() => new Set());
+  const [isPreviewOpen,   setIsPreviewOpen]   = useState(false);
+  const [excludedRefs,    setExcludedRefs]    = useState<Set<string>>(() => new Set());
 
   const filtered = useMemo(() => filterCatalogRows(ALL_ROWS, cfg), [cfg]);
   const exportRows = useMemo(() => applyPreviewExclusions(filtered, excludedRefs), [filtered, excludedRefs]);
@@ -556,8 +541,7 @@ export const ChecklistGenerator: React.FC = () => {
     if (!exportRows.length) return;
     setExportingAction('filtered');
     try {
-      if (exportFormat === 'markdown') exportMarkdown(exportRows, cfg);
-      else await exportXLSX(exportRows, cfg);
+      await exportXLSX(exportRows, cfg);
     } finally { setExportingAction(null); }
   };
   const handleExportFullCatalog = async () => {
@@ -567,8 +551,8 @@ export const ChecklistGenerator: React.FC = () => {
   };
 
   const previewFilename = cfg.targetName
-    ? `${safeFilename(cfg.targetName)}_Checklist_${new Date().toISOString().split('T')[0]}.${exportFormat === 'markdown' ? 'md' : 'xlsx'}`
-    : `Target_Checklist_<date>.${exportFormat === 'markdown' ? 'md' : 'xlsx'}`;
+    ? `${safeFilename(cfg.targetName)}_Checklist_${new Date().toISOString().split('T')[0]}.xlsx`
+    : 'Target_Checklist_<date>.xlsx';
 
   return (
     <div className="space-y-6 pb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -814,24 +798,6 @@ export const ChecklistGenerator: React.FC = () => {
               {excludedCount > 0 ? `${excludedCount} excluded` : `${filtered.length} selected`}
             </span>
           </button>
-          <div className="grid grid-cols-2 gap-2">
-            {([
-              { value: 'xlsx' as ExportFormat, label: 'XLSX' },
-              { value: 'markdown' as ExportFormat, label: 'Markdown' },
-            ]).map(option => (
-              <button
-                key={option.value}
-                onClick={() => setExportFormat(option.value)}
-                className={`rounded-lg border px-3 py-2 text-[10px] font-bold uppercase tracking-[0.14em] transition-all ${
-                  exportFormat === option.value
-                    ? 'border-[#9fef00]/30 bg-[#9fef00]/8 text-[#9fef00]'
-                    : 'border-white/[0.08] bg-[#141d26]/94 htb-text-muted hover:bg-[#18222d] hover:htb-text'
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
           <div className="flex gap-2">
             <button onClick={handleGenerate} disabled={exportingAction !== null || exportRows.length === 0}
               className={`w-1/2 flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-[11px] uppercase tracking-[0.12em] transition-all ${
