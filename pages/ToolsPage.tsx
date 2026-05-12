@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { CSRFTool } from './tools/CSRFTool';
 import { JWTTool } from './tools/JWTTool';
 import { DataEncodingTool } from './tools/DataEncodingTool';
 import { MSFVenomBuilder } from './tools/MSFVenomBuilder';
 import { ChecklistGenerator } from './tools/ChecklistGenerator';
+import { KHQRTool } from './tools/KHQRTool';
 import { tools, toolCategories } from '../data/tools';
 import { ArrowLeft, Hash } from 'lucide-react';
 
@@ -58,11 +58,11 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({ initialTool, setView }) =>
           <div className="absolute top-0 right-0 h-48 w-48 rounded-full bg-[#9fef00]/5 blur-[90px] pointer-events-none" />
           {(() => {
             switch (activeToolId) {
-              case 'tool-csrf': return <CSRFTool />;
               case 'tool-jwt': return <JWTTool />;
               case 'tool-encoding': return <DataEncodingTool />;
               case 'tool-msfvenom': return <MSFVenomBuilder />;
               case 'tool-checklist': return <ChecklistGenerator />;
+              case 'tool-khqr': return <KHQRTool />;
               default: return <div className="htb-text-faint italic">Tool not found: {activeToolId}</div>;
             }
           })()}

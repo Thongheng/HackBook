@@ -9,8 +9,25 @@ import { GlobalSearch } from './components/GlobalSearch';
 type View = 'dashboard' | 'tools' | 'guides' | 'reference' | string;
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<View>('dashboard');
+  const [currentView, setCurrentView] = useState<View>(() => {
+    const hash = window.location.hash.slice(1);
+    return hash || 'dashboard';
+  });
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash && hash !== currentView) setCurrentView(hash);
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [currentView]);
+
+  const setViewWithHash = (view: string) => {
+    setCurrentView(view);
+    window.location.hash = view;
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -26,33 +43,33 @@ const App: React.FC = () => {
 
   const handleSearchResultSelect = (type: 'tool' | 'guide' | 'reference', id: string | number) => {
     if (type === 'tool') {
-      setCurrentView(id as string);
+      setViewWithHash(id as string);
     } else if (type === 'guide') {
       // For guides, we route to the guides page. 
       // Enhanced: If guides page had specific routing we could pass state, 
       // but for now we navigate to the page.
-      setCurrentView('guides');
+      setViewWithHash('guides');
     } else if (type === 'reference') {
-      setCurrentView('reference');
+      setViewWithHash('reference');
     }
     setIsSearchOpen(false);
   };
 
   const renderContent = () => {
     switch (currentView) {
-      case 'dashboard': return <Dashboard setView={setCurrentView} />;
-      case 'tools': return <ToolsPage setView={setCurrentView} />;
+      case 'dashboard': return <Dashboard setView={setViewWithHash} />;
+      case 'tools': return <ToolsPage setView={setViewWithHash} />;
       case 'guides': return <GuidesPage />;
       case 'reference': return <ReferencesPage />;
       default:
-        if (currentView.startsWith('tool-')) return <ToolsPage initialTool={currentView} setView={setCurrentView} />;
-        return <Dashboard setView={setCurrentView} />;
+        if (currentView.startsWith('tool-')) return <ToolsPage initialTool={currentView} setView={setViewWithHash} />;
+        return <Dashboard setView={setViewWithHash} />;
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar setView={setCurrentView} currentView={currentView} onOpenSearch={() => setIsSearchOpen(true)} />
+      <Navbar setView={setViewWithHash} currentView={currentView} onOpenSearch={() => setIsSearchOpen(true)} />
       
       <GlobalSearch 
         isOpen={isSearchOpen} 
