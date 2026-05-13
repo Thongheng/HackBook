@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import jsQR from 'jsqr';
 import QRCode from 'qrcode';
-import { QrCode, Wrench, Copy, Check, ClipboardPaste, ChevronDown, ChevronRight, ArrowRight, X } from 'lucide-react';
+import { QrCode, Wrench, Copy, Check, ClipboardPaste, ChevronDown, ChevronRight, ArrowRight, X, Trash2, Plus } from 'lucide-react';
 
 // ── TLV tag labels ──────────────────────────────────────────────────────────
 const TAG_NAMES: Record<string, string> = {
@@ -115,12 +115,16 @@ export const KHQRTool: React.FC = () => {
   const [parsed, setParsed] = useState<TLVField[]>([]);
   const [editFields, setEditFields] = useState<TLVField[]>([]);
   const [rebuiltStr, setRebuiltStr] = useState('');
-  const [rebuiltImg, setRebuiltImg] = useState('');
+  const [rebuiltImg, setRebuiltImg] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState(false);
   const [rawCopied, setRawCopied] = useState(false);
 
-  // ── Paste handler ──────────────────────────────────────────────────────────
+  const [newTagId, setNewTagId] = useState('');
+  const [newTagValue, setNewTagValue] = useState('');
+  const [newTagParent, setNewTagParent] = useState('');
+
+  // ── Handlers ──────────────────────────────────────────────────────────────
   const handlePaste = useCallback((e: ClipboardEvent) => {
     if (tab !== 'decode') return;
     const imgItem = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith('image/'));
@@ -202,6 +206,52 @@ export const KHQRTool: React.FC = () => {
       f.id !== pid ? f : { ...f, subfields: f.subfields?.map(sf => sf.id === sid ? { ...sf, value } : sf) }
     ));
 
+  const removeField = (id: string) => {
+    setEditFields(prev => prev.filter(f => f.id !== id));
+  };
+
+  const removeSubField = (pid: string, sid: string) => {
+    setEditFields(prev => prev.map(f =>
+      f.id !== pid ? f : { ...f, subfields: f.subfields?.filter(sf => sf.id !== sid) }
+    ));
+  };
+
+  const addTag = () => {
+    if (!newTagId || newTagId.length !== 2 || isNaN(Number(newTagId))) {
+      alert("Tag ID must be a 2-digit number (e.g. 01)");
+      return;
+    }
+    const name = TAG_NAMES[newTagId] || `Custom Tag ${newTagId}`;
+    
+    if (newTagParent) {
+      if (newTagParent.length !== 2 || isNaN(Number(newTagParent))) {
+        alert("Parent Tag ID must be a 2-digit number (e.g. 62)");
+        return;
+      }
+      setEditFields(prev => {
+        const hasParent = prev.find(f => f.id === newTagParent);
+        if (!hasParent) {
+           return [...prev, { id: newTagParent, name: TAG_NAMES[newTagParent] || `Custom Parent`, value: '', subfields: [{ id: newTagId, name: `Custom SubTag ${newTagId}`, value: newTagValue }] }].sort((a,b) => a.id.localeCompare(b.id));
+        }
+        return prev.map(f => {
+          if (f.id === newTagParent) {
+            const subs = f.subfields || [];
+            if (subs.find(s => s.id === newTagId)) return f;
+            return { ...f, subfields: [...subs, { id: newTagId, name: `Custom SubTag ${newTagId}`, value: newTagValue }].sort((a,b) => a.id.localeCompare(b.id)) };
+          }
+          return f;
+        });
+      });
+    } else {
+      setEditFields(prev => {
+        if (prev.find(f => f.id === newTagId)) return prev;
+        return [...prev, { id: newTagId, name, value: newTagValue }].sort((a,b) => a.id.localeCompare(b.id));
+      });
+    }
+    setNewTagId('');
+    setNewTagValue('');
+  };
+
   // live CRC for display
   const liveCRC = editFields.length ? (() => {
     let body = '';
@@ -241,14 +291,17 @@ export const KHQRTool: React.FC = () => {
                   <span className={`font-mono text-[12px] ${c.accent} break-all text-right max-w-[55%]`}>{sf.value}</span>
                 </div>
               ) : (
-                <div key={sf.id} className="flex items-center gap-3 px-5 py-2.5">
+                <div key={sf.id} className="flex items-center gap-3 px-5 py-2.5 group/item">
                   <span className="font-mono text-[9px] font-black text-white/25 shrink-0">{sf.id}</span>
-                  <span className="text-[11px] text-white/40 font-medium w-40 shrink-0">{sf.name}</span>
+                  <span className="text-[11px] text-white/40 font-medium w-36 shrink-0">{sf.name}</span>
                   <input
                     className={`flex-1 bg-transparent font-mono text-[12px] ${c.accent} outline-none border-b border-white/10 focus:border-white/30 pb-0.5 transition-colors min-w-0`}
                     value={sf.value}
                     onChange={e => updateField(sf.id, e.target.value)}
                   />
+                  <button onClick={() => removeField(sf.id)} className="opacity-0 group-hover/item:opacity-100 p-1 hover:text-rose-400 text-white/20 transition-all shrink-0">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               )
             ))}
@@ -325,11 +378,16 @@ export const KHQRTool: React.FC = () => {
     return (
       <div key={f.id} className={`rounded-xl border ${c.border} overflow-hidden`}>
         <div
-          className={`flex items-center gap-3 px-4 py-2.5 ${c.bg} ${hasChildren ? 'cursor-pointer select-none' : ''}`}
+          className={`flex items-center gap-3 px-4 py-2.5 ${c.bg} ${hasChildren ? 'cursor-pointer select-none' : ''} group/header`}
           onClick={() => hasChildren && toggleExpand(f.id)}
         >
           <span className={`font-mono text-[10px] font-black px-2 py-0.5 rounded ${c.bg} border ${c.border} ${c.accent} shrink-0`}>{f.id}</span>
           <span className="text-[11px] font-bold text-white/60 uppercase tracking-widest flex-1">{f.name}</span>
+          {!isCRC && (
+            <button onClick={(e) => { e.stopPropagation(); removeField(f.id); }} className="opacity-0 group-hover/header:opacity-100 p-1 hover:text-rose-400 text-white/20 transition-all">
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
           {hasChildren && (isOpen ? <ChevronDown className={`w-3.5 h-3.5 ${c.accent} shrink-0`} /> : <ChevronRight className={`w-3.5 h-3.5 ${c.accent} shrink-0`} />)}
           {isCRC && <span className={`font-mono text-sm font-black ${c.accent}`}>{liveCRC}</span>}
         </div>
@@ -345,7 +403,7 @@ export const KHQRTool: React.FC = () => {
         {hasChildren && isOpen && (
           <div className="divide-y divide-white/5">
             {f.subfields!.map(sf => (
-              <div key={sf.id} className="flex items-center gap-3 px-5 py-2.5 bg-black/10">
+              <div key={sf.id} className="flex items-center gap-3 px-5 py-2.5 bg-black/10 group/item">
                 <span className="font-mono text-[9px] font-black text-white/25 shrink-0">{sf.id}</span>
                 <span className="text-[11px] text-white/40 font-medium w-40 shrink-0">{sf.name}</span>
                 <input
@@ -353,6 +411,9 @@ export const KHQRTool: React.FC = () => {
                   value={sf.value}
                   onChange={e => updateSub(f.id, sf.id, e.target.value)}
                 />
+                <button onClick={() => removeSubField(f.id, sf.id)} className="opacity-0 group-hover/item:opacity-100 p-1 hover:text-rose-400 text-white/20 transition-all shrink-0">
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
               </div>
             ))}
           </div>
@@ -484,9 +545,41 @@ export const KHQRTool: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-6">
               {/* Left: editable fields */}
-              <div className="space-y-2">
+              <div className="space-y-2 pb-10">
                 <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-3">Target Fields (CRC live updates)</p>
                 {renderLayout(editFields, false)}
+
+                <div className="mt-6 p-4 rounded-xl border border-white/10 bg-black/20 space-y-3">
+                  <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Add Custom Tag</p>
+                  <div className="flex gap-2">
+                    <input
+                      placeholder="Parent ID (opt)"
+                      className="w-24 bg-white/5 font-mono text-[11px] text-white outline-none border border-white/10 rounded-lg px-3 py-2 focus:border-white/30 transition-colors"
+                      value={newTagParent}
+                      onChange={e => setNewTagParent(e.target.value)}
+                      maxLength={2}
+                    />
+                    <input
+                      placeholder="Tag ID"
+                      className="w-20 bg-white/5 font-mono text-[11px] text-white outline-none border border-white/10 rounded-lg px-3 py-2 focus:border-white/30 transition-colors"
+                      value={newTagId}
+                      onChange={e => setNewTagId(e.target.value)}
+                      maxLength={2}
+                    />
+                    <input
+                      placeholder="Tag Value"
+                      className="flex-1 bg-white/5 font-mono text-[11px] text-white outline-none border border-white/10 rounded-lg px-3 py-2 focus:border-white/30 transition-colors min-w-0"
+                      value={newTagValue}
+                      onChange={e => setNewTagValue(e.target.value)}
+                    />
+                    <button
+                      onClick={addTag}
+                      className="px-4 py-2 bg-[#9fef00]/10 hover:bg-[#9fef00]/20 text-[#9fef00] border border-[#9fef00]/20 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all shrink-0 flex items-center gap-1"
+                    >
+                      <Plus className="w-3 h-3" /> Add
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* Right: QR preview + output */}
