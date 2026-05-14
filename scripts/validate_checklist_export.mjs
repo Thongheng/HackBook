@@ -28,33 +28,25 @@ assert(
   'workbook sheet names/order do not include Summary and Markdown before the canonical six-sheet layout'
 );
 
-assert(sheets[0].data[0]?.[0]?.v === 'Checklist update:', 'summary sheet must start with the summary title');
-assert(sheets[0].data.some((row) => row[0]?.v === 'After manually editing detail sheets, recalculate workbook to refresh key checks.'), 'summary sheet must include recalculation guidance');
-const summaryHeaderIndex = sheets[0].data.findIndex((row) => row.map((cell) => cell?.v).join('|') === 'area|key checks|status');
-assert(summaryHeaderIndex >= 0, 'summary sheet must include area/key checks/status headers');
+// Summary sheet: static (no formulas)
+assert(sheets[0].data[0]?.[0]?.v === 'Checklist Summary', 'summary sheet must start with the summary title');
+const summaryHeaderIndex = sheets[0].data.findIndex((row) => row.map((cell) => cell?.v).join('|') === 'Area|Status|Notes');
+assert(summaryHeaderIndex >= 0, 'summary sheet must include Area/Status/Notes headers');
 const summaryRows = sheets[0].data.slice(summaryHeaderIndex + 1);
-const formulaSummaryRow = summaryRows.find((row) => row[0]?.v && row[1]?.f);
-assert(formulaSummaryRow, 'summary key checks must be formula-backed');
-assert(formulaSummaryRow[2]?.v === '', 'summary status cells must remain blank for input');
+assert(summaryRows.length > 0, 'summary sheet must include at least one area row');
+assert(summaryRows[0][0]?.v, 'summary area cells must have a text value');
+assert(summaryRows.every((row) => !row[0]?.f && !row[1]?.f), 'summary sheet must be fully static (no formulas)');
 
-assert(sheets[1].data[0]?.[0]?.v === 'Copyable Markdown:', 'markdown sheet must start with the markdown title');
-assert(sheets[1].data.some((row) => row[0]?.v === 'After manually editing detail sheets, recalculate workbook, then copy the full markdown from cell B4.'), 'markdown sheet must include copy/recalculation guidance');
-const markdownHeaderIndex = sheets[1].data.findIndex((row) => row.map((cell) => cell?.v).slice(0, 2).join('|') === 'copy|markdown');
-assert(markdownHeaderIndex >= 0, 'markdown sheet must include copy/markdown headers');
+// Markdown sheet: static pre-rendered markdown (no formulas)
+assert(sheets[1].data[0]?.[0]?.v === 'Markdown Export', 'markdown sheet must start with the markdown title');
+const markdownHeaderIndex = sheets[1].data.findIndex((row) => row.map((cell) => cell?.v).slice(0, 2).join('|') === 'Section|Markdown');
+assert(markdownHeaderIndex >= 0, 'markdown sheet must include Section/Markdown headers');
 const markdownRows = sheets[1].data.slice(markdownHeaderIndex + 1);
-const visibleMarkdownRows = markdownRows.filter((row) => row[0]?.v || row[1]?.v || row[1]?.f);
-assert(visibleMarkdownRows.length === 1, `markdown sheet must expose exactly one visible copy row, got ${visibleMarkdownRows.length}`);
-const formulaMarkdownRow = visibleMarkdownRows[0];
-assert(formulaMarkdownRow[0]?.v === 'Full Markdown', 'markdown copy row must be labelled Full Markdown');
-assert(formulaMarkdownRow[1]?.f, 'full markdown copy cell must be formula-backed');
-assert(/TEXTJOIN\(CHAR\(10\)&CHAR\(10\)/.test(formulaMarkdownRow[1].f), 'full markdown formula must join hidden section blocks with blank lines');
-const helperMarkdownRow = markdownRows.find((row) => row[3]?.f);
-assert(helperMarkdownRow, 'markdown sheet must include hidden formula-backed section blocks');
-assert(/^IFERROR\("Web \/ API - /.test(helperMarkdownRow[3].f), 'markdown helper formulas must use the same plain section heading format as web markdown export');
-assert(helperMarkdownRow[3].f.includes('&" : "&'), 'markdown helper formulas must use the same "- test case : description" row format as web markdown export');
-assert(!formulaMarkdownRow[1].f.includes('###'), 'markdown formulas must not use markdown heading markers');
-assert(!formulaMarkdownRow[1].f.includes('**'), 'markdown formulas must not add bold markdown markup');
-assert(sheets[1].columnWidths.some((column) => typeof column === 'object' && column.hidden), 'markdown helper columns must be hidden');
+assert(markdownRows.length > 0, 'markdown sheet must include at least one row');
+const firstMarkdownRow = markdownRows[0];
+assert(firstMarkdownRow[0]?.v, 'markdown section cell must have a text value');
+assert(firstMarkdownRow[1]?.v?.includes('###'), 'markdown content cell must include a heading marker');
+assert(!firstMarkdownRow[1]?.f, 'markdown content cell must be static text, not a formula');
 
 assert(sheets[2].data[0]?.[0]?.v === 'PENTEST CHECKLIST — FULL CATALOG', 'first detail sheet must start with the workbook title');
 
@@ -121,7 +113,6 @@ const workbookBytes = buildWorkbookBuffer(sheets);
 const zip = CFB.read(Array.from(workbookBytes), { type: 'array' });
 const stylesXml = Buffer.from(CFB.find(zip, '/xl/styles.xml').content).toString('utf8');
 const firstSheetXml = Buffer.from(CFB.find(zip, '/xl/worksheets/sheet1.xml').content).toString('utf8');
-const markdownSheetXml = Buffer.from(CFB.find(zip, '/xl/worksheets/sheet2.xml').content).toString('utf8');
 const firstDetailSheetXml = Buffer.from(CFB.find(zip, '/xl/worksheets/sheet3.xml').content).toString('utf8');
 
 assert(stylesXml.includes('<name val="Aptos"/>'), 'styles.xml must include Aptos font definitions');
@@ -133,9 +124,7 @@ assert(
   new RegExp(`<c[^>]*r="${headerCell.ref}"[^>]*s="${WORKBOOK_XLSX_STYLE_INDEX.header}"`).test(firstSheetXml),
   `expected ${headerCell.ref} to reference the header style index`
 );
-assert(/<f>IFERROR\(TEXTJOIN/.test(firstSheetXml), 'summary worksheet XML must include key-check formulas');
-assert(/<f>IFERROR\(TEXTJOIN\(CHAR\(10\)&amp;CHAR\(10\)/.test(markdownSheetXml), 'markdown worksheet XML must include one-cell full markdown formula');
-assert(/<f>IFERROR\(&quot;Web \/ API - /.test(markdownSheetXml), 'markdown worksheet XML must include hidden web-export-shaped section formulas');
+assert(!/\<f\>IFERROR\(TEXTJOIN/.test(firstSheetXml), 'summary worksheet XML must NOT contain formula cells');
 assert(/hidden="(?:1|true)"/.test(firstDetailSheetXml), 'detail worksheet XML must include a hidden helper column');
 
 const severityCell = sheets

@@ -10,7 +10,7 @@ import { buildWorkbookMetadataRows, buildWorkbookSheets } from '../../logic/chec
 import { saveWorkbookFile } from '../../logic/checklistWorkbookXlsx.js';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
-type EngagementType = 'Black-Box' | 'Grey-Box';
+type EngagementType = 'Black-Box' | 'Grey-Box' | 'All';
 
 interface TechStack {
   web: { php: boolean; aspnet: boolean; tomcat: boolean; nodejs: boolean; };
@@ -25,6 +25,7 @@ interface Config {
   categories: Category[];
   techStack: TechStack;
   features: Record<string, boolean>;
+  customFeatures: string[];
 }
 
 // ─── Constants ──────────────────────────────────────────────────────────────────
@@ -70,7 +71,7 @@ async function exportXLSX(filtered: ChecklistRow[], cfg: Config) {
     totalItems: filtered.length,
     sourceLabel: 'JSON catalog',
   });
-  const sheets = buildWorkbookSheets(filtered, { metadataRows, includeEmptySheets: false });
+  const sheets = buildWorkbookSheets(filtered, { metadataRows, includeEmptySheets: false, customFeatures: cfg.customFeatures });
   saveWorkbookFile(sheets, filename);
 }
 
@@ -451,7 +452,10 @@ export const ChecklistGenerator: React.FC = () => {
     categories:     ['web'],
     techStack:      DEFAULT_STACK,
     features:       getDefaultFeatures(['web']),
+    customFeatures: [],
   });
+
+  const [newCustomFeature, setNewCustomFeature] = useState('');
 
   const updateCategories = (newCats: Category[]) => {
     setCfg(p => {
@@ -459,6 +463,25 @@ export const ChecklistGenerator: React.FC = () => {
       FEATURE_REGISTRY.forEach(f => { newFeatures[f.key] = newCats.includes(f.platform); });
       return { ...p, categories: newCats, features: newFeatures };
     });
+  };
+
+  const handleSelectAll = () => {
+    const allFeatures: Record<string, boolean> = {};
+    FEATURE_REGISTRY.forEach(f => { allFeatures[f.key] = true; });
+    setCfg(p => ({
+      ...p,
+      scope: 'external',
+      engagementType: 'All',
+      categories: ['web', 'mobile', 'desktop'],
+      techStack: {
+        web: { php: true, aspnet: true, tomcat: true, nodejs: true },
+        mobile: { native: true, flutter: true, reactnative: true },
+        desktop: { dotnet: true, electron: true, java: true },
+      },
+      features: allFeatures,
+      customFeatures: p.customFeatures,
+    }));
+    setExcludedRefs(new Set());
   };
 
   const [exportingAction, setExportingAction] = useState<null | 'filtered' | 'full'>(null);
@@ -557,16 +580,21 @@ export const ChecklistGenerator: React.FC = () => {
   return (
     <div className="space-y-6 pb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
       {/* Pill stats */}
-      <div className="flex flex-wrap gap-2">
-        {[
-          `${ALL_ROWS.length} rows`,
-          `${FEATURE_REGISTRY.length} features`,
-          cfg.categories.length ? cfg.categories.map(c => CAT_LABEL[c]).join(' + ') : 'No target',
-        ].map(txt => (
-          <span key={txt} className="rounded-full border border-white/[0.08] bg-[#141d26]/92 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] htb-text-muted">
-            {txt}
-          </span>
-        ))}
+      <div className="flex items-center justify-between">
+        <div className="flex flex-wrap gap-2">
+          {[
+            `${ALL_ROWS.length} rows`,
+            `${FEATURE_REGISTRY.length} features`,
+            cfg.categories.length ? cfg.categories.map(c => CAT_LABEL[c]).join(' + ') : 'No target',
+          ].map(txt => (
+            <span key={txt} className="rounded-full border border-white/[0.08] bg-[#141d26]/92 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] htb-text-muted">
+              {txt}
+            </span>
+          ))}
+        </div>
+        <button onClick={handleSelectAll} className="text-[10px] font-bold htb-text-muted hover:text-[#9fef00] transition-colors uppercase tracking-widest border border-white/10 hover:border-[#9fef00]/30 rounded-lg px-3 py-1.5 bg-[#141d26]/60 hover:bg-[#9fef00]/10">
+          Select All Items
+        </button>
       </div>
 
       <SummaryRail filtered={filtered} />
@@ -621,7 +649,7 @@ export const ChecklistGenerator: React.FC = () => {
             {/* Access Type */}
             <div className="pt-2 border-t border-white/[0.04] space-y-2">
               <p className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.18em]">Access Type</p>
-              {(['Black-Box','Grey-Box'] as EngagementType[]).map(et => (
+              {(['Black-Box','Grey-Box','All'] as EngagementType[]).map(et => (
                 <button key={et} onClick={() => setCfg(p => ({ ...p, engagementType: et }))}
                   className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
                     cfg.engagementType === et
@@ -631,7 +659,7 @@ export const ChecklistGenerator: React.FC = () => {
                   <div className={`w-3 h-3 rounded-full border-2 shrink-0 mt-0.5 transition-colors ${cfg.engagementType === et ? 'bg-[#9fef00] border-[#9fef00]' : 'border-white/20'}`} />
                   <p className="text-[12px] font-bold leading-tight flex-1">{et}</p>
                   <span className="text-[8px] font-bold px-1.5 py-0.5 rounded border opacity-60">
-                    {et === 'Black-Box' ? 'Black-Box + Both' : 'Grey-Box + Both'}
+                    {et === 'Black-Box' ? 'Black-Box + Both' : et === 'Grey-Box' ? 'Grey-Box + Both' : 'All test cases'}
                   </span>
                 </button>
               ))}
@@ -747,7 +775,7 @@ export const ChecklistGenerator: React.FC = () => {
               );
             })}
 
-            {cfg.categories.length > 0 && contributingFeatureCount === 0 && (
+            {cfg.categories.length > 0 && contributingFeatureCount === 0 && cfg.customFeatures.length === 0 && (
               <div className="flex items-start gap-2.5 px-3.5 py-3 rounded-lg border border-yellow-500/20 bg-yellow-500/5">
                 <AlertTriangle className="w-3.5 h-3.5 text-yellow-400/70 shrink-0 mt-0.5" />
                 <p className="text-[11px] text-yellow-300/60 leading-relaxed">
@@ -758,6 +786,52 @@ export const ChecklistGenerator: React.FC = () => {
             <p className="text-[10px] htb-text-faint leading-relaxed pt-1">
               Feature selection is linked to target categories. Toggle features to include custom tests in your export.
             </p>
+
+            {/* Custom Features UI */}
+            <div className="pt-4 mt-2 border-t border-white/[0.04]">
+              <p className="text-[10px] font-bold htb-text-muted uppercase tracking-[0.18em] mb-3">User-Defined Custom Features</p>
+              <div className="flex gap-2 mb-3">
+                <input
+                  value={newCustomFeature}
+                  onChange={e => setNewCustomFeature(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && newCustomFeature.trim()) {
+                      setCfg(p => ({ ...p, customFeatures: [...p.customFeatures, newCustomFeature.trim()] }));
+                      setNewCustomFeature('');
+                    }
+                  }}
+                  placeholder="e.g. Chatbot AI"
+                  className="flex-1 bg-[#0a0f16]/60 border border-white/[0.08] rounded-lg px-3 py-2 text-sm htb-text-muted placeholder-htb-text-faint focus:outline-none focus:border-[#9fef00]/30"
+                />
+                <button
+                  onClick={() => {
+                    if (newCustomFeature.trim()) {
+                      setCfg(p => ({ ...p, customFeatures: [...p.customFeatures, newCustomFeature.trim()] }));
+                      setNewCustomFeature('');
+                    }
+                  }}
+                  className="px-4 py-2 rounded-lg bg-[#141d26]/80 border border-white/10 hover:bg-[#9fef00]/10 hover:border-[#9fef00]/30 hover:text-[#9fef00] transition-colors text-[11px] font-bold uppercase tracking-widest htb-text-muted"
+                >
+                  Add
+                </button>
+              </div>
+              
+              {cfg.customFeatures.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {cfg.customFeatures.map((feat, idx) => (
+                    <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#9fef00]/8 border border-[#9fef00]/25 text-[#9fef00] text-[11px] font-bold tracking-tight">
+                      <span>{feat}</span>
+                      <button 
+                        onClick={() => setCfg(p => ({ ...p, customFeatures: p.customFeatures.filter((_, i) => i !== idx) }))}
+                        className="p-0.5 hover:bg-[#9fef00]/20 rounded transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </Section>
 
         </div>
@@ -800,7 +874,7 @@ export const ChecklistGenerator: React.FC = () => {
           </button>
           <div className="flex gap-2">
             <button onClick={handleGenerate} disabled={exportingAction !== null || exportRows.length === 0}
-              className={`w-1/2 flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-[11px] uppercase tracking-[0.12em] transition-all ${
+              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-[11px] uppercase tracking-[0.12em] transition-all ${
                 exportRows.length === 0
                   ? 'bg-white/5 border border-white/5 htb-text-faint cursor-not-allowed'
                   : exportingAction === 'filtered'
@@ -809,17 +883,6 @@ export const ChecklistGenerator: React.FC = () => {
               }`}>
               <Download className="w-4 h-4" />
               {exportingAction === 'filtered' ? 'Building…' : filtered.length === 0 ? 'Select category' : exportRows.length === 0 ? 'All rows excluded' : `Export ${exportRows.length}`}
-            </button>
-            <button onClick={handleExportFullCatalog} disabled={exportingAction !== null || ALL_ROWS.length === 0}
-              className={`w-1/2 flex items-center justify-center gap-2 py-2.5 rounded-lg border font-bold text-[11px] uppercase tracking-[0.12em] transition-all ${
-                ALL_ROWS.length === 0
-                  ? 'bg-white/5 border-white/5 htb-text-faint cursor-not-allowed'
-                  : exportingAction === 'full'
-                    ? 'bg-white/[0.05] border-white/[0.08] htb-text-faint cursor-wait'
-                    : 'bg-[#141d26]/94 border-white/[0.08] htb-text-muted hover:htb-text hover:bg-[#18222d]'
-              }`}>
-              <FileDown className="w-4 h-4" />
-              Full Catalog
             </button>
           </div>
           <p className="text-[9px] htb-text-faint leading-relaxed font-mono">

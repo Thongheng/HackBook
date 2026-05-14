@@ -68,7 +68,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ zoom: 0.8 }}>
       <Navbar setView={setViewWithHash} currentView={currentView} onOpenSearch={() => setIsSearchOpen(true)} />
       
       <GlobalSearch 

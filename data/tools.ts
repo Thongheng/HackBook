@@ -1,4 +1,4 @@
-import { Globe, ShieldCheck, Zap, Terminal, ClipboardList, ScanLine } from 'lucide-react';
+import { ShieldCheck, Zap, Terminal, ClipboardList, ScanLine } from 'lucide-react';
 
 export const tools = [
   // Planning

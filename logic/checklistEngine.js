@@ -9,6 +9,7 @@ export function accessModeLabel(access) {
 }
 
 export function getAllowedAccess(engagementType) {
+  if (engagementType === 'All') return new Set(['blackbox', 'greybox', 'both']);
   return engagementType === 'Black-Box'
     ? new Set(['blackbox', 'both'])
     : new Set(['greybox', 'both']);

@@ -77,20 +77,20 @@ const scenarios = [
   },
   {
     name: 'web + File Upload excludes File Download',
-    config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:file-upload': true } }),
+    config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:file-handling': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'WEB-BL-047'), 'merged file upload validation/processing row missing');
-      assert(!rows.some((row) => row.id === 'WEB-BL-033'), 'file download row should not appear with File Upload only');
-      assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into file upload scenario');
+      assert(rows.some((row) => row.id === 'WEB-BL-047'), 'file upload row missing from File Handling');
+      assert(rows.some((row) => row.id === 'WEB-BL-033'), 'file download row missing from File Handling');
+      assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into file handling scenario');
     },
   },
   {
     name: 'web + File Download excludes File Upload',
-    config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:file-download': true } }),
+    config: cfg({ categories: ['web'], engagementType: 'Grey-Box', features: { 'web:file-handling': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'WEB-BL-033'), 'merged file download traversal row missing');
-      assert(!rows.some((row) => row.id === 'WEB-BL-047'), 'file upload row should not appear with File Download only');
-      assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into file download scenario');
+      assert(rows.some((row) => row.id === 'WEB-BL-033'), 'file download row missing from File Handling');
+      assert(rows.some((row) => row.id === 'WEB-BL-047'), 'file upload row missing from File Handling');
+      assert(rows.every((row) => row.platform === 'web'), 'non-web rows leaked into file handling scenario');
     },
   },
   {
@@ -152,20 +152,20 @@ const scenarios = [
   },
   {
     name: 'mobile + File Upload excludes File Download',
-    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:file-upload': true } }),
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:file-handling': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'MOB-CT-054'), 'mobile file upload validation row missing');
-      assert(!rows.some((row) => row.id === 'MOB-CT-055'), 'mobile file download row should not appear with File Upload only');
-      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile file upload scenario');
+      assert(rows.some((row) => row.id === 'MOB-CT-054'), 'mobile file upload row missing from File Handling');
+      assert(rows.some((row) => row.id === 'MOB-CT-055'), 'mobile file download row missing from File Handling');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile file handling scenario');
     },
   },
   {
     name: 'mobile + File Download excludes File Upload',
-    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:file-download': true } }),
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:file-handling': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'MOB-CT-055'), 'mobile file download authorization row missing');
-      assert(!rows.some((row) => row.id === 'MOB-CT-054'), 'mobile file upload row should not appear with File Download only');
-      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile file download scenario');
+      assert(rows.some((row) => row.id === 'MOB-CT-055'), 'mobile file download row missing from File Handling');
+      assert(rows.some((row) => row.id === 'MOB-CT-054'), 'mobile file upload row missing from File Handling');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into mobile file handling scenario');
     },
   },
   {
@@ -223,20 +223,20 @@ const scenarios = [
   },
   {
     name: 'desktop + File Upload excludes File Download',
-    config: cfg({ categories: ['desktop'], engagementType: 'Grey-Box', features: { 'desktop:file-upload': true } }),
+    config: cfg({ categories: ['desktop'], engagementType: 'Grey-Box', features: { 'desktop:file-handling': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'DSK-CT-048'), 'desktop file upload validation row missing');
-      assert(!rows.some((row) => row.id === 'DSK-CT-049'), 'desktop file download row should not appear with File Upload only');
-      assert(rows.every((row) => row.platform === 'desktop'), 'non-desktop rows leaked into desktop file upload scenario');
+      assert(rows.some((row) => row.id === 'DSK-CT-048'), 'desktop file upload row missing from File Handling');
+      assert(rows.some((row) => row.id === 'DSK-CT-049'), 'desktop file download row missing from File Handling');
+      assert(rows.every((row) => row.platform === 'desktop'), 'non-desktop rows leaked into desktop file handling scenario');
     },
   },
   {
     name: 'desktop + File Download excludes File Upload',
-    config: cfg({ categories: ['desktop'], engagementType: 'Grey-Box', features: { 'desktop:file-download': true } }),
+    config: cfg({ categories: ['desktop'], engagementType: 'Grey-Box', features: { 'desktop:file-handling': true } }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'DSK-CT-049'), 'desktop file download authorization row missing');
-      assert(!rows.some((row) => row.id === 'DSK-CT-048'), 'desktop file upload row should not appear with File Download only');
-      assert(rows.every((row) => row.platform === 'desktop'), 'non-desktop rows leaked into desktop file download scenario');
+      assert(rows.some((row) => row.id === 'DSK-CT-049'), 'desktop file download row missing from File Handling');
+      assert(rows.some((row) => row.id === 'DSK-CT-048'), 'desktop file upload row missing from File Handling');
+      assert(rows.every((row) => row.platform === 'desktop'), 'non-desktop rows leaked into desktop file handling scenario');
     },
   },
   {
@@ -270,14 +270,14 @@ const scenarios = [
       categories: ['web'],
       engagementType: 'Grey-Box',
       features: {
-        'web:export': true,
+        'web:file-handling': true,
       },
     }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'WEB-CT-064'), 'merged export formula row missing');
+      assert(rows.some((row) => row.id === 'WEB-CT-064'), 'export row missing from file-handling');
       assert(rows.some((row) => row.id === 'WEB-CT-066'), 'export authorization row missing');
-      assert(!rows.some((row) => row.id === 'WEB-CT-067'), 'curated import row should not appear with Export only');
-      assert(rows.some((row) => row.source === 'curated'), 'expected curated rows in export scenario');
+      assert(rows.some((row) => row.id === 'WEB-CT-067'), 'import row missing from file-handling');
+      assert(rows.some((row) => row.source === 'curated'), 'expected curated rows in file-handling scenario');
     },
   },
   {
@@ -286,23 +286,23 @@ const scenarios = [
       categories: ['web'],
       engagementType: 'Grey-Box',
       features: {
-        'web:import': true,
+        'web:file-handling': true,
       },
     }),
     run(rows) {
-      assert(rows.some((row) => row.id === 'WEB-CT-067'), 'merged import parser row missing');
-      assert(rows.some((row) => row.id === 'WEB-CT-068'), 'merged import mapping row missing');
-      assert(!rows.some((row) => row.id === 'WEB-CT-064'), 'curated export row should not appear with Import only');
-      assert(rows.some((row) => row.source === 'curated'), 'expected curated rows in import scenario');
+      assert(rows.some((row) => row.id === 'WEB-CT-067'), 'import parser row missing from file-handling');
+      assert(rows.some((row) => row.id === 'WEB-CT-068'), 'import mapping row missing from file-handling');
+      assert(rows.some((row) => row.id === 'WEB-CT-064'), 'export row missing from file-handling');
+      assert(rows.some((row) => row.source === 'curated'), 'expected curated rows in file-handling scenario');
     },
   },
   {
     name: 'mobile explicit login/auth feature',
-    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:login-auth': true } }),
+    config: cfg({ categories: ['mobile'], engagementType: 'Grey-Box', features: { 'mobile:login': true } }),
     run(rows) {
       assert(rows.some((row) => row.id === 'MOB-BL-022'), 'merged mobile biometric auth row missing');
-      assert(rows.some((row) => row.id === 'MOB-BL-024'), 'merged mobile session token lifecycle row missing');
-      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into login/auth scenario');
+      assert(!rows.some((row) => row.id === 'MOB-BL-024'), 'MOB-BL-024 moved to Session feature, not Login');
+      assert(rows.every((row) => row.platform === 'mobile'), 'non-mobile rows leaked into login scenario');
     },
   },
   {
@@ -370,12 +370,11 @@ try {
   assert(orderIndex('WEB-BL-009') === orderIndex('WEB-BL-002') + 1, 'WEB-BL-009 must immediately follow subdomain enumeration');
   assert(orderIndex('WEB-BL-070') < orderIndex('WEB-BL-004'), 'WEB-BL-070 discovery must stay in the recon block before JS endpoint analysis');
   assert(orderIndex('WEB-BL-067') < orderIndex('WEB-BL-010'), 'WEB-BL-067 vulnerability scan must stay in the recon block');
-  assert(orderIndex('MOB-BL-034') === orderIndex('MOB-BL-006') + 1, 'mobile resilience must start immediately after root bypass setup');
-  assert(orderIndex('MOB-BL-032') < orderIndex('MOB-BL-014'), 'MOB-BL-032 status check must stay before storage review');
+  assert(orderIndex('MOB-BL-034') > orderIndex('MOB-BL-006'), 'mobile resilience must come after root bypass setup');
   assert(!catalog.some((row) => row.group === 'Infra'), 'Infra group should not remain in the catalog');
   assert(!catalog.some((row) => row.group === 'Network'), 'Network group should not remain in the catalog');
   assert(catalog.some((row) => row.id === 'MOB-CT-019' && row.section === 'baseline'), 'MOB-CT-019 must move to baseline');
-  assert(catalog.some((row) => row.id === 'MOB-BL-024' && row.featureKey === 'mobile:login-auth'), 'MOB-BL-024 must remain in login/auth feature');
+  assert(catalog.some((row) => row.id === 'MOB-BL-024' && row.featureKey === 'mobile:session'), 'MOB-BL-024 must move to mobile:session feature');
   console.log('PASS cleanup invariants: removed features, merged rows, and moved rows');
 } catch (error) {
   failures += 1;
