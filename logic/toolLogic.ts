@@ -282,7 +282,9 @@ function bodyToDict(body: string, argsIndent: string): string {
         }
         return [k, pyStr(v)] as [string, string];
       });
-      return pyDict(entries, argsIndent);
+      // Use urllib.parse.urlencode with quote_via=urllib.parse.quote to
+      // encode spaces as %20 instead of + (some servers need this).
+      return `urllib.parse.urlencode(${pyDict(entries, argsIndent)}, quote_via=urllib.parse.quote)`;
     } catch { /**/ }
   }
   if (body.trim().startsWith('{') || body.trim().startsWith('[')) {
@@ -372,6 +374,10 @@ export const convertBurpRequest = (input: string, opts: ConvertOptions): string 
     const requiresVars = useSession ? [caller, ...paramVars] : paramVars;
     if (requiresVars.length > 0) lines.push(`# requires: ${requiresVars.join(', ')}`);
   }
+
+  // Add import for form-encoded bodies
+  const isFormEncoded = parsed.body && parsed.body.includes('=') && !parsed.body.trim().startsWith('{') && !parsed.body.trim().startsWith('[');
+  if (isFormEncoded) lines.push(`${baseIndent}import urllib.parse`);
 
   lines.push(`${baseIndent}r = ${caller}.${method}(`);
   lines.push(`${argIndent}f"${url}",`);
