@@ -273,7 +273,15 @@ function bodyToDict(body: string, argsIndent: string): string {
           ? [decodeURIComponent(p), '']
           : [decodeURIComponent(p.substring(0, eq)), decodeURIComponent(p.substring(eq + 1))];
       });
-      const entries = pairs.map(([k, v]) => [k, pyStr(v)] as [string, string]);
+      const entries = pairs.map(([k, v]) => {
+        if ((v.startsWith('{') || v.startsWith('[')) && v.length > 2) {
+          try {
+            JSON.parse(v);
+            return [k, `json.dumps(${v})`] as [string, string];
+          } catch { /* not JSON */ }
+        }
+        return [k, pyStr(v)] as [string, string];
+      });
       return pyDict(entries, argsIndent);
     } catch { /**/ }
   }
