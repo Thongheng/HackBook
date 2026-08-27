@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Star, Zap, BookOpen, Share2, Pin, Globe, ShieldCheck,
-  Terminal, ClipboardList, ExternalLink, Trash2,
+  Star, Zap, BookOpen, Share2, Pin,
+  ClipboardList, ExternalLink, Trash2, Code,
   Plus, X, Search, ArrowRight
 } from 'lucide-react';
 import { tools } from '../data/tools';
@@ -25,9 +25,8 @@ function loadFavs(): FavItem[] {
 function saveFavs(f: FavItem[]) { localStorage.setItem(LS_KEY, JSON.stringify(f)); }
 
 const TOOL_ICONS: Record<string, React.FC<any>> = {
-  'tool-csrf': Globe, 'tool-jwt': ShieldCheck, 'tool-encoding': Zap,
-  'tool-msfvenom': Terminal,
   'tool-checklist': ClipboardList,
+  'tool-burp-converter': Code,
 };
 
 const CAT_COLORS: Record<string, string> = {
