@@ -237,10 +237,9 @@ function pyDict(entries: Array<[string, string]>, indent: string): string {
   if (entries.length === 0) return '{}';
   const inner = indent + '    ';
   const pairs = entries.map(([k, v]) => `${pyStr(k)}: ${v}`);
-  // Try compact single-line: { 'key': val, 'key2': val2 }
   const compact = `{ ${pairs.join(', ')} }`;
-  if (compact.length <= LINE_WIDTH) return compact;
-  // Multi-line
+  const anyLongValue = entries.some(([, v]) => v.length > 60);
+  if (compact.length <= LINE_WIDTH && !anyLongValue) return compact;
   const lines = entries.map(([k, v]) => `${inner}${pyStr(k)}: ${v}`);
   return `{\n${lines.join(',\n')},\n${indent}}`;
 }
