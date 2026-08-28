@@ -32,7 +32,7 @@ const TOOL_ICONS: Record<string, React.FC<any>> = {
 const CAT_COLORS: Record<string, string> = {
   Web: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
   Auth: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
-  General: 'text-[#9fef00] bg-[#9fef00]/10 border-[#9fef00]/20',
+  General: 'text-[#22d3ee] bg-[#22d3ee]/10 border-[#22d3ee]/20',
   Planning: 'text-orange-400 bg-orange-500/10 border-orange-500/20',
 };
 
@@ -52,7 +52,7 @@ const QuickAdd: React.FC<{ onAdd: (item: FavItem) => void; onClose: () => void; 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
-      <div className="w-full max-w-lg mx-4 bg-[#0b1217] border border-white/10 rounded-2xl shadow-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
+      <div className="w-full max-w-lg mx-4 rounded-2xl shadow-2xl overflow-hidden" style={{ background: 'var(--htb-surface)', border: '1px solid var(--htb-border)' }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-white/5">
           <h3 className="text-sm font-bold htb-text tracking-tight">Pin to Favorites</h3>
           <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
@@ -63,13 +63,13 @@ const QuickAdd: React.FC<{ onAdd: (item: FavItem) => void; onClose: () => void; 
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 htb-text-faint" />
             <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="Search..."
-              className="w-full bg-white/[0.03] border border-white/5 rounded-lg pl-8 pr-3 py-2 text-sm htb-text-muted placeholder-htb-text-faint focus:outline-none focus:ring-1 focus:ring-[#9fef00]/30" />
+              className="w-full bg-white/[0.03] border border-white/5 rounded-lg pl-8 pr-3 py-2 text-sm htb-text-muted placeholder-htb-text-faint focus:outline-none focus:ring-1 focus:ring-[#22d3ee]/30" />
           </div>
         </div>
         <div className="flex border-b border-white/5 px-5">
           {(['tools', 'guides', 'refs'] as const).map(t => (
             <button key={t} onClick={() => setTab(t)}
-              className={`px-3 py-2.5 text-[10px] font-bold tracking-[0.15em] uppercase border-b-2 transition-colors -mb-px ${tab === t ? 'border-[#9fef00] text-[#9fef00]' : 'border-transparent htb-text-faint hover:htb-text-muted'}`}>
+              className={`px-3 py-2.5 text-[10px] font-bold tracking-[0.15em] uppercase border-b-2 transition-colors -mb-px ${tab === t ? 'border-[#22d3ee] text-[#22d3ee]' : 'border-transparent htb-text-faint hover:htb-text-muted'}`}>
               {t === 'refs' ? 'Refs' : t.charAt(0).toUpperCase() + t.slice(1)}
             </button>
           ))}
@@ -135,7 +135,7 @@ const FavCard: React.FC<{ item: FavItem; onRemove: () => void; onClick: () => vo
 
   return (
     <div onClick={onClick}
-      className="htb-card p-6 group cursor-pointer hover:translate-y-[-2px] transition-all flex flex-col h-full relative overflow-hidden hover:border-[#9fef00]/20">
+      className="htb-card p-6 group cursor-pointer hover:translate-y-[-2px] transition-all flex flex-col h-full relative overflow-hidden hover:border-[#22d3ee]/20">
       {/* remove button */}
       <button
         onClick={e => { e.stopPropagation(); onRemove(); }}
@@ -148,13 +148,13 @@ const FavCard: React.FC<{ item: FavItem; onRemove: () => void; onClick: () => vo
       </div>
 
       <div className="space-y-2 flex-grow">
-        <h3 className="text-base font-bold htb-text tracking-tight group-hover:text-[#9fef00] transition-colors leading-tight">{label}</h3>
+        <h3 className="text-base font-bold htb-text tracking-tight group-hover:text-[#22d3ee] transition-colors leading-tight">{label}</h3>
         <p className="text-[12px] htb-text-faint font-medium tracking-tight capitalize">{sub}</p>
       </div>
 
       <div className="mt-5 pt-4 border-t border-white/5 flex items-center justify-between">
         <span className="text-[8px] font-bold htb-text-faint uppercase tracking-widest group-hover:htb-text-muted transition-colors">#{tagLabel}</span>
-        {item.kind === 'ref' && <ExternalLink className="w-3 h-3 htb-text-faint group-hover:text-[#9fef00]/50 transition-colors" />}
+        {item.kind === 'ref' && <ExternalLink className="w-3 h-3 htb-text-faint group-hover:text-[#22d3ee]/50 transition-colors" />}
       </div>
     </div>
   );
@@ -182,12 +182,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView }) => {
 
       {/* Header — minimal status line + title */}
       <section className="space-y-5 animate-in fade-in duration-700">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#9fef00]/10 border border-[#9fef00]/20 rounded-full">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#22d3ee]/10 border border-[#22d3ee]/20 rounded-full">
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#9fef00] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#9fef00]"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22d3ee] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22d3ee]"></span>
           </span>
-          <span className="text-[10px] font-bold text-[#9fef00] uppercase tracking-widest">HackBook Terminal: Online</span>
+          <span className="text-[10px] font-bold text-[#22d3ee] uppercase tracking-widest">HackBook Terminal: Online</span>
         </div>
         <div>
           <h1 className="text-4xl md:text-5xl font-extrabold htb-text tracking-tight leading-tight">
@@ -203,7 +203,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView }) => {
       <section className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Pin className="w-4 h-4 text-[#9fef00]/60" />
+            <Pin className="w-4 h-4 text-[#22d3ee]/60" />
             <h2 className="text-lg font-bold htb-text tracking-tight">Pinned Favorites</h2>
             {favs.length > 0 && (
               <span className="text-[10px] font-bold htb-text-faint bg-white/5 border border-white/5 px-2 py-0.5 rounded-full">{favs.length}</span>
@@ -217,15 +217,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView }) => {
 
         {favs.length === 0 ? (
           <div onClick={() => setShowPicker(true)}
-            className="htb-card border-dashed p-12 flex flex-col items-center justify-center gap-4 cursor-pointer hover:border-[#9fef00]/20 hover:bg-[#9fef00]/[0.015] transition-all group">
-            <div className="w-14 h-14 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-center group-hover:border-[#9fef00]/20 transition-colors">
-              <Star className="w-6 h-6 htb-text-faint group-hover:text-[#9fef00]/40 transition-colors" />
+            className="htb-card border-dashed p-12 flex flex-col items-center justify-center gap-4 cursor-pointer hover:border-[#22d3ee]/20 hover:bg-[#22d3ee]/[0.015] transition-all group">
+            <div className="w-14 h-14 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-center group-hover:border-[#22d3ee]/20 transition-colors">
+              <Star className="w-6 h-6 htb-text-faint group-hover:text-[#22d3ee]/40 transition-colors" />
             </div>
             <div className="text-center space-y-1">
               <p className="text-sm font-bold htb-text-faint">No favorites pinned yet</p>
               <p className="text-[12px] htb-text-faint">Pin tools, guides, or references for fast access during engagements.</p>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#9fef00]/50 group-hover:text-[#9fef00] transition-colors uppercase tracking-widest">
+            <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#22d3ee]/50 group-hover:text-[#22d3ee] transition-colors uppercase tracking-widest">
               <Plus className="w-3.5 h-3.5" /> Pin your first item
             </div>
           </div>
@@ -235,9 +235,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView }) => {
               <FavCard key={i} item={item} onRemove={() => removeFav(i)} onClick={() => handleFavClick(item)} />
             ))}
             <div onClick={() => setShowPicker(true)}
-              className="htb-card border-dashed p-6 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#9fef00]/20 hover:bg-[#9fef00]/[0.015] transition-all group min-h-[140px]">
-              <div className="w-10 h-10 rounded-lg bg-white/[0.02] border border-white/5 flex items-center justify-center group-hover:border-[#9fef00]/20 transition-colors">
-                <Plus className="w-5 h-5 htb-text-faint group-hover:text-[#9fef00]/50 transition-colors" />
+              className="htb-card border-dashed p-6 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#22d3ee]/20 hover:bg-[#22d3ee]/[0.015] transition-all group min-h-[140px]">
+              <div className="w-10 h-10 rounded-lg bg-white/[0.02] border border-white/5 flex items-center justify-center group-hover:border-[#22d3ee]/20 transition-colors">
+                <Plus className="w-5 h-5 htb-text-faint group-hover:text-[#22d3ee]/50 transition-colors" />
               </div>
               <span className="text-[10px] font-bold htb-text-faint group-hover:htb-text-muted uppercase tracking-widest transition-colors">Add Item</span>
             </div>
@@ -251,11 +251,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView }) => {
           {
             title: 'Tooling',
             icon: Zap,
-            color: 'bg-[#9fef00]/10 text-[#9fef00]',
-            border: 'hover:border-[#9fef00]/30',
-            glow: 'group-hover:shadow-[0_0_40px_rgba(159,239,0,0.06)]',
+            color: 'bg-[#22d3ee]/10 text-[#22d3ee]',
+            border: 'hover:border-[#22d3ee]/30',
+            glow: 'group-hover:shadow-[0_0_40px_rgba(34,211,238,0.06)]',
             badge: `${tools.length} tools`,
-            badgeColor: 'text-[#9fef00]/60 bg-[#9fef00]/8 border-[#9fef00]/15',
+            badgeColor: 'text-[#22d3ee]/60 bg-[#22d3ee]/8 border-[#22d3ee]/15',
             desc: 'Exploit generators, encoders, payload builders.',
             action: () => setView('tools'),
           },
@@ -275,7 +275,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ setView }) => {
             icon: Share2,
             color: 'bg-purple-500/10 text-purple-400',
             border: 'hover:border-purple-500/25',
-            glow: 'group-hover:shadow-[0_0_40px_rgba(168,85,247,0.06)]',
+            glow: 'group-hover:shadow-[0_0_40px_rgba(34,211,238,0.06)]',
             badge: `${referenceCategories.reduce((a, c) => a + c.links.length, 0)}+ links`,
             badgeColor: 'text-purple-400/60 bg-purple-500/8 border-purple-500/15',
             desc: 'Cheatsheets, CVE write-ups, OSINT resources.',

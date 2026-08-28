@@ -9,90 +9,152 @@ interface NavbarProps {
 }
 
 const HackBookLogo = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform group-hover:scale-105">
-    <rect width="32" height="32" rx="6" fill="#9FEF00" />
+  <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="32" height="32" rx="6" fill="#22D3EE" />
     <path d="M8 8H12V24H8V8Z" fill="black" />
     <path d="M14 8H24V10H14V8Z" fill="black" fillOpacity="0.8" />
     <path d="M14 12H21V14H14V12Z" fill="black" fillOpacity="0.8" />
     <path d="M14 16H24V18H14V16Z" fill="black" fillOpacity="0.8" />
-    <rect x="14" y="20" width="5" height="4" fill="black" className="animate-pulse" />
+    <rect x="14" y="20" width="5" height="4" fill="black" />
   </svg>
 );
+
+const NAV_ITEMS = [
+  { id: 'dashboard', label: 'Dashboard' },
+  { id: 'tools', label: 'Tools' },
+  { id: 'guides', label: 'Guides' },
+  { id: 'reference', label: 'Reference' },
+];
 
 export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, onOpenSearch }) => {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
 
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#05080a]/80 backdrop-blur-md px-6 md:px-12 lg:px-24 h-20 flex items-center justify-between border-b border-white/5">
-      <div
-        className="flex items-center gap-3.5 cursor-pointer group"
-        onClick={() => setView('dashboard')}
-      >
-        <HackBookLogo />
-        <div className="flex items-baseline gap-1">
-          <span className="text-xl font-bold htb-text tracking-tight">HackBook</span>
-        </div>
-      </div>
+  const isActive = (id: string) =>
+    currentView === id || (id === 'tools' && currentView.startsWith('tool-'));
 
-      <div className="flex items-center gap-3">
-        <div className="hidden md:flex items-center gap-8 border-r border-white/5 pr-8 mr-2">
-          {[
-            { id: 'dashboard', label: 'Dashboard' },
-            { id: 'tools', label: 'Tools' },
-            { id: 'guides', label: 'Guides' },
-            { id: 'reference', label: 'Reference' }
-          ].map((item) => (
+  return (
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center px-6 md:px-10 lg:px-16 pt-3">
+      <nav
+        style={{
+          background: isDark ? 'rgba(11, 18, 23, 0.92)' : 'rgba(255,255,255,0.97)',
+          border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)',
+          boxShadow: isDark
+            ? '0 4px 24px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.04)'
+            : '0 4px 24px rgba(0,0,0,0.12), 0 1px 0 rgba(0,0,0,0.04)',
+          borderRadius: '14px',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+        }}
+        className="relative w-full max-w-[1440px] h-14 flex items-center px-5 gap-4"
+      >
+        {/* Logo */}
+        <div
+          className="flex items-center gap-2.5 cursor-pointer shrink-0 group"
+          onClick={() => setView('dashboard')}
+        >
+          <HackBookLogo />
+          <span
+            className="text-[15px] font-semibold tracking-tight"
+            style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+          >
+            HackBook
+          </span>
+        </div>
+
+        {/* Divider */}
+        <div
+          className="h-5 w-px shrink-0"
+          style={{ background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }}
+        />
+
+        {/* Nav Links — absolutely centered in the card */}
+        <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+          {NAV_ITEMS.map((item) => (
             <button
               key={item.id}
               onClick={() => setView(item.id)}
-              className={`text-sm font-semibold transition-colors tracking-tight ${currentView === item.id || (item.id === 'tools' && currentView.startsWith('tool-'))
-                ? 'text-[#9fef00]'
-                : 'htb-text-muted hover:htb-text'
-                }`}
+              className="relative px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all"
+              style={{
+                color: isActive(item.id)
+                  ? (isDark ? '#ffffff' : '#0f172a')
+                  : (isDark ? '#64748b' : '#64748b'),
+                background: isActive(item.id)
+                  ? (isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)')
+                  : 'transparent',
+              }}
+              onMouseEnter={e => {
+                if (!isActive(item.id)) {
+                  (e.currentTarget as HTMLElement).style.color = isDark ? '#cbd5e1' : '#1e293b';
+                  (e.currentTarget as HTMLElement).style.background = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
+                }
+              }}
+              onMouseLeave={e => {
+                if (!isActive(item.id)) {
+                  (e.currentTarget as HTMLElement).style.color = '#64748b';
+                  (e.currentTarget as HTMLElement).style.background = 'transparent';
+                }
+              }}
             >
               {item.label}
+              {isActive(item.id) && (
+                <span
+                  className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-3.5 h-0.5 rounded-full"
+                  style={{ background: '#22d3ee' }}
+                />
+              )}
             </button>
           ))}
         </div>
 
-        {/* Theme Toggle */}
-        <button
-          id="theme-toggle"
-          onClick={toggleTheme}
-          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          className="theme-toggle-btn w-9 h-9 flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all"
-          style={{ flexShrink: 0 }}
-        >
-          <span
-            key={theme}
+        {/* Actions */}
+        <div className="flex items-center gap-2 ml-auto shrink-0">
+          <button
+            onClick={onOpenSearch}
+            title="Search (Ctrl+K)"
+            className="flex items-center gap-2 px-3 h-8 rounded-lg text-sm font-medium transition-all"
             style={{
-              display: 'inline-flex',
-              animation: 'spin-in 0.35s cubic-bezier(0.34,1.56,0.64,1)',
+              border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
+              background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+              color: isDark ? '#64748b' : '#94a3b8',
             }}
           >
-            {isDark
-              ? <Sun className="w-4 h-4 htb-text-muted" style={{ color: '#facc15' }} />
-              : <Moon className="w-4 h-4" style={{ color: '#6366f1' }} />
-            }
-          </span>
-        </button>
+            <Search className="w-3.5 h-3.5" />
+            <span className="hidden sm:block text-xs tracking-wide">Search</span>
+            <span
+              className="hidden lg:block text-[10px] font-bold px-1.5 py-0.5 rounded"
+              style={{
+                border: isDark ? '1px solid rgba(255,255,255,0.15)' : '1px solid rgba(0,0,0,0.12)',
+                background: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.06)',
+                color: isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)',
+              }}
+            >
+              ⌘K
+            </span>
+          </button>
 
-        {/* Search */}
-        <button
-          onClick={onOpenSearch}
-          className="flex items-center gap-3 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all group"
-        >
-          <Search className="w-4 h-4 htb-text-faint group-hover:htb-text-muted" />
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-bold htb-text-faint group-hover:htb-text-muted uppercase tracking-widest hidden sm:block">Search...</span>
-            <div className="hidden lg:flex items-center gap-0.5 opacity-40 group-hover:opacity-60 transition-opacity">
-              <span className="text-[9px] font-black htb-text px-1.5 py-0.5 rounded border border-white/20 bg-black/20">CTRL</span>
-              <span className="text-[9px] font-black htb-text px-1.5 py-0.5 rounded border border-white/20 bg-black/20">K</span>
-            </div>
-          </div>
-        </button>
-      </div>
-    </nav>
+          <button
+            id="theme-toggle"
+            onClick={toggleTheme}
+            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            className="w-8 h-8 flex items-center justify-center rounded-lg transition-all"
+            style={{
+              border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
+              background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+            }}
+          >
+            <span
+              key={theme}
+              style={{ display: 'inline-flex', animation: 'spin-in 0.35s cubic-bezier(0.34,1.56,0.64,1)' }}
+            >
+              {isDark
+                ? <Sun className="w-3.5 h-3.5" style={{ color: '#facc15' }} />
+                : <Moon className="w-3.5 h-3.5" style={{ color: '#6366f1' }} />
+              }
+            </span>
+          </button>
+        </div>
+      </nav>
+    </div>
   );
 };

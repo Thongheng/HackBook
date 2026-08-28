@@ -110,7 +110,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose, onS
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-2xl bg-[#0b1217] border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden animate-in slide-in-from-top-4 duration-300">
+      <div className="relative w-full max-w-2xl rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden animate-in slide-in-from-top-4 duration-300" style={{ background: 'var(--htb-surface)', border: '1px solid var(--htb-border)' }}>
         <div className="flex items-center gap-4 px-6 h-16 border-b border-white/5 bg-white/[0.02]">
           <Search className="w-5 h-5 htb-text-faint" />
           <input
@@ -138,10 +138,10 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose, onS
                   key={res.id}
                   onClick={() => onSelect(res.type, res.originalId)}
                   onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all ${idx === selectedIndex ? 'bg-[#9fef00]/10 border border-[#9fef00]/20' : 'bg-transparent border border-transparent'
+                  className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all ${idx === selectedIndex ? 'bg-[#22d3ee]/10 border border-[#22d3ee]/20' : 'bg-transparent border border-transparent'
                     }`}
                 >
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${idx === selectedIndex ? 'bg-[#9fef00]/20 text-[#9fef00]' : 'bg-white/5 htb-text-faint'
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${idx === selectedIndex ? 'bg-[#22d3ee]/20 text-[#22d3ee]' : 'bg-white/5 htb-text-faint'
                     }`}>
                     {res.type === 'tool' && <Terminal className="w-5 h-5" />}
                     {res.type === 'guide' && <BookOpen className="w-5 h-5" />}
@@ -149,7 +149,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose, onS
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <h4 className={`text-sm font-bold tracking-tight truncate ${idx === selectedIndex ? 'text-[#9fef00]' : 'htb-text'}`}>
+                      <h4 className={`text-sm font-bold tracking-tight truncate ${idx === selectedIndex ? 'text-[#22d3ee]' : 'htb-text'}`}>
                         {res.title}
                       </h4>
                       <span className="text-[9px] font-bold htb-text-faint uppercase tracking-widest border border-white/5 px-2 py-0.5 rounded">
@@ -173,8 +173,8 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose, onS
             <div className="p-4">
               <p className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em] mb-4 px-2">Recently Accessed / Quick Links</p>
               <div className="grid grid-cols-2 gap-2">
-                <button onClick={() => onSelect('guide', 0)} className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-xl hover:border-[#9fef00]/20 transition-all text-left group">
-                  <BookOpen className="w-4 h-4 htb-text-faint group-hover:text-[#9fef00]" />
+                <button onClick={() => onSelect('guide', 0)} className="flex items-center gap-3 p-3 bg-white/[0.02] border border-white/5 rounded-xl hover:border-[#22d3ee]/20 transition-all text-left group">
+                  <BookOpen className="w-4 h-4 htb-text-faint group-hover:text-[#22d3ee]" />
                   <span className="text-xs font-bold htb-text-muted group-hover:htb-text">TTY Upgrade</span>
                 </button>
               </div>
@@ -194,8 +194,8 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose, onS
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Command className="w-3 h-3 text-[#9fef00]/40" />
-            <span className="text-[9px] text-[#9fef00]/40 font-bold uppercase tracking-widest">Search Module v1.0</span>
+            <Command className="w-3 h-3 text-[#22d3ee]/40" />
+            <span className="text-[9px] text-[#22d3ee]/40 font-bold uppercase tracking-widest">Search Module v1.0</span>
           </div>
         </div>
       </div>

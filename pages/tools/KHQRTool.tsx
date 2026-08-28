@@ -97,7 +97,7 @@ function buildQRString(fields: TLVField[]): string {
 function tagColor(id: string) {
   const n = parseInt(id, 10);
   if (id === '00' || id === '01') return { accent: 'text-slate-400', bg: 'bg-slate-400/10', border: 'border-slate-400/20' };
-  if (n >= 26 && n <= 51)         return { accent: 'text-[#9fef00]', bg: 'bg-[#9fef00]/10', border: 'border-[#9fef00]/20' };
+  if (n >= 26 && n <= 51)         return { accent: 'text-[#22d3ee]', bg: 'bg-[#22d3ee]/10', border: 'border-[#22d3ee]/20' };
   if (n >= 52 && n <= 54)         return { accent: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20' };
   if (n >= 58 && n <= 61)         return { accent: 'text-sky-400',   bg: 'bg-sky-400/10',   border: 'border-sky-400/20' };
   if (id === '62')                 return { accent: 'text-purple-400', bg: 'bg-purple-400/10', border: 'border-purple-400/20' };
@@ -433,7 +433,7 @@ export const KHQRTool: React.FC = () => {
             onClick={() => setTab(t)}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-[11px] font-bold uppercase tracking-widest border transition-all ${
               tab === t
-                ? 'bg-[#9fef00]/10 border-[#9fef00]/30 text-[#9fef00]'
+                ? 'bg-[#22d3ee]/10 border-[#22d3ee]/30 text-[#22d3ee]'
                 : 'bg-white/5 border-white/5 text-white/40 hover:text-white/60'
             }`}
           >
@@ -448,7 +448,7 @@ export const KHQRTool: React.FC = () => {
         <div className="space-y-5 animate-in fade-in duration-200">
           {/* Paste zone */}
           <div className={`relative rounded-2xl border-2 border-dashed transition-all overflow-hidden min-h-[180px] flex flex-col items-center justify-center gap-4 px-6
-            ${status === 'ok' ? 'border-[#9fef00]/30' : status === 'err' ? 'border-rose-500/30' : 'border-white/10 hover:border-white/20'}`}>
+            ${status === 'ok' ? 'border-[#22d3ee]/30' : status === 'err' ? 'border-rose-500/30' : 'border-white/10 hover:border-white/20'}`}>
             {pastedImage && (
               <img src={pastedImage} alt="Pasted QR" className="absolute inset-0 w-full h-full object-contain opacity-10 blur-sm pointer-events-none" />
             )}
@@ -468,7 +468,7 @@ export const KHQRTool: React.FC = () => {
                 <img src={pastedImage} alt="QR Preview" className="h-28 w-28 object-contain rounded-xl border border-white/10 shrink-0 bg-white/5" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1.5">
-                    <p className="text-[10px] text-[#9fef00] font-bold uppercase tracking-widest">✓ Decoded Successfully</p>
+                    <p className="text-[10px] text-[#22d3ee] font-bold uppercase tracking-widest">✓ Decoded Successfully</p>
                     <button 
                       onClick={handleClear} 
                       className="p-1.5 hover:bg-rose-500/10 hover:text-rose-400 rounded-md text-white/40 transition-colors" 
@@ -482,7 +482,7 @@ export const KHQRTool: React.FC = () => {
                     onClick={() => handleCopy(rawQR, setRawCopied)}
                     className="mt-2 flex items-center gap-1.5 text-[10px] font-bold text-white/40 hover:text-white/70 transition-colors"
                   >
-                    {rawCopied ? <Check className="w-3 h-3 text-[#9fef00]" /> : <Copy className="w-3 h-3" />}
+                    {rawCopied ? <Check className="w-3 h-3 text-[#22d3ee]" /> : <Copy className="w-3 h-3" />}
                     {rawCopied ? 'Copied' : 'Copy raw'}
                   </button>
                 </div>
@@ -508,7 +508,7 @@ export const KHQRTool: React.FC = () => {
                 <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Parsed TLV Fields ({parsed.length})</p>
                 <button
                   onClick={() => { setEditFields(JSON.parse(JSON.stringify(parsed))); setTab('rebuild'); }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#9fef00]/10 border border-[#9fef00]/30 text-[#9fef00] rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-[#9fef00]/20 transition-all"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#22d3ee]/10 border border-[#22d3ee]/30 text-[#22d3ee] rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-[#22d3ee]/20 transition-all"
                 >
                   Load into Rebuild <ArrowRight className="w-3 h-3" />
                 </button>
@@ -574,7 +574,7 @@ export const KHQRTool: React.FC = () => {
                     />
                     <button
                       onClick={addTag}
-                      className="px-4 py-2 bg-[#9fef00]/10 hover:bg-[#9fef00]/20 text-[#9fef00] border border-[#9fef00]/20 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all shrink-0 flex items-center gap-1"
+                      className="px-4 py-2 bg-[#22d3ee]/10 hover:bg-[#22d3ee]/20 text-[#22d3ee] border border-[#22d3ee]/20 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all shrink-0 flex items-center gap-1"
                     >
                       <Plus className="w-3 h-3" /> Add
                     </button>
@@ -585,7 +585,7 @@ export const KHQRTool: React.FC = () => {
               {/* Right: QR preview + output */}
               <div className="space-y-4">
                 {rebuiltImg && (
-                  <div className="p-4 bg-white rounded-2xl flex items-center justify-center shadow-[0_0_40px_rgba(159,239,0,0.06)]">
+                  <div className="p-4 bg-white rounded-2xl flex items-center justify-center shadow-[0_0_40px_rgba(34,211,238,0.06)]">
                     <img src={rebuiltImg} alt="Rebuilt QR" className="w-full max-w-[260px]" />
                   </div>
                 )}
@@ -606,9 +606,9 @@ export const KHQRTool: React.FC = () => {
                       <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Rebuilt QR String</span>
                       <button
                         onClick={() => handleCopy(rebuiltStr, setCopied)}
-                        className="flex items-center gap-1.5 text-[10px] font-bold text-white/40 hover:text-[#9fef00] transition-colors"
+                        className="flex items-center gap-1.5 text-[10px] font-bold text-white/40 hover:text-[#22d3ee] transition-colors"
                       >
-                        {copied ? <Check className="w-3 h-3 text-[#9fef00]" /> : <Copy className="w-3 h-3" />}
+                        {copied ? <Check className="w-3 h-3 text-[#22d3ee]" /> : <Copy className="w-3 h-3" />}
                         {copied ? 'Copied!' : 'Copy'}
                       </button>
                     </div>

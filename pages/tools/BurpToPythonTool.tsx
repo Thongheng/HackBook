@@ -49,7 +49,7 @@ export const BurpToPythonTool: React.FC = () => {
           onClick={() => onSelect(m)}
           className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest transition-all ${
             active === m
-              ? 'bg-[#9fef00]/10 text-[#9fef00]'
+              ? 'bg-[#22d3ee]/10 text-[#22d3ee]'
               : 'bg-white/[0.02] htb-text-faint hover:htb-text-muted'
           }`}
         >
@@ -64,7 +64,7 @@ export const BurpToPythonTool: React.FC = () => {
       {/* Header row */}
       <div className="flex items-center justify-between gap-4">
         <p className="text-xs htb-text-muted font-medium">
-          Paste a <span className="text-[#9fef00]">Copy as cURL</span> or raw Burp request.
+          Paste a <span className="text-[#22d3ee]">Copy as cURL</span> or raw Burp request.
           Auth headers are auto-detected; noise is stripped.
         </p>
         <div className="flex items-center gap-2 shrink-0">
@@ -79,7 +79,7 @@ export const BurpToPythonTool: React.FC = () => {
             onClick={() => setParametrize(!parametrize)}
             className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest transition-all rounded-md border ${
               parametrize
-                ? 'bg-[#9fef00]/10 text-[#9fef00] border-[#9fef00]/30'
+                ? 'bg-[#22d3ee]/10 text-[#22d3ee] border-[#22d3ee]/30'
                 : 'bg-white/[0.02] htb-text-faint border-white/10 hover:htb-text-muted'
             }`}
           >
@@ -95,7 +95,8 @@ export const BurpToPythonTool: React.FC = () => {
           onChange={e => setInput(e.target.value)}
           placeholder={PLACEHOLDER}
           spellCheck={false}
-          className="w-full h-52 resize-none font-mono text-[12px] bg-[#0a0f16]/80 border border-white/10 rounded-xl p-4 htb-text placeholder:htb-text-faint focus:outline-none focus:border-[#9fef00]/30 transition-colors leading-relaxed"
+          className="w-full h-52 resize-none font-mono text-[12px] border rounded-xl p-4 htb-text placeholder:htb-text-faint focus:outline-none focus:border-[#22d3ee]/30 transition-colors leading-relaxed"
+          style={{ background: 'var(--htb-surface)', borderColor: 'var(--htb-border)' }}
         />
         <div className="absolute top-2.5 right-2.5 flex gap-1.5">
           {input && (

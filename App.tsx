@@ -68,25 +68,25 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ zoom: 0.8 }}>
+    <div className="min-h-screen flex flex-col">
       <Navbar setView={setViewWithHash} currentView={currentView} onOpenSearch={() => setIsSearchOpen(true)} />
-      
-      <GlobalSearch 
-        isOpen={isSearchOpen} 
-        onClose={() => setIsSearchOpen(false)} 
-        onSelect={handleSearchResultSelect} 
+
+      <GlobalSearch
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelect={handleSearchResultSelect}
       />
 
-      <main className="flex-1 pt-24 pb-20 px-6 md:px-10 lg:px-16">
+      <main className="flex-1 pt-24 pb-16 px-6 md:px-10 lg:px-16">
         <div className="max-w-[1440px] mx-auto">
           {renderContent()}
         </div>
       </main>
-      
-      <footer className="py-12 border-t border-white/5 text-center">
-         <p className="text-[10px] font-black text-slate-700 uppercase tracking-[0.4em]">
-           &copy; 2025 HACKBOOK | AUTHORIZED ACCESS ONLY
-         </p>
+
+      <footer className="py-8 border-t border-white/[0.06] text-center">
+        <p className="text-[10px] font-semibold text-slate-700 uppercase tracking-[0.4em]">
+          &copy; 2025 HACKBOOK · AUTHORIZED ACCESS ONLY
+        </p>
       </footer>
     </div>
   );

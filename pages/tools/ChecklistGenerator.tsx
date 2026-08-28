@@ -49,9 +49,9 @@ const CAT_COLOR: Record<Category, string> = {
   desktop: 'text-purple-400 border-purple-500/25 bg-purple-500/8',
 };
 
-const PANEL_SHELL        = 'border border-white/[0.08] bg-[#101821]/96 shadow-[0_22px_60px_rgba(0,0,0,0.28)]';
-const PANEL_HEADER       = 'bg-[#070b10]';
-const PANEL_BODY         = 'bg-[#141d26]/94';
+const PANEL_SHELL        = 'htb-card shadow-[0_22px_60px_rgba(0,0,0,0.28)]';
+const PANEL_HEADER       = '';
+const PANEL_BODY         = '';
 const QUIET_CONTROL      = 'bg-[#111921]/92 border-white/[0.08]';
 const QUIET_CONTROL_HOVER= 'hover:border-white/15 hover:bg-[#16202a]';
 
@@ -94,7 +94,7 @@ const Section: React.FC<{ title: string; children: React.ReactNode; defaultOpen?
         className={`w-full flex items-center justify-between px-5 py-4 ${PANEL_HEADER} hover:bg-[#18222d] transition-colors`}>
         <div className="flex items-center gap-2.5">
           <span className="text-[10px] font-bold htb-text-muted uppercase tracking-[0.18em]">{title}</span>
-          {badge && <span className="text-[8px] font-bold text-[#9fef00]/60 bg-[#9fef00]/8 px-1.5 py-0.5 rounded border border-[#9fef00]/15">{badge}</span>}
+          {badge && <span className="text-[8px] font-bold text-[#22d3ee]/60 bg-[#22d3ee]/8 px-1.5 py-0.5 rounded border border-[#22d3ee]/15">{badge}</span>}
         </div>
         {open ? <ChevronUp className="w-3.5 h-3.5 htb-text-faint" /> : <ChevronDown className="w-3.5 h-3.5 htb-text-faint" />}
       </button>
@@ -129,7 +129,7 @@ const Chip: React.FC<{ label: string; count?: number; active: boolean; onClick: 
   <button onClick={onClick}
     className={`px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-tight border transition-all ${
       active
-        ? 'bg-[#9fef00]/8 border-[#9fef00]/25 text-[#9fef00]'
+        ? 'bg-[#22d3ee]/8 border-[#22d3ee]/25 text-[#22d3ee]'
         : `${QUIET_CONTROL} htb-text-muted ${QUIET_CONTROL_HOVER} hover:htb-text`
     }`}>
     <span>{label}</span>
@@ -140,8 +140,8 @@ const Chip: React.FC<{ label: string; count?: number; active: boolean; onClick: 
 const Toggle: React.FC<{ on: boolean; onChange: () => void; label: string }> = ({ on, onChange, label }) => (
   <label className="flex items-start gap-3 cursor-pointer group">
     <button onClick={onChange}
-      className={`relative mt-0.5 w-8 h-4 rounded-full border transition-all shrink-0 ${on ? 'bg-[#9fef00]/20 border-[#9fef00]/40' : 'bg-white/5 border-white/10'}`}>
-      <span className={`absolute top-0.5 w-3 h-3 rounded-full transition-all ${on ? 'left-4 bg-[#9fef00]' : 'left-0.5 bg-white/20'}`} />
+      className={`relative mt-0.5 w-8 h-4 rounded-full border transition-all shrink-0 ${on ? 'bg-[#22d3ee]/20 border-[#22d3ee]/40' : 'bg-white/5 border-white/10'}`}>
+      <span className={`absolute top-0.5 w-3 h-3 rounded-full transition-all ${on ? 'left-4 bg-[#22d3ee]' : 'left-0.5 bg-white/20'}`} />
     </button>
     <p className="text-[12px] font-semibold htb-text-muted group-hover:htb-text transition-colors leading-tight">{label}</p>
   </label>
@@ -156,7 +156,7 @@ const SummaryRail: React.FC<{ filtered: ChecklistRow[] }> = ({ filtered }) => {
   const stats = [
     { label: 'Selected', val: filtered.length, cls: 'htb-text' },
     { label: 'Baseline', val: base, cls: 'text-slate-300' },
-    { label: 'Custom',   val: cust, cls: 'text-[#9fef00]' },
+    { label: 'Custom',   val: cust, cls: 'text-[#22d3ee]' },
     { label: 'Critical', val: crit, cls: 'text-red-400' },
     { label: 'High',     val: high, cls: 'text-orange-400' },
     { label: 'Medium',   val: med,  cls: 'text-yellow-400' },
@@ -164,7 +164,7 @@ const SummaryRail: React.FC<{ filtered: ChecklistRow[] }> = ({ filtered }) => {
   return (
     <div className={`${PANEL_SHELL} flex flex-wrap gap-2 rounded-[24px] px-3 py-3 backdrop-blur-sm`}>
       {stats.map(({ label, val, cls }) => (
-        <div key={label} className="min-w-[92px] rounded-xl border border-white/[0.08] bg-[#141d26]/94 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
+        <div key={label} className="min-w-[92px] rounded-xl px-3 py-2" style={{ background: 'var(--htb-surface)', border: '1px solid var(--htb-border)' }}>
           <div className={`text-lg font-black tracking-tight leading-none ${cls}`}>{val}</div>
           <div className="mt-1 text-[8px] font-bold htb-text-faint uppercase tracking-[0.18em]">{label}</div>
         </div>
@@ -209,7 +209,7 @@ const PreviewModal: React.FC<{
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-[11px] font-bold uppercase tracking-[0.2em] htb-text">Checklist Preview</p>
-              <span className="rounded border border-[#9fef00]/20 bg-[#9fef00]/8 px-2 py-0.5 text-[9px] font-bold text-[#9fef00]/75">
+              <span className="rounded border border-[#22d3ee]/20 bg-[#22d3ee]/8 px-2 py-0.5 text-[9px] font-bold text-[#22d3ee]/75">
                 {exportCount} export / {rows.length} selected
               </span>
               {excludedCount > 0 && (
@@ -255,7 +255,7 @@ const PreviewModal: React.FC<{
                     onClick={() => setActiveSectionName(section.name)}
                     className={`min-w-[190px] rounded-xl border px-3 py-3 text-left transition-colors lg:min-w-0 ${
                       active
-                        ? 'border-[#9fef00]/25 bg-[#9fef00]/8 text-[#9fef00]'
+                        ? 'border-[#22d3ee]/25 bg-[#22d3ee]/8 text-[#22d3ee]'
                         : 'border-[var(--htb-border)] bg-[var(--htb-surface)] htb-text hover:bg-[var(--htb-overlay-hover)]'
                     }`}
                   >
@@ -332,7 +332,7 @@ const PreviewModal: React.FC<{
                                 <span className={`rounded border px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] ${
                                   excluded
                                     ? 'border-slate-500/20 bg-slate-500/10 text-slate-400'
-                                    : 'border-[#9fef00]/20 bg-[#9fef00]/8 text-[#9fef00]/75'
+                                    : 'border-[#22d3ee]/20 bg-[#22d3ee]/8 text-[#22d3ee]/75'
                                 }`}>
                                   {excluded ? 'Excluded' : 'Included'}
                                 </span>
@@ -373,7 +373,7 @@ const FeatureSubGroups: React.FC<{
   return (
     <div className="space-y-2.5 pt-3">
       <div className="flex items-center justify-end gap-2">
-        <button onClick={() => onSetAll(cat, true)}  className="text-[10px] text-[#9fef00]/55 hover:text-[#9fef00] font-bold transition-colors">All</button>
+        <button onClick={() => onSetAll(cat, true)}  className="text-[10px] text-[#22d3ee]/55 hover:text-[#22d3ee] font-bold transition-colors">All</button>
         <span className="htb-text-faint">|</span>
         <button onClick={() => onSetAll(cat, false)} className="text-[10px] htb-text-faint hover:htb-text-muted font-bold transition-colors">None</button>
       </div>
@@ -425,7 +425,7 @@ const FeatureSubGroups: React.FC<{
         <p className="text-[10px] htb-text-faint pt-1">No {CAT_LABEL[cat]} features active. Only baseline rows will export.</p>
       )}
       {cfg.categories.includes(cat) && allOn && (
-        <p className="text-[10px] text-[#9fef00]/55 pt-1">All {CAT_LABEL[cat]} custom feature groups active.</p>
+        <p className="text-[10px] text-[#22d3ee]/55 pt-1">All {CAT_LABEL[cat]} custom feature groups active.</p>
       )}
     </div>
   );
@@ -587,12 +587,12 @@ export const ChecklistGenerator: React.FC = () => {
             `${FEATURE_REGISTRY.length} features`,
             cfg.categories.length ? cfg.categories.map(c => CAT_LABEL[c]).join(' + ') : 'No target',
           ].map(txt => (
-            <span key={txt} className="rounded-full border border-white/[0.08] bg-[#141d26]/92 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] htb-text-muted">
+            <span key={txt} className="rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] htb-text-muted" style={{ background: 'var(--htb-surface)', border: '1px solid var(--htb-border)' }}>
               {txt}
             </span>
           ))}
         </div>
-        <button onClick={handleSelectAll} className="text-[10px] font-bold htb-text-muted hover:text-[#9fef00] transition-colors uppercase tracking-widest border border-white/10 hover:border-[#9fef00]/30 rounded-lg px-3 py-1.5 bg-[#141d26]/60 hover:bg-[#9fef00]/10">
+        <button onClick={handleSelectAll} className="text-[10px] font-bold htb-text-muted hover:text-[#22d3ee] transition-colors uppercase tracking-widest rounded-lg px-3 py-1.5 hover:bg-[#22d3ee]/10" style={{ background: 'var(--htb-surface)', border: '1px solid var(--htb-border)' }}>
           Select All Items
         </button>
       </div>
@@ -614,7 +614,8 @@ export const ChecklistGenerator: React.FC = () => {
                 value={cfg.targetName}
                 onChange={e => setCfg(p => ({ ...p, targetName: e.target.value }))}
                 placeholder="Facebook"
-                className="w-full bg-[#0a0f16]/60 border border-white/[0.08] rounded-lg p-3 text-sm htb-text-muted font-mono placeholder-htb-text-faint focus:outline-none focus:ring-1 focus:ring-[#9fef00]/30"
+                className="w-full rounded-lg p-3 text-sm htb-text-muted font-mono placeholder-htb-text-faint focus:outline-none focus:ring-1 focus:ring-[#22d3ee]/30"
+                style={{ background: 'var(--htb-surface)', border: '1px solid var(--htb-border)' }}
               />
               {cfg.targetName && (
                 <p className="mt-1.5 text-[9px] font-mono htb-text-faint truncate">
@@ -633,10 +634,10 @@ export const ChecklistGenerator: React.FC = () => {
                 <button key={val} onClick={() => setCfg(p => ({ ...p, scope: val }))}
                   className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
                     cfg.scope === val
-                      ? 'bg-[#9fef00]/6 border-[#9fef00]/25 text-[#9fef00]'
+                      ? 'bg-[#22d3ee]/6 border-[#22d3ee]/25 text-[#22d3ee]'
                       : `${QUIET_CONTROL} htb-text-muted ${QUIET_CONTROL_HOVER} hover:htb-text`
                   }`}>
-                  <div className={`w-3 h-3 rounded-full border-2 shrink-0 transition-colors ${cfg.scope === val ? 'bg-[#9fef00] border-[#9fef00]' : 'border-white/20'}`} />
+                  <div className={`w-3 h-3 rounded-full border-2 shrink-0 transition-colors ${cfg.scope === val ? 'bg-[#22d3ee] border-[#22d3ee]' : 'border-white/20'}`} />
                   <Icon className="w-3.5 h-3.5 shrink-0 opacity-60" />
                   <div className="flex-1 min-w-0">
                     <p className="text-[12px] font-bold leading-tight">{label}</p>
@@ -653,10 +654,10 @@ export const ChecklistGenerator: React.FC = () => {
                 <button key={et} onClick={() => setCfg(p => ({ ...p, engagementType: et }))}
                   className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
                     cfg.engagementType === et
-                      ? 'bg-[#9fef00]/6 border-[#9fef00]/25 text-[#9fef00]'
+                      ? 'bg-[#22d3ee]/6 border-[#22d3ee]/25 text-[#22d3ee]'
                       : `${QUIET_CONTROL} htb-text-muted ${QUIET_CONTROL_HOVER} hover:htb-text`
                   }`}>
-                  <div className={`w-3 h-3 rounded-full border-2 shrink-0 mt-0.5 transition-colors ${cfg.engagementType === et ? 'bg-[#9fef00] border-[#9fef00]' : 'border-white/20'}`} />
+                  <div className={`w-3 h-3 rounded-full border-2 shrink-0 mt-0.5 transition-colors ${cfg.engagementType === et ? 'bg-[#22d3ee] border-[#22d3ee]' : 'border-white/20'}`} />
                   <p className="text-[12px] font-bold leading-tight flex-1">{et}</p>
                   <span className="text-[8px] font-bold px-1.5 py-0.5 rounded border opacity-60">
                     {et === 'Black-Box' ? 'Black-Box + Both' : et === 'Grey-Box' ? 'Grey-Box + Both' : 'All test cases'}
@@ -756,7 +757,7 @@ export const ChecklistGenerator: React.FC = () => {
                   badge={
                     <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${
                       cfg.categories.includes(cat)
-                        ? 'text-[#9fef00]/70 border-[#9fef00]/20 bg-[#9fef00]/8'
+                        ? 'text-[#22d3ee]/70 border-[#22d3ee]/20 bg-[#22d3ee]/8'
                         : 'htb-text-faint border-white/10'
                     }`}>
                       {cfg.categories.includes(cat) ? 'selected' : 'not exporting'}
@@ -801,7 +802,8 @@ export const ChecklistGenerator: React.FC = () => {
                     }
                   }}
                   placeholder="e.g. Chatbot AI"
-                  className="flex-1 bg-[#0a0f16]/60 border border-white/[0.08] rounded-lg px-3 py-2 text-sm htb-text-muted placeholder-htb-text-faint focus:outline-none focus:border-[#9fef00]/30"
+                  className="flex-1 rounded-lg px-3 py-2 text-sm htb-text-muted placeholder-htb-text-faint focus:outline-none focus:border-[#22d3ee]/30"
+                  style={{ background: 'var(--htb-surface)', border: '1px solid var(--htb-border)' }}
                 />
                 <button
                   onClick={() => {
@@ -810,7 +812,8 @@ export const ChecklistGenerator: React.FC = () => {
                       setNewCustomFeature('');
                     }
                   }}
-                  className="px-4 py-2 rounded-lg bg-[#141d26]/80 border border-white/10 hover:bg-[#9fef00]/10 hover:border-[#9fef00]/30 hover:text-[#9fef00] transition-colors text-[11px] font-bold uppercase tracking-widest htb-text-muted"
+                  className="px-4 py-2 rounded-lg hover:bg-[#22d3ee]/10 hover:border-[#22d3ee]/30 hover:text-[#22d3ee] transition-colors text-[11px] font-bold uppercase tracking-widest htb-text-muted"
+                  style={{ background: 'var(--htb-surface)', border: '1px solid var(--htb-border)' }}
                 >
                   Add
                 </button>
@@ -819,11 +822,11 @@ export const ChecklistGenerator: React.FC = () => {
               {cfg.customFeatures.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {cfg.customFeatures.map((feat, idx) => (
-                    <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#9fef00]/8 border border-[#9fef00]/25 text-[#9fef00] text-[11px] font-bold tracking-tight">
+                    <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#22d3ee]/8 border border-[#22d3ee]/25 text-[#22d3ee] text-[11px] font-bold tracking-tight">
                       <span>{feat}</span>
                       <button 
                         onClick={() => setCfg(p => ({ ...p, customFeatures: p.customFeatures.filter((_, i) => i !== idx) }))}
-                        className="p-0.5 hover:bg-[#9fef00]/20 rounded transition-colors"
+                        className="p-0.5 hover:bg-[#22d3ee]/20 rounded transition-colors"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -859,7 +862,7 @@ export const ChecklistGenerator: React.FC = () => {
             className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border transition-colors ${
               filtered.length === 0
                 ? 'border-white/[0.05] bg-white/[0.03] htb-text-faint cursor-not-allowed'
-                : 'border-white/[0.08] bg-[#141d26]/94 htb-text-muted hover:bg-[#18222d] hover:htb-text'
+                : 'htb-text-muted hover:htb-text'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -878,8 +881,8 @@ export const ChecklistGenerator: React.FC = () => {
                 exportRows.length === 0
                   ? 'bg-white/5 border border-white/5 htb-text-faint cursor-not-allowed'
                   : exportingAction === 'filtered'
-                    ? 'bg-[#9fef00]/10 border border-[#9fef00]/20 htb-text-muted cursor-wait'
-                    : 'bg-[#9fef00] text-black hover:shadow-[0_0_25px_rgba(159,239,0,0.2)] active:scale-[0.99]'
+                    ? 'bg-[#22d3ee]/10 border border-[#22d3ee]/20 htb-text-muted cursor-wait'
+                    : 'bg-[#22d3ee] text-black hover:shadow-[0_0_25px_rgba(34,211,238,0.2)] active:scale-[0.99]'
               }`}>
               <Download className="w-4 h-4" />
               {exportingAction === 'filtered' ? 'Building…' : filtered.length === 0 ? 'Select category' : exportRows.length === 0 ? 'All rows excluded' : `Export ${exportRows.length}`}

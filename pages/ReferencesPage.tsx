@@ -19,7 +19,7 @@ export const ReferencesPage: React.FC = () => {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-1.5 text-[11px] font-bold tracking-tight rounded-md transition-all border ${activeTab === tab
-                ? 'bg-[#9fef00]/10 border-[#9fef00]/30 text-[#9fef00] shadow-[0_0_20px_rgba(159,239,0,0.05)]'
+                ? 'bg-[#22d3ee]/10 border-[#22d3ee]/30 text-[#22d3ee] shadow-[0_0_20px_rgba(34,211,238,0.05)]'
                 : 'bg-white/5 border-white/5 htb-text-faint hover:border-white/20 hover:htb-text'
               }`}
           >
@@ -38,15 +38,15 @@ export const ReferencesPage: React.FC = () => {
             className="htb-card group p-6 flex flex-col h-full hover:translate-y-[-2px] transition-all relative overflow-hidden"
           >
             <div className="flex items-start justify-between mb-5">
-              <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center border border-white/5 group-hover:border-[#9fef00]/20 transition-colors">
-                <link.icon className="w-5 h-5 htb-text-faint group-hover:text-[#9fef00] transition-colors" />
+              <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center border border-white/5 group-hover:border-[#22d3ee]/20 transition-colors">
+                <link.icon className="w-5 h-5 htb-text-faint group-hover:text-[#22d3ee] transition-colors" />
               </div>
               <ExternalLink className="w-3.5 h-3.5 htb-text-faint group-hover:htb-text transition-colors" />
             </div>
 
             <div className="space-y-2 flex-grow">
-              <div className="text-[9px] font-bold text-[#9fef00] uppercase tracking-widest opacity-80">{link.category}</div>
-              <h3 className="text-base font-bold htb-text group-hover:text-[#9fef00] transition-colors leading-tight tracking-tight">
+              <div className="text-[9px] font-bold text-[#22d3ee] uppercase tracking-widest opacity-80">{link.category}</div>
+              <h3 className="text-base font-bold htb-text group-hover:text-[#22d3ee] transition-colors leading-tight tracking-tight">
                 {link.title}
               </h3>
               <p className="text-[12px] htb-text-muted font-medium leading-relaxed tracking-tight line-clamp-2">

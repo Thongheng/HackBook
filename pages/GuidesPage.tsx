@@ -14,12 +14,12 @@ export const GuidesPage: React.FC = () => {
   return (
     <div className="flex flex-col lg:flex-row gap-10 min-h-[70vh]">
       {/* Guides Sidebar */}
-      <aside className="w-full lg:w-80 shrink-0 space-y-8 bg-[#05080a] p-2 rounded-xl border border-white/5 lg:border-none lg:bg-transparent">
-        <div className="space-y-6 lg:bg-[#05080a] lg:p-4 lg:rounded-xl lg:border lg:border-white/5">
+      <aside className="w-full lg:w-80 shrink-0 space-y-8 p-2 rounded-xl lg:border-none" style={{ background: 'var(--htb-surface)', border: '1px solid var(--htb-border)' }}>
+        <div className="space-y-6 lg:p-4 lg:rounded-xl" style={{ background: 'var(--htb-surface)' }}>
           {categories.map(cat => (
             <div key={cat} className="space-y-2">
-              <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mb-3 flex items-center gap-2">
-                <span className="w-1 h-1 bg-slate-700 rounded-full" />
+              <h4 className="text-[10px] font-bold htb-text-faint uppercase tracking-[0.2em] px-3 mb-3 flex items-center gap-2">
+                <span className="w-1 h-1 rounded-full" style={{ background: 'var(--htb-border)' }} />
                 {cat}
               </h4>
               <div className="space-y-1">
@@ -31,8 +31,8 @@ export const GuidesPage: React.FC = () => {
                       key={guide.originalIndex}
                       onClick={() => setActiveGuideId(guide.originalIndex)}
                       className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-xs font-bold transition-all group ${activeGuideId === guide.originalIndex
-                        ? 'bg-[#9fef00]/10 text-[#9fef00] border border-[#9fef00]/20'
-                        : 'htb-text-muted hover:htb-text hover:bg-white/[0.03] border border-transparent'
+                        ? 'bg-[#22d3ee]/10 text-[#22d3ee] border border-[#22d3ee]/20'
+                        : 'htb-text-muted htb-hover border border-transparent'
                         }`}
                     >
                       <span className="truncate pr-2">{guide.title}</span>
@@ -45,8 +45,8 @@ export const GuidesPage: React.FC = () => {
           ))}
         </div>
 
-        <div className="p-5 htb-card border-dashed border-white/5 bg-[#05080a]">
-          <p className="text-[10px] text-slate-500 leading-relaxed italic">
+        <div className="p-5 htb-card border-dashed">
+          <p className="text-[10px] htb-text-faint leading-relaxed italic">
             Select a tactic from the manifest to view deployment instructions and shell commands.
           </p>
         </div>
@@ -54,23 +54,23 @@ export const GuidesPage: React.FC = () => {
 
       {/* Guide Content Area */}
       <main className="flex-1 space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-8" style={{ borderColor: 'var(--htb-border)' }}>
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 bg-[#9fef00]/5 border border-[#9fef00]/20 rounded-xl flex items-center justify-center shadow-[0_0_30px_rgba(159,239,0,0.05)]">
-              <activeGuide.icon className="w-6 h-6 text-[#9fef00]" />
+            <div className="w-14 h-14 bg-[#22d3ee]/5 border border-[#22d3ee]/20 rounded-xl flex items-center justify-center shadow-[0_0_30px_rgba(34,211,238,0.05)]">
+              <activeGuide.icon className="w-6 h-6 text-[#22d3ee]" />
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <Hash className="w-4 h-4 text-[#9fef00] opacity-40" />
+                <Hash className="w-4 h-4 text-[#22d3ee] opacity-40" />
                 <h1 className="text-2xl font-extrabold htb-text tracking-tight leading-none">
                   {activeGuide.title}
                 </h1>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-bold htb-text-faint uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded">
+                <span className="text-[10px] font-bold htb-text-faint uppercase tracking-widest px-2 py-0.5 rounded" style={{ background: 'var(--htb-overlay)', border: '1px solid var(--htb-overlay-border)' }}>
                   {activeGuide.category}
                 </span>
-                <span className="text-[10px] font-mono text-[#9fef00]/60 uppercase tracking-widest">
+                <span className="text-[10px] font-mono text-[#22d3ee]/60 uppercase tracking-widest">
                   REF: OPSEC-{100 + activeGuideId}
                 </span>
               </div>
@@ -80,18 +80,18 @@ export const GuidesPage: React.FC = () => {
 
         <div className="space-y-6">
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-slate-500" />
+            <h3 className="text-sm font-bold htb-text uppercase tracking-widest flex items-center gap-2">
+              <BookOpen className="w-4 h-4 htb-text-muted" />
               Operational Briefing
             </h3>
-            <p className="text-sm text-slate-400 leading-relaxed font-medium tracking-tight max-w-4xl">
+            <p className="text-sm htb-text-muted leading-relaxed font-medium tracking-tight max-w-4xl">
               {activeGuide.description}
             </p>
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-slate-500" />
+            <h3 className="text-sm font-bold htb-text uppercase tracking-widest flex items-center gap-2">
+              <Terminal className="w-4 h-4 htb-text-muted" />
               Deployment Sequence
             </h3>
             <div className="max-w-[1000px]">
