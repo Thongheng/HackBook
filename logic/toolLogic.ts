@@ -145,13 +145,17 @@ function tokenizeCurl(cmd: string): string[] {
     } else if (ch === '\\' && i + 1 < normalized.length && (inAnsiC || (!inSingle && !inDouble))) {
       const nx = normalized[++i];
       if (inAnsiC) {
-        // ANSI-C escape sequences: \n \t \r \\ \' \"
+        // ANSI-C escape sequences: \n \t \r \\ \' \" \xHH
         if      (nx === 'n')  current += '\n';
         else if (nx === 't')  current += '\t';
         else if (nx === 'r')  current += '\r';
         else if (nx === '\\') current += '\\';
         else if (nx === "'")  current += "'";
         else if (nx === '"')  current += '"';
+        else if (nx === 'x' && i + 2 < normalized.length && /[0-9a-fA-F]{2}/.test(normalized.substring(i + 1, i + 3))) {
+          current += String.fromCharCode(parseInt(normalized.substring(i + 1, i + 3), 16));
+          i += 2; // skip 2 hex digits (i already at x)
+        }
         else { current += '\\'; current += nx; }
       } else {
         current += nx;
