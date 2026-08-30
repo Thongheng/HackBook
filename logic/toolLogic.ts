@@ -265,7 +265,12 @@ function pyVal(v: unknown, indent: string): string {
 }
 
 function bodyToDict(body: string, argsIndent: string): string {
-  if (body.includes('=') && !body.trim().startsWith('{')) {
+  const trimmed = body.trim();
+  // XML/HTML bodies — keep as raw string
+  if (trimmed.startsWith('<?xml') || trimmed.startsWith('<')) {
+    return pyStr(body);
+  }
+  if (body.includes('=') && !trimmed.startsWith('{')) {
     try {
       const pairs = body.split('&').map(p => {
         const eq = p.indexOf('=');
@@ -376,7 +381,9 @@ export const convertBurpRequest = (input: string, opts: ConvertOptions): string 
   }
 
   // Add import for form-encoded bodies
-  const isFormEncoded = parsed.body && parsed.body.includes('=') && !parsed.body.trim().startsWith('{') && !parsed.body.trim().startsWith('[');
+  const bodyTrimmed = parsed.body?.trim() ?? '';
+  const isXml = bodyTrimmed.startsWith('<?xml') || bodyTrimmed.startsWith('<');
+  const isFormEncoded = parsed.body && parsed.body.includes('=') && !bodyTrimmed.startsWith('{') && !bodyTrimmed.startsWith('[') && !isXml;
   if (isFormEncoded) lines.push(`${baseIndent}import urllib.parse`);
 
   lines.push(`${baseIndent}r = ${caller}.${method}(`);
