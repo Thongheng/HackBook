@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import jsQR from 'jsqr';
 import QRCode from 'qrcode';
-import { QrCode, Wrench, Copy, Check, ClipboardPaste, ChevronDown, ChevronRight, ArrowRight, X, Trash2, Plus } from 'lucide-react';
+import { QrCode, Wrench, Copy, Check, ClipboardPaste, ChevronDown, ChevronRight, ArrowRight, X, Trash2, Plus, Upload } from 'lucide-react';
 
 // ── TLV tag labels ──────────────────────────────────────────────────────────
 const TAG_NAMES: Record<string, string> = {
@@ -123,37 +123,61 @@ export const KHQRTool: React.FC = () => {
   const [newTagId, setNewTagId] = useState('');
   const [newTagValue, setNewTagValue] = useState('');
   const [newTagParent, setNewTagParent] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
-  const handlePaste = useCallback((e: ClipboardEvent) => {
-    if (tab !== 'decode') return;
-    const imgItem = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith('image/'));
-    if (!imgItem) return;
-    const file = imgItem.getAsFile();
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const url = ev.target?.result as string;
-      setPastedImage(url);
-      decodeFromUrl(url);
-    };
-    reader.readAsDataURL(file);
-  }, [tab]);
-
-  useEffect(() => {
-    window.addEventListener('paste', handlePaste as EventListener);
-    return () => window.removeEventListener('paste', handlePaste as EventListener);
-  }, [handlePaste]);
-
+  // ── Multi-strategy QR decode ───────────────────────────────────────────────
   const decodeFromUrl = (url: string) => {
     const img = new Image();
     img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width; canvas.height = img.height;
-      const ctx = canvas.getContext('2d')!;
-      ctx.drawImage(img, 0, 0);
-      const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const result = jsQR(data.data, data.width, data.height);
+      type PreprocessFn = (ctx: CanvasRenderingContext2D, w: number, h: number) => void;
+      const tryDecode = (scale: number, preprocess?: PreprocessFn) => {
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0, w, h);
+        if (preprocess) preprocess(ctx, w, h);
+        const data = ctx.getImageData(0, 0, w, h);
+        return jsQR(data.data, data.width, data.height);
+      };
+
+      const grayscaleThreshold: PreprocessFn = (ctx, w, h) => {
+        const d = ctx.getImageData(0, 0, w, h);
+        for (let i = 0; i < d.data.length; i += 4) {
+          const g = 0.299 * d.data[i] + 0.587 * d.data[i + 1] + 0.114 * d.data[i + 2];
+          const v = g > 128 ? 255 : 0;
+          d.data[i] = d.data[i + 1] = d.data[i + 2] = v;
+        }
+        ctx.putImageData(d, 0, 0);
+      };
+
+      const invert: PreprocessFn = (ctx, w, h) => {
+        const d = ctx.getImageData(0, 0, w, h);
+        for (let i = 0; i < d.data.length; i += 4) {
+          d.data[i] = 255 - d.data[i];
+          d.data[i + 1] = 255 - d.data[i + 1];
+          d.data[i + 2] = 255 - d.data[i + 2];
+        }
+        ctx.putImageData(d, 0, 0);
+      };
+
+      const strategies = [
+        () => tryDecode(1),
+        () => tryDecode(2),
+        () => tryDecode(3),
+        () => tryDecode(1, grayscaleThreshold),
+        () => tryDecode(2, grayscaleThreshold),
+        () => tryDecode(2, invert),
+      ];
+
+      let result = null;
+      for (const strategy of strategies) {
+        result = strategy();
+        if (result) break;
+      }
+
       if (result) {
         setStatus('ok'); setErrMsg('');
         setRawQR(result.data);
@@ -166,10 +190,74 @@ export const KHQRTool: React.FC = () => {
         ]));
       } else {
         setStatus('err');
-        setErrMsg('No QR code detected. Ensure the screenshot contains a clear, unobstructed QR code.');
+        setErrMsg('No QR code detected. Try a clearer screenshot, or crop tighter around the QR code.');
       }
     };
     img.src = url;
+  };
+
+  // ── Shared image processor ─────────────────────────────────────────────────
+  const processFile = useCallback((file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const url = ev.target?.result as string;
+      setPastedImage(url);
+      decodeFromUrl(url);
+    };
+    reader.readAsDataURL(file);
+  }, []); // eslint-disable-line
+
+  // ── Handlers ──────────────────────────────────────────────────────────────
+  const handlePaste = useCallback((e: ClipboardEvent) => {
+    if (tab !== 'decode') return;
+    const imgItem = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith('image/'));
+    if (!imgItem) return;
+    const file = imgItem.getAsFile();
+    if (file) processFile(file);
+  }, [tab, processFile]);
+
+  useEffect(() => {
+    window.addEventListener('paste', handlePaste as EventListener);
+    return () => window.removeEventListener('paste', handlePaste as EventListener);
+  }, [handlePaste]);
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) processFile(file);
+    e.target.value = '';
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  };
+
+  const handleClipboardButton = async () => {
+    try {
+      const items = await navigator.clipboard.read();
+      for (const item of items) {
+        const imageType = item.types.find(t => t.startsWith('image/'));
+        if (imageType) {
+          const blob = await item.getType(imageType);
+          const url = URL.createObjectURL(blob);
+          const reader = new FileReader();
+          reader.onload = ev => {
+            setPastedImage(ev.target?.result as string);
+            decodeFromUrl(ev.target?.result as string);
+          };
+          reader.readAsDataURL(blob);
+          return;
+        }
+      }
+      setStatus('err');
+      setErrMsg('No image found in clipboard. Copy a screenshot first.');
+    } catch {
+      setStatus('err');
+      setErrMsg('Clipboard access denied. Use ⌘V / Ctrl+V to paste instead.');
+    }
   };
 
   const handleClear = () => {
@@ -446,32 +534,64 @@ export const KHQRTool: React.FC = () => {
       {/* ── DECODE TAB ─────────────────────────────────────────────────────── */}
       {tab === 'decode' && (
         <div className="space-y-5 animate-in fade-in duration-200">
-          {/* Paste zone */}
-          <div className={`relative rounded-2xl border-2 border-dashed transition-all overflow-hidden min-h-[180px] flex flex-col items-center justify-center gap-4 px-6
-            ${status === 'ok' ? 'border-[#22d3ee]/30' : status === 'err' ? 'border-rose-500/30' : 'border-white/10 hover:border-white/20'}`}>
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileInput}
+          />
+
+          {/* Drop / paste zone */}
+          <div
+            className={`relative rounded-2xl border-2 border-dashed transition-all overflow-hidden min-h-[180px] flex flex-col items-center justify-center gap-4 px-6 cursor-pointer
+              ${isDragging ? 'border-[#22d3ee]/60 bg-[#22d3ee]/5' : status === 'ok' ? 'border-[#22d3ee]/30' : status === 'err' ? 'border-rose-500/30' : 'border-white/10 hover:border-white/20'}`}
+            onClick={() => status !== 'ok' && fileInputRef.current?.click()}
+            onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={handleDrop}
+          >
             {pastedImage && (
               <img src={pastedImage} alt="Pasted QR" className="absolute inset-0 w-full h-full object-contain opacity-10 blur-sm pointer-events-none" />
             )}
+
             {status !== 'ok' && (
               <div className="relative flex flex-col items-center gap-3 text-center">
                 <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
-                  <ClipboardPaste className="w-6 h-6 text-white/30" />
+                  {isDragging
+                    ? <Upload className="w-6 h-6 text-[#22d3ee]" />
+                    : <QrCode className="w-6 h-6 text-white/30" />}
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white/60">Paste QR image here</p>
-                  <p className="text-xs text-white/30 mt-1">Take a screenshot of a KHQR code, then press <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-[10px] font-mono">⌘V</kbd> or <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-[10px] font-mono">Ctrl+V</kbd></p>
+                  <p className="text-sm font-bold text-white/60">
+                    {isDragging ? 'Drop image here' : 'Drop, click, or paste a QR image'}
+                  </p>
+                  <p className="text-xs text-white/30 mt-1">
+                    {!isDragging && <>Press <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-[10px] font-mono">⌘V</kbd> / <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-[10px] font-mono">Ctrl+V</kbd>, drag a file, or click to browse</>}
+                  </p>
                 </div>
+                {!isDragging && (
+                  <button
+                    onClick={e => { e.stopPropagation(); handleClipboardButton(); }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[11px] font-bold text-white/50 hover:text-white/80 transition-all"
+                  >
+                    <ClipboardPaste className="w-3.5 h-3.5" />
+                    Paste from Clipboard
+                  </button>
+                )}
               </div>
             )}
+
             {status === 'ok' && pastedImage && (
-              <div className="relative flex items-center gap-6 w-full">
+              <div className="relative flex items-center gap-6 w-full" onClick={e => e.stopPropagation()}>
                 <img src={pastedImage} alt="QR Preview" className="h-28 w-28 object-contain rounded-xl border border-white/10 shrink-0 bg-white/5" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1.5">
                     <p className="text-[10px] text-[#22d3ee] font-bold uppercase tracking-widest">✓ Decoded Successfully</p>
-                    <button 
-                      onClick={handleClear} 
-                      className="p-1.5 hover:bg-rose-500/10 hover:text-rose-400 rounded-md text-white/40 transition-colors" 
+                    <button
+                      onClick={handleClear}
+                      className="p-1.5 hover:bg-rose-500/10 hover:text-rose-400 rounded-md text-white/40 transition-colors"
                       title="Clear and scan new"
                     >
                       <X className="w-4 h-4" />
@@ -488,11 +608,12 @@ export const KHQRTool: React.FC = () => {
                 </div>
               </div>
             )}
+
             {status === 'err' && (
-              <div className="relative flex flex-col items-center gap-3">
-                <p className="text-xs text-rose-400 font-medium">{errMsg}</p>
-                <button 
-                  onClick={handleClear} 
+              <div className="relative flex flex-col items-center gap-3" onClick={e => e.stopPropagation()}>
+                <p className="text-xs text-rose-400 font-medium text-center">{errMsg}</p>
+                <button
+                  onClick={handleClear}
                   className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-bold text-white/60 hover:text-white transition-colors"
                 >
                   Clear & Try Again

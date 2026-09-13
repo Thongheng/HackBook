@@ -78,31 +78,28 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView, onOpenSear
               style={{
                 color: isActive(item.id)
                   ? (isDark ? '#ffffff' : '#0f172a')
-                  : (isDark ? '#64748b' : '#64748b'),
+                  : (isDark ? '#64748b' : '#94a3b8'),
                 background: isActive(item.id)
-                  ? (isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)')
+                  ? 'rgba(34, 211, 238, 0.07)'
                   : 'transparent',
+                boxShadow: isActive(item.id)
+                  ? 'inset 0 0 0 1px rgba(34, 211, 238, 0.14)'
+                  : 'none',
               }}
               onMouseEnter={e => {
                 if (!isActive(item.id)) {
                   (e.currentTarget as HTMLElement).style.color = isDark ? '#cbd5e1' : '#1e293b';
-                  (e.currentTarget as HTMLElement).style.background = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
+                  (e.currentTarget as HTMLElement).style.background = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
                 }
               }}
               onMouseLeave={e => {
                 if (!isActive(item.id)) {
-                  (e.currentTarget as HTMLElement).style.color = '#64748b';
+                  (e.currentTarget as HTMLElement).style.color = isDark ? '#64748b' : '#94a3b8';
                   (e.currentTarget as HTMLElement).style.background = 'transparent';
                 }
               }}
             >
               {item.label}
-              {isActive(item.id) && (
-                <span
-                  className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-3.5 h-0.5 rounded-full"
-                  style={{ background: '#22d3ee' }}
-                />
-              )}
             </button>
           ))}
         </div>

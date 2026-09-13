@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChecklistGenerator } from './tools/ChecklistGenerator';
 import { KHQRTool } from './tools/KHQRTool';
 import { BurpToPythonTool } from './tools/BurpToPythonTool';
+import { RedSploitTool } from './tools/RedSploitTool';
 import { tools, toolCategories } from '../data/tools';
 import { ArrowLeft, Hash } from 'lucide-react';
 
@@ -59,6 +60,7 @@ export const ToolsPage: React.FC<ToolsPageProps> = ({ initialTool, setView }) =>
               case 'tool-burp-converter': return <BurpToPythonTool />;
               case 'tool-checklist': return <ChecklistGenerator />;
               case 'tool-khqr': return <KHQRTool />;
+              case 'tool-redsploit': return <RedSploitTool />;
               default: return <div className="htb-text-faint italic">Tool not found: {activeToolId}</div>;
             }
           })()}

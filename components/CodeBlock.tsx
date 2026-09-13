@@ -22,7 +22,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language = 'bash', t
   return (
     <div
       data-code-block="true"
-      className="relative group rounded-xl overflow-hidden shadow-2xl transition-all"
+      className="relative group rounded-xl overflow-hidden shadow-2xl transition-colors"
       style={{ background: 'var(--htb-code-bg)', border: '1px solid var(--htb-border)' }}
       onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'rgba(34,211,238,0.3)'}
       onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'var(--htb-border)'}
