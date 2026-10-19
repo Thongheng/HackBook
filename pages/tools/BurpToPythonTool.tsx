@@ -1,71 +1,52 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { CodeBlock } from '../../components/CodeBlock';
-import { convertBurpRequest } from '../../logic/toolLogic';
+import { convertBurpRequest, HeaderMode } from '../../logic/burpToPython';
 import { ClipboardPaste, X } from 'lucide-react';
 
-type Mode = 'inline' | 'function';
-type Caller = 'session' | 'requests';
-
 const PLACEHOLDER = [
-  "curl 'http://target/api/login' \\",
-  "  -H 'X-CSRF-Token: abc123' \\",
-  "  --data-raw 'username=admin&password=secret'",
-  '',
-  '# — or paste a raw Burp request —',
-  '',
-  'POST /api/login HTTP/1.1',
-  'Host: target',
-  'X-CSRF-Token: abc123',
-  '',
-  'username=admin&password=secret',
+  "POST /login HTTP/1.1",
+  "Host: target",
+  "Content-Type: application/x-www-form-urlencoded",
+  "",
+  "user=admin&pass=admin",
+  "",
+  "— or —",
+  "",
+  "curl 'http://target/login' \\",
+  "  -H 'Content-Type: application/x-www-form-urlencoded' \\",
+  "  --data-raw 'user=admin&pass=admin'",
 ].join('\n');
+
+const HEADER_MODES: Array<[HeaderMode, string]> = [
+  ['clean', 'clean (default)'],
+  ['keep', 'keep all'],
+];
 
 export const BurpToPythonTool: React.FC = () => {
   const [input, setInput] = useState('');
-  const [mode, setMode] = useState<Mode>('inline');
-  const [caller, setCaller] = useState<Caller>('requests');
-  const [parametrize, setParametrize] = useState(false);
+  const [headerMode, setHeaderMode] = useState<HeaderMode>('clean');
+  const [funcName, setFuncName] = useState('');
 
-  const output = input.trim() ? convertBurpRequest(input, { mode, caller, parametrize }) : '';
-  const isParseError = output.startsWith('# Parse error:');
-  const inputType = input.trim().startsWith('curl ') ? 'cURL' : input.trim() ? 'Raw HTTP' : null;
+  const result = useMemo(
+    () => (input.trim() ? convertBurpRequest(input, { headerMode, funcName }) : null),
+    [input, headerMode, funcName],
+  );
 
   const handlePaste = useCallback(async () => {
     try {
-      const text = await navigator.clipboard.readText();
-      setInput(text);
+      setInput(await navigator.clipboard.readText());
     } catch { /* clipboard permission denied */ }
   }, []);
 
-  const segmented = (
-    items: string[],
-    active: string,
-    onSelect: (v: any) => void,
-  ) => (
-    <div className="flex rounded-md border border-white/10 overflow-hidden">
-      {items.map(m => (
-        <button
-          key={m}
-          onClick={() => onSelect(m)}
-          className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest transition-all ${
-            active === m
-              ? 'bg-[#22d3ee]/10 text-[#22d3ee]'
-              : 'bg-white/[0.02] htb-text-faint hover:htb-text-muted'
-          }`}
-        >
-          {m}
-        </button>
-      ))}
-    </div>
-  );
+  const inputType = input.trim() ? (/^\s*curl\s/i.test(input) ? 'cURL' : 'Raw HTTP') : null;
 
   return (
     <div className="space-y-4 p-1">
       {/* Header row */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs htb-text-muted font-medium">
-          Paste a <span className="text-[#22d3ee]">Copy as cURL</span> or raw Burp request.
-          Auth headers are auto-detected; noise is stripped.
+          Paste a raw Burp request or <span className="text-[#22d3ee]">Copy as cURL</span>.
+          Output is a function for your <span className="text-[#22d3ee]">session</span> / <span className="text-[#22d3ee]">BASE_URL</span> template.
         </p>
         <div className="flex items-center gap-2 shrink-0">
           {inputType && (
@@ -73,19 +54,37 @@ export const BurpToPythonTool: React.FC = () => {
               {inputType}
             </span>
           )}
-          {segmented(['requests', 'session'], caller, setCaller)}
-          {segmented(['inline', 'function'], mode, setMode)}
-          <button
-            onClick={() => setParametrize(!parametrize)}
-            className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest transition-all rounded-md border ${
-              parametrize
-                ? 'bg-[#22d3ee]/10 text-[#22d3ee] border-[#22d3ee]/30'
-                : 'bg-white/[0.02] htb-text-faint border-white/10 hover:htb-text-muted'
-            }`}
-          >
-            var
-          </button>
+          <div className="flex rounded-md border border-white/10 overflow-hidden">
+            {HEADER_MODES.map(([mode, label]) => (
+              <button
+                key={mode}
+                onClick={() => setHeaderMode(mode)}
+                className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest transition-all ${
+                  headerMode === mode
+                    ? 'bg-[#22d3ee]/10 text-[#22d3ee]'
+                    : 'bg-white/[0.02] htb-text-faint hover:htb-text-muted'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
+
+      {/* Function name */}
+      <div className="flex items-center gap-2">
+        <label className="text-[10px] font-bold uppercase tracking-widest htb-text-faint shrink-0">
+          function name
+        </label>
+        <input
+          value={funcName}
+          onChange={e => setFuncName(e.target.value)}
+          placeholder="auto (from method + path)"
+          spellCheck={false}
+          className="flex-1 font-mono text-[12px] border rounded-md px-3 py-1.5 htb-text placeholder:htb-text-faint focus:outline-none focus:border-[#22d3ee]/30"
+          style={{ background: 'var(--htb-surface)', borderColor: 'var(--htb-border)' }}
+        />
       </div>
 
       {/* Input */}
@@ -118,14 +117,23 @@ export const BurpToPythonTool: React.FC = () => {
         </div>
       </div>
 
+      {/* Warnings */}
+      {result && !result.error && result.warnings.length > 0 && (
+        <ul className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 space-y-1">
+          {result.warnings.map((w, i) => (
+            <li key={i} className="font-mono text-[11px] text-amber-400">• {w}</li>
+          ))}
+        </ul>
+      )}
+
       {/* Output */}
-      {output ? (
-        isParseError ? (
+      {result ? (
+        result.error ? (
           <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-4">
-            <p className="font-mono text-xs text-red-400">{output}</p>
+            <p className="font-mono text-xs text-red-400">Parse error: {result.error}</p>
           </div>
         ) : (
-          <CodeBlock code={output} title="Python Snippet" language="python" />
+          <CodeBlock code={result.code} title="Python Function" language="python" />
         )
       ) : (
         <div className="h-32 flex items-center justify-center rounded-xl border border-dashed border-white/10">
